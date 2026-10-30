@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx — Study Four, The Image Chessboard. Desktop interactive design concept.">
+  <link rel="icon" href="data:,">
+  <title>Rivington Marx — Study Four / The Image Chessboard</title>
+  <style>
+    :root {
+      --ink: #151411;
+      --ink-soft: #1c1a16;
+      --paper: #eee9dc;
+      --paper-soft: #d7d0c1;
+      --rule: rgba(238, 233, 220, .22);
+      --rule-dark: rgba(21, 20, 17, .2);
+      --rust: #9d4f39;
+      --display: Cochin, "Hoefler Text", Georgia, serif;
+      --sans: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --ease: cubic-bezier(.22, .78, .22, 1);
+      --dock-height: 70px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+    html { background: var(--ink); }
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--paper);
+      background: var(--ink);
+      font-family: var(--sans);
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, a { color: inherit; font: inherit; }
+    button { border: 0; cursor: pointer; }
+    a { text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    :focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+
+    .mobile-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 48px;
+      color: var(--paper);
+      background: var(--ink);
+      text-align: center;
+    }
+    .mobile-gate__inner { max-width: 470px; }
+    .mobile-gate__eyebrow { margin-bottom: 26px; font-size: 10px; letter-spacing: .25em; text-transform: uppercase; }
+    .mobile-gate h1 { margin: 0 0 22px; font: 400 46px/.96 var(--display); letter-spacing: -.035em; }
+    .mobile-gate p { margin: 0; color: #aaa398; font: 16px/1.55 var(--display); }
+
+    .experience { position: relative; width: 100%; height: 100%; isolation: isolate; }
+    .top-mark {
+      position: fixed;
+      z-index: 30;
+      top: 25px;
+      left: 28px;
+      display: grid;
+      grid-template-columns: 7px 100px;
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: start;
+      font-size: 8px;
+      line-height: 1.2;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+      mix-blend-mode: difference;
+    }
+    .top-mark::before { content: ""; grid-row: 1 / span 2; width: 7px; height: 7px; margin-top: 2px; background: currentColor; }
+    .top-mark span { display: block; }
+    .contact-pill {
+      position: fixed;
+      z-index: 41;
+      right: 24px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      height: 46px;
+      min-width: 172px;
+      padding: 12px 16px;
+      color: var(--paper);
+      background: var(--ink);
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      font-size: 9px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      transition: color .3s ease, background .3s ease;
+    }
+    .contact-pill::after { content: "↗"; margin-left: auto; font: 18px/1 var(--display); }
+    .contact-pill:hover { color: var(--paper); background: var(--rust); }
+
+    .board-stage {
+      position: absolute;
+      inset: 0 0 var(--dock-height);
+      overflow: hidden;
+      background: var(--ink);
+      transition: opacity .65s ease, transform .8s var(--ease), visibility .65s;
+    }
+    .mode-index .board-stage { visibility: hidden; opacity: 0; transform: scale(.975); pointer-events: none; }
+    .board-world {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transform-origin: 50% 50%;
+      transition: opacity 1.1s ease;
+    }
+    .board-world.is-ready { opacity: 1; }
+    .board-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      border: 1px solid var(--rule);
+      background-image:
+        linear-gradient(to right, transparent calc(100% - 1px), var(--rule) calc(100% - 1px)),
+        linear-gradient(to bottom, transparent calc(100% - 1px), var(--rule) calc(100% - 1px));
+      background-size: 12.5% 100%, 100% 25%;
+      pointer-events: none;
+    }
+    .board-lines::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 48%, transparent 20%, rgba(8,8,6,.22) 96%);
+    }
+    .board-tiles { position: absolute; inset: 0; z-index: 1; }
+    .tile {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 1px;
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transition: transform .95s var(--ease), width .95s var(--ease), height .95s var(--ease), opacity .45s ease;
+    }
+    .tile.is-mounted { opacity: 1; pointer-events: auto; }
+    .tile.is-hidden { opacity: 0; pointer-events: none; }
+    .tile__inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      color: var(--paper);
+      background: var(--ink-soft);
+      border: 1px solid var(--rule);
+      transition: opacity .45s ease, transform .55s var(--ease), border-color .45s ease;
+    }
+    button.tile__inner { display: block; padding: 0; text-align: left; }
+    .tile__inner:hover,
+    .tile__inner:focus-visible { z-index: 3; transform: translateY(-5px) scale(1.018); border-color: rgba(238,233,220,.72); }
+    .board-tiles.has-focus .tile:not(.is-focused) .tile__inner { opacity: .38; }
+    .tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease), filter .45s ease; }
+    .tile__inner:hover img,
+    .tile__inner:focus-visible img { transform: scale(1.018); }
+    .tile__veil { position: absolute; inset: 0; background: linear-gradient(to top, rgba(9,9,7,.7), transparent 46%, rgba(9,9,7,.1)); }
+    .tile__no,
+    .tile__year { position: absolute; top: 16px; z-index: 2; font-size: 8px; letter-spacing: .18em; text-transform: uppercase; }
+    .tile__no { left: 16px; }
+    .tile__year { right: 16px; }
+    .tile__caption { position: absolute; z-index: 2; right: 16px; bottom: 14px; left: 16px; display: block; }
+    .tile__caption strong { display: block; font: 400 clamp(15px, 1.55vw, 20px)/1 var(--display); letter-spacing: -.02em; }
+    .tile__caption span { display: block; margin-top: 5px; overflow: hidden; opacity: .65; font-size: 7px; line-height: 1.2; letter-spacing: .14em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+    .tile--narrow .tile__caption strong { font-size: 16px; }
+    .tile--narrow .tile__caption span { display: none; }
+    .tile__open { position: absolute; z-index: 2; top: 50%; left: 50%; padding: 9px 13px; border: 1px solid rgba(255,255,255,.56); border-radius: 999px; opacity: 0; transform: translate(-50%, -40%); font-size: 8px; letter-spacing: .15em; text-transform: uppercase; transition: opacity .35s ease, transform .4s var(--ease); white-space: nowrap; }
+    .tile__inner:hover .tile__open,
+    .tile__inner:focus-visible .tile__open { opacity: 1; transform: translate(-50%, -50%); }
+
+    .tile--brand .tile__inner { padding: clamp(24px, 3vw, 48px); color: var(--ink); background: var(--paper); }
+    .brand-cell__name { position: absolute; right: clamp(24px, 3vw, 48px); bottom: clamp(22px, 2.8vw, 44px); left: clamp(24px, 3vw, 48px); font: 400 clamp(40px, 5vw, 88px)/.7 var(--display); letter-spacing: -.065em; }
+    .brand-cell__name em { display: block; margin-left: 20%; font-style: italic; }
+    .tile--statement .tile__inner { padding: 28px; color: var(--paper); background: #294551; }
+    .tile--statement:nth-of-type(8) .tile__inner { background: #865144; }
+    .statement-cell__text { position: absolute; right: 26px; bottom: 25px; left: 26px; font: italic 400 clamp(24px, 2.3vw, 42px)/.93 var(--display); letter-spacing: -.025em; }
+    .tile--special .tile__inner { padding: 24px; background: #24221d; }
+    .special-cell__title { position: absolute; right: 23px; bottom: 22px; left: 23px; font: 400 clamp(25px, 2.5vw, 46px)/.88 var(--display); letter-spacing: -.04em; }
+    .special-cell__arrow { position: absolute; top: 19px; right: 20px; font: 25px/1 var(--display); }
+    .tile--contact .tile__inner { color: var(--ink); background: #d6b069; }
+    .tile--approach .tile__inner { background: #59473c; }
+
+    .board-note {
+      display: none;
+    }
+
+    .control-dock {
+      position: fixed;
+      z-index: 40;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: var(--dock-height);
+      padding: 0 220px 0 30px;
+      color: var(--ink);
+      background: var(--paper);
+      border-top: 1px solid rgba(255,255,255,.38);
+      box-shadow: 0 -14px 44px rgba(0,0,0,.16);
+      white-space: nowrap;
+    }
+    .dock-group { display: flex; align-items: center; gap: 2px; }
+    .dock-divider { width: 1px; height: 22px; margin: 0 5px; background: var(--rule-dark); }
+    .dock-button {
+      padding: 11px 13px;
+      color: rgba(21,20,17,.58);
+      background: transparent;
+      border-radius: 999px;
+      font-size: 8px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      transition: color .3s ease, background .3s ease;
+    }
+    .dock-button:hover { color: var(--ink); }
+    .dock-button.is-active { color: var(--paper); background: var(--ink); }
+    .dock-count { min-width: 74px; padding: 0 13px; text-align: center; font-size: 8px; letter-spacing: .15em; text-transform: uppercase; }
+    .dock-group[aria-label="Filter projects"] + .dock-divider { margin-left: auto; }
+    .dock-hint { padding: 0 13px 0 5px; color: rgba(21,20,17,.46); font: italic 12px/1 var(--display); }
+
+    .index-view {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      visibility: hidden;
+      opacity: 0;
+      color: var(--ink);
+      background: var(--paper);
+      transform: translateY(24px);
+      transition: visibility .7s, opacity .55s ease, transform .8s var(--ease);
+    }
+    .mode-index .index-view { visibility: visible; opacity: 1; transform: none; }
+    .index-head { position: absolute; top: 30px; left: 4vw; display: flex; align-items: baseline; gap: 28px; }
+    .index-head h1 { margin: 0; font: 400 clamp(48px, 5vw, 82px)/1 var(--display); letter-spacing: -.05em; }
+    .index-head span { color: rgba(21,20,17,.5); font-size: 8px; letter-spacing: .2em; text-transform: uppercase; }
+    .index-layout { display: grid; grid-template-columns: 58% 42%; height: 100%; padding: 124px 4vw 92px; }
+    .index-list { min-width: 0; padding-right: 4vw; overflow: auto; scrollbar-width: none; }
+    .index-list::-webkit-scrollbar { display: none; }
+    .index-row {
+      display: grid;
+      grid-template-columns: 54px minmax(180px, 1fr) 150px 50px;
+      align-items: center;
+      width: 100%;
+      padding: 17px 0;
+      color: rgba(21,20,17,.62);
+      background: transparent;
+      border-top: 1px solid var(--rule-dark);
+      text-align: left;
+      transition: color .3s ease, padding .4s var(--ease);
+    }
+    .index-row:last-child { border-bottom: 1px solid var(--rule-dark); }
+    .index-row:hover,
+    .index-row:focus-visible,
+    .index-row.is-active { padding-left: 12px; color: var(--ink); }
+    .index-row__no,
+    .index-row__tag,
+    .index-row__year { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; }
+    .index-row__title { font: 400 clamp(23px, 2.2vw, 36px)/1 var(--display); letter-spacing: -.025em; }
+    .index-preview { position: relative; overflow: hidden; background: #cec8ba; }
+    .index-preview img { width: 100%; height: 100%; object-fit: cover; transition: opacity .28s ease, transform .75s var(--ease); }
+    .index-preview.is-changing img { opacity: .15; transform: scale(1.02); }
+    .index-preview__shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,9,8,.62), transparent 55%); }
+    .index-preview__copy { position: absolute; right: 28px; bottom: 27px; left: 28px; display: flex; align-items: end; justify-content: space-between; gap: 20px; color: var(--paper); }
+    .index-preview__copy strong { font: 400 34px/1 var(--display); }
+    .index-preview__copy span { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; }
+
+    .project-layer {
+      --origin: inset(45% 45% 45% 45% round 0px);
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      visibility: hidden;
+      opacity: 0;
+      color: var(--paper);
+      background: #100f0d;
+      clip-path: var(--origin);
+      pointer-events: none;
+      transition: clip-path .9s var(--ease), opacity .2s ease, visibility .9s;
+    }
+    .project-layer.is-preparing { visibility: visible; opacity: 1; pointer-events: auto; }
+    .project-layer.is-open { clip-path: inset(0 0 0 0 round 0px); }
+    .project-layer__media { position: absolute; inset: 0 31vw 0 0; overflow: hidden; background: #25211c; }
+    .project-layer__media img { width: 100%; height: 100%; object-fit: cover; transition: opacity .35s ease, transform .75s var(--ease); }
+    .project-layer__media.is-changing img { opacity: .15; transform: scale(1.015); }
+    .project-layer__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(7,7,6,.5), transparent 34%); pointer-events: none; }
+    .project-layer__rail { position: absolute; inset: 0 0 0 auto; width: 31vw; padding: 28px 30px 32px; border-left: 1px solid rgba(238,233,220,.18); background: rgba(16,15,13,.97); }
+    .layer-brand { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; }
+    .project-close { position: absolute; top: 21px; right: 24px; width: 39px; height: 39px; color: var(--paper); background: transparent; border: 1px solid rgba(238,233,220,.35); border-radius: 50%; font: 20px/1 var(--display); transition: color .3s ease, background .3s ease, transform .3s ease; }
+    .project-close:hover { color: var(--ink); background: var(--paper); transform: rotate(90deg); }
+    .project-layer__body { position: absolute; top: 23vh; right: 30px; left: 30px; }
+    .project-layer__kicker { color: #b66b54; font-size: 8px; letter-spacing: .19em; text-transform: uppercase; }
+    .project-layer h2 { max-width: 8ch; margin: 24px 0 27px; font: 400 clamp(48px, 5.2vw, 84px)/.82 var(--display); letter-spacing: -.055em; }
+    .project-layer__description { max-width: 380px; margin: 0; color: rgba(238,233,220,.68); font: 16px/1.55 var(--display); }
+    .project-layer__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 42px; padding-top: 17px; border-top: 1px solid rgba(238,233,220,.2); }
+    .project-layer__meta span { font-size: 8px; line-height: 1.5; letter-spacing: .15em; text-transform: uppercase; }
+    .project-layer__count { position: absolute; right: 30px; bottom: 31px; font-size: 9px; letter-spacing: .18em; }
+    .layer-cta { display: none; align-items: center; justify-content: space-between; margin-top: 36px; padding: 15px 0; border-top: 1px solid rgba(238,233,220,.25); border-bottom: 1px solid rgba(238,233,220,.25); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+    .layer-cta.is-visible { display: flex; }
+    .layer-cta b { font: 24px/1 var(--display); }
+    .filmstrip { position: absolute; z-index: 2; right: calc(31vw + 24px); bottom: 22px; left: 24px; display: flex; align-items: end; gap: 8px; }
+    .filmstrip-button { width: 68px; height: 49px; padding: 0; overflow: hidden; background: #222; border: 1px solid rgba(238,233,220,.28); opacity: .62; transition: width .4s var(--ease), opacity .3s ease, border-color .3s ease; }
+    .filmstrip-button img { width: 100%; height: 100%; object-fit: cover; }
+    .filmstrip-button:hover,
+    .filmstrip-button.is-active { width: 92px; opacity: 1; border-color: var(--paper); }
+
+    @media (max-width: 1180px) {
+      .dock-hint { display: none; }
+      .dock-button { padding-right: 10px; padding-left: 10px; letter-spacing: .11em; }
+      .project-layer__media { right: 34vw; }
+      .project-layer__rail { width: 34vw; }
+      .filmstrip { right: calc(34vw + 22px); }
+    }
+    @media (max-width: 979px) {
+      .mobile-gate { display: grid; }
+      .experience { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+      .board-world { transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="mobile-gate" aria-label="Desktop study notice">
+    <div class="mobile-gate__inner">
+      <div class="mobile-gate__eyebrow">Rivington Marx / Study 04</div>
+      <h1>The Image Chessboard is a desktop study.</h1>
+      <p>The mobile experience is intentionally deferred until the selected desktop direction has been approved.</p>
+    </div>
+  </aside>
+
+  <main class="experience">
+    <div class="top-mark"><span>Study 04</span><span>The Image Chessboard</span></div>
+    <button class="contact-pill" type="button" data-open-special="contact">Begin a project</button>
+
+    <section class="board-stage" aria-label="Interactive project board">
+      <div class="board-world">
+        <div class="board-lines" aria-hidden="true"></div>
+        <div class="board-tiles"></div>
+      </div>
+      <div class="board-note">Move pointer / Scroll to explore</div>
+    </section>
+
+    <section class="index-view" aria-hidden="true" aria-label="Project index">
+      <div class="index-head"><h1>Project Index</h1><span>Gallery / Archive</span></div>
+      <div class="index-layout">
+        <div class="index-list"></div>
+        <div class="index-preview">
+          <img src="../assets/collected-living.jpg" alt="Collected interior with patterned seating and floral curtains">
+          <div class="index-preview__shade"></div>
+          <div class="index-preview__copy"><strong>Collected Living</strong><span>Collected / Residential</span></div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="control-dock" aria-label="Portfolio controls">
+      <div class="dock-group" aria-label="View">
+        <button class="dock-button view-button is-active" type="button" data-view="board">Board</button>
+        <button class="dock-button view-button" type="button" data-view="index">Index</button>
+      </div>
+      <span class="dock-divider" aria-hidden="true"></span>
+      <div class="dock-group" aria-label="Filter projects">
+        <button class="dock-button filter-button is-active" type="button" data-filter="all">All</button>
+        <button class="dock-button filter-button" type="button" data-filter="colour">Colour</button>
+        <button class="dock-button filter-button" type="button" data-filter="collected">Collected</button>
+        <button class="dock-button filter-button" type="button" data-filter="quiet">Quiet</button>
+        <button class="dock-button filter-button" type="button" data-filter="architectural">Architectural</button>
+        <button class="dock-button filter-button" type="button" data-filter="detail">Detail</button>
+      </div>
+      <span class="dock-divider" aria-hidden="true"></span>
+      <div class="dock-count" aria-live="polite">09 / 09</div>
+      <div class="dock-hint">An interior archive in motion</div>
+    </nav>
+
+    <article class="project-layer" aria-hidden="true">
+      <div class="project-layer__media"><img src="../assets/collected-living.jpg" alt=""></div>
+      <div class="filmstrip" aria-label="Project image selection"></div>
+      <aside class="project-layer__rail">
+        <div class="layer-brand">Rivington Marx</div>
+        <button class="project-close" type="button" aria-label="Close project">×</button>
+        <div class="project-layer__body">
+          <div class="project-layer__kicker">Selected work / Project cover</div>
+          <h2>Collected Living</h2>
+          <p class="project-layer__description"></p>
+          <div class="project-layer__meta"></div>
+          <a class="layer-cta" href="https://rivingtonmarx.com/contact/" target="_blank" rel="noopener">Contact the studio <b aria-hidden="true">↗</b></a>
+        </div>
+        <div class="project-layer__count">01 / 09</div>
+      </aside>
+    </article>
+  </main>
+
+  <script>
+    (() => {
+      const projects = [
+        {
+          title: 'Collected Living', image: '../assets/collected-living.jpg', alt: 'Collected interior with patterned seating and floral curtains',
+          tag: 'Collected / Residential', character: ['collected', 'colour'], year: '01',
+          description: 'Pattern, art and objects are composed as an evolving portrait of the people who live here.',
+          meta: ['Residential', 'Character-led', 'Denver / Nationwide'],
+          gallery: ['../assets/collected-living.jpg', '../assets/portrait-vignette.jpg', '../assets/collected-bath.jpg']
+        },
+        {
+          title: 'Blue Salon', image: '../assets/blue-salon.jpg', alt: 'Blue salon with sculptural seating and patterned carpet',
+          tag: 'Colour / Salon', character: ['colour', 'collected'], year: '02',
+          description: 'A saturated room where colour becomes structure and every object has a deliberate place.',
+          meta: ['Residential', 'Colour study', 'Concept presentation'],
+          gallery: ['../assets/blue-salon.jpg', '../assets/pink-dining.jpg', '../assets/green-study.jpg']
+        },
+        {
+          title: 'Stone Kitchen', image: '../assets/stone-kitchen.jpg', alt: 'Quiet stone kitchen with restrained architectural detailing',
+          tag: 'Architectural / Kitchen', character: ['architectural', 'quiet'], year: '03',
+          description: 'Natural stone, exact alignments and quiet utility give the room its architectural calm.',
+          meta: ['Residential', 'Kitchen', 'Design + build'],
+          gallery: ['../assets/stone-kitchen.jpg', '../assets/dark-kitchen.jpg', '../assets/foyer.jpg']
+        },
+        {
+          title: 'Pink Dining', image: '../assets/pink-dining.jpg', alt: 'Pink dining room with art and colourful furniture',
+          tag: 'Colour / Dining', character: ['colour', 'collected'], year: '04',
+          description: 'Confident colour and art create a dining room that feels both composed and spontaneous.',
+          meta: ['Residential', 'Dining', 'Expressive colour'],
+          gallery: ['../assets/pink-dining.jpg', '../assets/gold-dining.jpg', '../assets/blue-salon.jpg']
+        },
+        {
+          title: 'Green Study', image: '../assets/green-study.jpg', alt: 'Deep green study with layered furnishings and framed art',
+          tag: 'Quiet / Study', character: ['quiet', 'colour'], year: '05',
+          description: 'A deeply coloured retreat balanced by warm light, art and a precise furniture plan.',
+          meta: ['Residential', 'Study', 'Atmospheric'],
+          gallery: ['../assets/green-study.jpg', '../assets/desk.jpg', '../assets/tailored-bar.jpg']
+        },
+        {
+          title: 'Black Bath', image: '../assets/black-bath.jpg', alt: 'Dark bathroom with strong architectural geometry',
+          tag: 'Architectural / Bath', character: ['architectural', 'quiet'], year: '06',
+          description: 'Material contrast and rigorous geometry turn a private room into a graphic composition.',
+          meta: ['Residential', 'Bath', 'Material study'],
+          gallery: ['../assets/black-bath.jpg', '../assets/collected-bath.jpg', '../assets/powder-detail.jpg']
+        },
+        {
+          title: 'Powder Detail', image: '../assets/powder-detail.jpg', alt: 'Decorative powder room detail with layered pattern',
+          tag: 'Detail / Powder', character: ['detail', 'colour'], year: '07',
+          description: 'A small room becomes an opportunity for scale, pattern and an unexpected visual rhythm.',
+          meta: ['Residential', 'Powder room', 'Decorative detail'],
+          gallery: ['../assets/powder-detail.jpg', '../assets/collected-bath.jpg', '../assets/portrait-vignette.jpg']
+        },
+        {
+          title: 'Tailored Bar', image: '../assets/tailored-bar.jpg', alt: 'Tailored home bar with warm materials and collected objects',
+          tag: 'Collected / Detail', character: ['collected', 'detail'], year: '08',
+          description: 'Craft, display and hospitality meet in a compact room made for gathering.',
+          meta: ['Residential', 'Bar', 'Custom detailing'],
+          gallery: ['../assets/tailored-bar.jpg', '../assets/desk.jpg', '../assets/dark-kitchen.jpg']
+        },
+        {
+          title: 'Quiet Foyer', image: '../assets/foyer.jpg', alt: 'Architectural foyer with restrained furniture and artwork',
+          tag: 'Quiet / Entry', character: ['quiet', 'architectural'], year: '09',
+          description: 'The first room establishes a composed sequence of proportion, art and natural material.',
+          meta: ['Residential', 'Entry', 'Architectural'],
+          gallery: ['../assets/foyer.jpg', '../assets/stone-kitchen.jpg', '../assets/studio.jpg']
+        }
+      ];
+
+      const tiles = [
+        { type: 'brand', col: 1, row: 0, w: 2, h: 1 },
+        { type: 'project', project: 0, col: 3, row: 0, w: 2, h: 2 },
+        { type: 'statement', tone: 'blue', text: 'Rooms with a point of view.', col: 5, row: 0, w: 1, h: 1 },
+        { type: 'project', project: 1, col: 6, row: 0, w: 2, h: 1 },
+        { type: 'project', project: 2, col: 0, row: 1, w: 2, h: 1 },
+        { type: 'special', special: 'studio', title: 'The Studio', col: 2, row: 1, w: 1, h: 1 },
+        { type: 'project', project: 3, col: 5, row: 1, w: 2, h: 2 },
+        { type: 'statement', tone: 'rust', text: 'Character before convention.', col: 7, row: 1, w: 1, h: 1 },
+        { type: 'project', project: 4, col: 1, row: 2, w: 2, h: 2 },
+        { type: 'project', project: 5, col: 3, row: 2, w: 2, h: 1 },
+        { type: 'special', special: 'approach', title: 'Design + Build', col: 3, row: 3, w: 1, h: 1 },
+        { type: 'project', project: 6, col: 4, row: 3, w: 2, h: 1 },
+        { type: 'special', special: 'contact', title: 'Begin a Project', col: 6, row: 3, w: 1, h: 1 },
+        { type: 'project', project: 7, col: 7, row: 2, w: 1, h: 2 },
+        { type: 'project', project: 8, col: 0, row: 3, w: 1, h: 1 }
+      ];
+
+      const specialContent = {
+        studio: {
+          title: 'One studio. Many disciplines.', image: '../assets/studio.jpg', alt: 'Rivington Marx studio with reception desk and material boards',
+          kicker: 'Studio / Denver', description: 'Interior design, architectural thinking and construction fluency work as one connected practice.',
+          meta: ['Denver, Colorado', 'Working nationwide', 'Integrated practice'], gallery: ['../assets/studio.jpg', '../assets/desk.jpg', '../assets/portrait-vignette.jpg']
+        },
+        approach: {
+          title: 'Bold ideas. Precisely delivered.', image: '../assets/dark-kitchen.jpg', alt: 'Tailored dark and cream kitchen with patterned ceiling',
+          kicker: 'Approach / Design + Build', description: 'A single creative thread carries each project from discovery and design through documentation and delivery.',
+          meta: ['Discover', 'Design + document', 'Deliver'], gallery: ['../assets/dark-kitchen.jpg', '../assets/stone-kitchen.jpg', '../assets/tailored-bar.jpg']
+        },
+        contact: {
+          title: 'Make it unmistakably yours.', image: '../assets/gold-dining.jpg', alt: 'Atmospheric gold dining room',
+          kicker: 'Begin a project', description: 'A conversation is the first step toward a home with character, clarity and a life of its own.',
+          meta: ['Rivington Marx', 'Denver / Nationwide', 'New enquiries'], gallery: ['../assets/gold-dining.jpg', '../assets/pink-dining.jpg', '../assets/blue-salon.jpg'], contact: true
+        }
+      };
+
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const body = document.body;
+      const boardWorld = document.querySelector('.board-world');
+      const tileField = document.querySelector('.board-tiles');
+      const viewButtons = [...document.querySelectorAll('.view-button')];
+      const filterButtons = [...document.querySelectorAll('.filter-button')];
+      const dockCount = document.querySelector('.dock-count');
+      const indexView = document.querySelector('.index-view');
+      const indexList = document.querySelector('.index-list');
+      const indexPreview = document.querySelector('.index-preview');
+      const projectLayer = document.querySelector('.project-layer');
+      const projectMedia = document.querySelector('.project-layer__media');
+      const projectImage = projectMedia.querySelector('img');
+      const projectClose = document.querySelector('.project-close');
+      const filmstrip = document.querySelector('.filmstrip');
+      let activeFilter = 'all';
+      let activeView = 'board';
+      let previewTimer = null;
+      let layerOrigin = 'inset(45% 45% 45% 45% round 0px)';
+
+      const visibleProjects = () => projects.map((project, index) => ({project, index})).filter(({project}) => activeFilter === 'all' || project.character.includes(activeFilter));
+      const pad = (number) => String(number + 1).padStart(2, '0');
+
+      const tileMarkup = (tile) => {
+        if (tile.type === 'brand') return `<div class="tile__inner"><div class="brand-cell__name">Rivington <em>Marx</em></div></div>`;
+        if (tile.type === 'statement') return `<div class="tile__inner"><div class="statement-cell__text">${tile.text}</div></div>`;
+        if (tile.type === 'special') return `<button class="tile__inner" type="button" data-special="${tile.special}" aria-label="Open ${tile.title}"><span class="special-cell__arrow" aria-hidden="true">↗</span><span class="special-cell__title">${tile.title}</span></button>`;
+        const project = projects[tile.project];
+        return `<button class="tile__inner" type="button" data-project="${tile.project}" aria-label="Open ${project.title}"><img src="${project.image}" alt="${project.alt}" loading="${tile.project > 2 ? 'lazy' : 'eager'}" decoding="async"><span class="tile__veil"></span><span class="tile__no">${pad(tile.project)}</span><span class="tile__year">RM / ${project.year}</span><span class="tile__open">View project ↗</span><span class="tile__caption"><strong>${project.title}</strong><span>${project.tag}</span></span></button>`;
+      };
+
+      const buildBoard = () => {
+        tiles.forEach((tile, index) => {
+          const node = document.createElement('article');
+          node.className = `tile tile--${tile.type}${tile.special ? ` tile--${tile.special}` : ''}${tile.w === 1 ? ' tile--narrow' : ''}`;
+          node.dataset.tile = index;
+          if (tile.type === 'project') node.dataset.project = tile.project;
+          node.innerHTML = tileMarkup(tile);
+          tileField.appendChild(node);
+          const inner = node.querySelector('.tile__inner');
+          inner.addEventListener('mouseenter', () => focusTile(node, true));
+          inner.addEventListener('mouseleave', () => focusTile(node, false));
+          inner.addEventListener('focus', () => focusTile(node, true));
+          inner.addEventListener('blur', () => focusTile(node, false));
+          if (tile.type === 'project') inner.addEventListener('click', () => openProject(tile.project, node));
+          if (tile.type === 'special') inner.addEventListener('click', () => openSpecial(tile.special, node));
+          setTimeout(() => node.classList.add('is-mounted'), reduceMotion ? 0 : 120 + index * 55);
+        });
+        positionTiles();
+        requestAnimationFrame(() => boardWorld.classList.add('is-ready'));
+      };
+
+      const focusTile = (node, focused) => {
+        node.classList.toggle('is-focused', focused);
+        tileField.classList.toggle('has-focus', focused || !!tileField.querySelector('.tile.is-focused'));
+      };
+
+      const projectSlots = tiles.filter(tile => tile.type === 'project').map(tile => ({col: tile.col, row: tile.row}));
+
+      const positionTiles = () => {
+        const cellW = boardWorld.clientWidth / 8;
+        const cellH = boardWorld.clientHeight / 4;
+        const visible = visibleProjects().map(item => item.index);
+        let visibleOrder = 0;
+        [...tileField.children].forEach((node, index) => {
+          const tile = tiles[index];
+          let col = tile.col;
+          let row = tile.row;
+          if (tile.type === 'project') {
+            const shown = visible.includes(tile.project);
+            node.classList.toggle('is-hidden', !shown);
+            node.setAttribute('aria-hidden', String(!shown));
+            if (shown && activeFilter !== 'all') {
+              const slot = projectSlots[visibleOrder++];
+              col = slot.col;
+              row = slot.row;
+            }
+          }
+          node.style.width = `${cellW * tile.w}px`;
+          node.style.height = `${cellH * tile.h}px`;
+          node.style.transform = `translate3d(${cellW * col}px, ${cellH * row}px, 0)`;
+        });
+      };
+
+      const setFilter = (filter) => {
+        activeFilter = filter;
+        filterButtons.forEach(button => button.classList.toggle('is-active', button.dataset.filter === filter));
+        const result = visibleProjects();
+        dockCount.textContent = `${String(result.length).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}`;
+        positionTiles();
+        renderIndex();
+      };
+
+      const setView = (view) => {
+        activeView = view;
+        body.classList.toggle('mode-index', view === 'index');
+        indexView.setAttribute('aria-hidden', String(view !== 'index'));
+        viewButtons.forEach(button => button.classList.toggle('is-active', button.dataset.view === view));
+        if (view === 'index') {
+          renderIndex();
+          const first = indexList.querySelector('.index-row');
+          if (first) { showIndexPreview(Number(first.dataset.project), true); first.focus(); }
+        }
+      };
+
+      const renderIndex = () => {
+        const result = visibleProjects();
+        indexList.innerHTML = '';
+        result.forEach(({project, index}, order) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'index-row';
+          button.dataset.project = index;
+          button.innerHTML = `<span class="index-row__no">${String(order + 1).padStart(2, '0')}</span><span class="index-row__title">${project.title}</span><span class="index-row__tag">${project.tag}</span><span class="index-row__year">${project.year}</span>`;
+          button.addEventListener('mouseenter', () => showIndexPreview(index));
+          button.addEventListener('focus', () => showIndexPreview(index));
+          button.addEventListener('click', () => openProject(index, indexPreview));
+          indexList.appendChild(button);
+        });
+      };
+
+      const showIndexPreview = (index, immediate = false) => {
+        clearTimeout(previewTimer);
+        const project = projects[index];
+        [...indexList.children].forEach(row => row.classList.toggle('is-active', Number(row.dataset.project) === index));
+        const apply = () => {
+          const image = indexPreview.querySelector('img');
+          image.src = project.image;
+          image.alt = project.alt;
+          indexPreview.querySelector('strong').textContent = project.title;
+          indexPreview.querySelector('span').textContent = project.tag;
+          indexPreview.classList.remove('is-changing');
+        };
+        if (immediate || reduceMotion) apply();
+        else { indexPreview.classList.add('is-changing'); previewTimer = setTimeout(apply, 180); }
+      };
+
+      const originFrom = (node) => {
+        const rect = node.getBoundingClientRect();
+        return `inset(${Math.max(0, rect.top)}px ${Math.max(0, innerWidth - rect.right)}px ${Math.max(0, innerHeight - rect.bottom)}px ${Math.max(0, rect.left)}px round 0px)`;
+      };
+
+      const populateLayer = (entry, count, isContact = false) => {
+        projectImage.src = entry.image;
+        projectImage.alt = entry.alt;
+        projectLayer.querySelector('.project-layer__kicker').textContent = entry.kicker || `Selected work / ${entry.tag}`;
+        projectLayer.querySelector('h2').textContent = entry.title;
+        projectLayer.querySelector('.project-layer__description').textContent = entry.description;
+        projectLayer.querySelector('.project-layer__meta').innerHTML = entry.meta.map(item => `<span>${item}</span>`).join('');
+        projectLayer.querySelector('.project-layer__count').textContent = count;
+        projectLayer.querySelector('.layer-cta').classList.toggle('is-visible', isContact);
+        filmstrip.innerHTML = '';
+        entry.gallery.forEach((src, imageIndex) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `filmstrip-button${imageIndex === 0 ? ' is-active' : ''}`;
+          button.setAttribute('aria-label', `Show image ${imageIndex + 1}`);
+          button.innerHTML = `<img src="${src}" alt="">`;
+          button.addEventListener('click', () => switchLayerImage(src, imageIndex));
+          filmstrip.appendChild(button);
+        });
+      };
+
+      const revealLayer = (origin) => {
+        layerOrigin = originFrom(origin);
+        projectLayer.style.setProperty('--origin', layerOrigin);
+        projectLayer.classList.add('is-preparing');
+        projectLayer.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(() => requestAnimationFrame(() => projectLayer.classList.add('is-open')));
+        setTimeout(() => projectClose.focus(), reduceMotion ? 0 : 550);
+      };
+
+      const openProject = (index, origin) => {
+        const project = projects[index];
+        populateLayer(project, `${String(index + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}`);
+        revealLayer(origin);
+      };
+
+      const openSpecial = (name, origin) => {
+        const entry = specialContent[name];
+        populateLayer(entry, name === 'studio' ? 'ST / 01' : name === 'approach' ? 'PR / 02' : 'CT / 03', !!entry.contact);
+        revealLayer(origin);
+      };
+
+      const switchLayerImage = (src, index) => {
+        projectMedia.classList.add('is-changing');
+        setTimeout(() => {
+          projectImage.src = src;
+          projectMedia.classList.remove('is-changing');
+          [...filmstrip.children].forEach((button, buttonIndex) => button.classList.toggle('is-active', buttonIndex === index));
+        }, reduceMotion ? 0 : 190);
+      };
+
+      const closeLayer = () => {
+        projectLayer.classList.remove('is-open');
+        projectLayer.setAttribute('aria-hidden', 'true');
+        setTimeout(() => projectLayer.classList.remove('is-preparing'), reduceMotion ? 0 : 900);
+      };
+
+      viewButtons.forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
+      filterButtons.forEach(button => button.addEventListener('click', () => setFilter(button.dataset.filter)));
+      document.querySelector('.contact-pill').addEventListener('click', (event) => openSpecial('contact', event.currentTarget));
+      projectClose.addEventListener('click', closeLayer);
+      addEventListener('resize', positionTiles);
+      addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && projectLayer.classList.contains('is-preparing')) closeLayer();
+        else if (event.key === 'Escape' && activeView === 'index') setView('board');
+        if (!projectLayer.classList.contains('is-preparing')) {
+          if (event.key.toLowerCase() === 'b') setView('board');
+          if (event.key.toLowerCase() === 'i') setView('index');
+        }
+      });
+
+      buildBoard();
+      renderIndex();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx — Study Two, Editorial House. Desktop design concept.">
+  <link rel="icon" href="data:,">
+  <title>Rivington Marx — Study Two / Editorial House</title>
+  <style>
+    :root {
+      --paper: #eeeae0;
+      --ink: #171713;
+      --muted: #68675f;
+      --line: rgba(23, 23, 19, .26);
+      --red: #a62a20;
+      --blue: #102c45;
+      --serif: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+      --display: "Bodoni 72", Didot, "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --pad: clamp(34px, 4.2vw, 82px);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    img { display: block; width: 100%; }
+    ::selection { color: var(--paper); background: var(--red); }
+
+    .mobile-gate {
+      display: none;
+      min-height: 100svh;
+      padding: 34px;
+      align-items: center;
+      justify-content: center;
+      background: var(--ink);
+      color: var(--paper);
+      text-align: center;
+    }
+    .mobile-gate__inner { max-width: 420px; }
+    .mobile-gate__eyebrow { margin-bottom: 28px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; }
+    .mobile-gate h1 { margin: 0 0 20px; font: 400 44px/.95 var(--display); }
+    .mobile-gate p { margin: 0; color: #b9b6ad; font: 15px/1.6 var(--serif); }
+
+    .desktop-study { position: relative; }
+    .progress {
+      position: fixed;
+      inset: 0 auto auto 0;
+      z-index: 200;
+      width: 0;
+      height: 3px;
+      background: var(--red);
+      pointer-events: none;
+    }
+
+    .masthead {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 22px var(--pad);
+      border-bottom: 1px solid rgba(23, 23, 19, .16);
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .masthead__brand { font: 400 21px/1 var(--display); letter-spacing: .04em; text-transform: none; }
+    .masthead__menu { justify-self: end; padding: 4px 0; border: 0; background: transparent; cursor: pointer; letter-spacing: inherit; text-transform: inherit; }
+    .masthead__menu::after { content: ""; display: inline-block; width: 24px; height: 1px; margin-left: 12px; vertical-align: middle; background: currentColor; transition: width .35s ease; }
+    .masthead__menu:hover::after { width: 38px; }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.06fr .94fr;
+      padding: 118px var(--pad) 54px;
+      overflow: hidden;
+    }
+    .hero__copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; padding: 5vh 0 16px; }
+    .hero__kicker { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; }
+    .hero h1 {
+      position: relative;
+      z-index: 3;
+      width: 126%;
+      margin: 10vh 0 0;
+      font: 400 clamp(90px, 10.3vw, 178px)/.78 var(--display);
+      letter-spacing: -.065em;
+    }
+    .hero h1 span { display: block; }
+    .hero h1 .line-two { margin-left: .37em; font-style: italic; }
+    .hero__footer { display: grid; grid-template-columns: 100px minmax(220px, 350px); gap: 32px; align-items: end; }
+    .hero__folio { font: 400 44px/1 var(--display); }
+    .hero__intro { margin: 0; font: 16px/1.55 var(--serif); }
+    .hero__visual { position: relative; height: calc(100vh - 172px); overflow: hidden; }
+    .hero__visual img { height: 115%; object-fit: cover; transform: translateY(-5%); }
+    .hero__visual::after { content: "Private residence / Study image 01"; position: absolute; right: 0; bottom: -25px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero__seal {
+      position: absolute;
+      right: -44px;
+      top: 23%;
+      width: 91px;
+      height: 91px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(238, 234, 224, .75);
+      border-radius: 50%;
+      color: var(--paper);
+      font-size: 9px;
+      letter-spacing: .18em;
+      text-align: center;
+      text-transform: uppercase;
+      transform: rotate(8deg);
+    }
+
+    .rule { margin: 0 var(--pad); border: 0; border-top: 1px solid var(--line); }
+    .eyebrow { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+    .reveal { opacity: 0; transform: translateY(42px); transition: opacity .9s ease, transform 1s cubic-bezier(.2,.75,.25,1); }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    .manifesto { display: grid; grid-template-columns: .63fr 1.37fr; min-height: 78vh; padding: 12vw var(--pad) 10vw; }
+    .manifesto__aside { display: flex; flex-direction: column; justify-content: space-between; padding-right: 6vw; }
+    .manifesto__aside p { max-width: 250px; margin: 0; color: var(--muted); font: 14px/1.55 var(--serif); }
+    .manifesto__quote { align-self: center; margin: 0; font: 400 clamp(58px, 6.9vw, 118px)/.91 var(--display); letter-spacing: -.045em; }
+    .manifesto__quote em { color: var(--red); font-weight: 400; }
+
+    .story-index { min-height: 110vh; display: grid; grid-template-columns: .82fr 1.18fr; background: #dcd7cb; }
+    .story-index__copy { position: relative; padding: 8vw var(--pad); }
+    .story-index__sticky { position: sticky; top: 9vh; }
+    .story-index h2 { max-width: 580px; margin: 7vh 0 8vh; font: 400 clamp(67px, 7.4vw, 125px)/.86 var(--display); letter-spacing: -.05em; }
+    .story-index h2 em { display: block; font-weight: 400; }
+    .story-list { border-top: 1px solid var(--line); }
+    .story-link {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 20px 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: padding .35s ease, color .25s ease;
+    }
+    .story-link:hover, .story-link.is-active { padding-left: 12px; color: var(--red); }
+    .story-link__no { font: 13px/1 var(--serif); }
+    .story-link__name { font: 400 25px/1.05 var(--display); }
+    .story-link__type { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+    .story-index__stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #1b2430; }
+    .story-index__image { position: absolute; inset: 0; opacity: 0; transform: scale(1.045); transition: opacity .65s ease, transform 1.2s cubic-bezier(.2,.75,.25,1); }
+    .story-index__image.is-active { opacity: 1; transform: scale(1); }
+    .story-index__image img { height: 100%; object-fit: cover; }
+    .story-index__caption { position: absolute; right: 28px; bottom: 25px; z-index: 5; color: white; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+
+    .chapter { padding: 12vw var(--pad); }
+    .chapter__header { display: grid; grid-template-columns: .45fr 1.55fr; align-items: start; margin-bottom: 11vw; }
+    .chapter__header h2 { max-width: 980px; margin: 0; font: 400 clamp(74px, 9.7vw, 160px)/.82 var(--display); letter-spacing: -.06em; }
+    .chapter__header h2 em { font-weight: 400; }
+    .chapter__grid { display: grid; grid-template-columns: 1.05fr .44fr .86fr; gap: clamp(28px, 4.5vw, 90px); align-items: start; }
+    .chapter__lead { margin-top: 11vw; }
+    .chapter__lead img { aspect-ratio: 1.36; object-fit: cover; }
+    .chapter__small { margin-top: 0; }
+    .chapter__small img { aspect-ratio: .75; object-fit: cover; }
+    .chapter__portrait { margin-top: 19vw; }
+    .chapter__portrait img { aspect-ratio: .72; object-fit: cover; }
+    .figure { position: relative; cursor: zoom-in; }
+    .figure__image { overflow: hidden; }
+    .figure img { transition: transform 1.25s cubic-bezier(.2,.75,.25,1), filter .5s ease; }
+    .figure:hover img { transform: scale(1.035); }
+    .figure figcaption { display: flex; justify-content: space-between; gap: 22px; padding-top: 13px; font-size: 9px; line-height: 1.4; letter-spacing: .13em; text-transform: uppercase; }
+    .figure figcaption span:last-child { color: var(--muted); text-align: right; }
+    .chapter__note { max-width: 280px; margin: 7vw 0 0; font: 16px/1.55 var(--serif); }
+
+    .blue-interlude { position: relative; min-height: 115vh; display: grid; align-items: end; overflow: hidden; color: white; background: var(--blue); }
+    .blue-interlude__image { position: absolute; inset: -10%; }
+    .blue-interlude__image img { height: 120%; object-fit: cover; filter: brightness(.58) saturate(.88); }
+    .blue-interlude::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(6,19,31,.62), transparent 62%), linear-gradient(0deg, rgba(6,19,31,.55), transparent 50%); }
+    .blue-interlude__copy { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr .36fr; gap: 6vw; align-items: end; padding: 9vw var(--pad); }
+    .blue-interlude h2 { margin: 0; font: 400 clamp(95px, 13vw, 215px)/.76 var(--display); letter-spacing: -.065em; }
+    .blue-interlude h2 em { display: block; padding-left: 18%; font-weight: 400; }
+    .blue-interlude p { max-width: 300px; margin: 0 0 8px; font: 16px/1.6 var(--serif); }
+
+    .pairing { padding: 13vw var(--pad); }
+    .pairing__top { display: grid; grid-template-columns: .72fr 1.28fr; gap: 8vw; align-items: end; }
+    .pairing__copy { padding-bottom: 5vw; }
+    .pairing__copy h2 { margin: 4vh 0 5vh; font: 400 clamp(68px, 7.7vw, 130px)/.87 var(--display); letter-spacing: -.05em; }
+    .pairing__copy p { max-width: 370px; margin: 0; font: 17px/1.6 var(--serif); }
+    .pairing__main img { aspect-ratio: 1.35; object-fit: cover; }
+    .pairing__bottom { width: 65%; display: grid; grid-template-columns: .8fr 1.2fr; gap: 5vw; align-items: end; margin: -3vw 0 0 8vw; }
+    .pairing__bottom .figure:first-child img { aspect-ratio: .76; object-fit: cover; }
+    .pairing__bottom .figure:last-child { margin-bottom: -12vw; }
+    .pairing__bottom .figure:last-child img { aspect-ratio: 1; object-fit: cover; }
+
+    .materials { padding: 13vw 0 10vw; overflow: hidden; background: #191916; color: #eeeae0; }
+    .materials__head { display: grid; grid-template-columns: 1fr .34fr; gap: 8vw; align-items: end; padding: 0 var(--pad) 7vw; }
+    .materials__head h2 { margin: 0; font: 400 clamp(76px, 9.4vw, 160px)/.82 var(--display); letter-spacing: -.055em; }
+    .materials__head h2 em { font-weight: 400; }
+    .materials__instruction { padding-bottom: 10px; color: #aca99f; font-size: 9px; line-height: 1.7; letter-spacing: .17em; text-transform: uppercase; }
+    .materials__rail { display: flex; gap: 22px; overflow-x: auto; padding: 0 var(--pad) 32px; cursor: grab; scrollbar-width: none; user-select: none; touch-action: pan-y; }
+    .materials__rail::-webkit-scrollbar { display: none; }
+    .materials__rail.is-dragging { cursor: grabbing; }
+    .material-card { flex: 0 0 clamp(310px, 29vw, 520px); margin: 0; }
+    .material-card:nth-child(even) { padding-top: 8vw; }
+    .material-card__image { height: clamp(430px, 58vh, 690px); overflow: hidden; }
+    .material-card img { height: 100%; object-fit: cover; pointer-events: none; transition: transform .8s ease; }
+    .material-card:hover img { transform: scale(1.025); }
+    .material-card figcaption { display: grid; grid-template-columns: 34px 1fr; gap: 16px; padding-top: 17px; border-top: 1px solid rgba(238,234,224,.25); margin-top: 16px; }
+    .material-card__no { color: #8d8b84; font: 12px/1 var(--serif); }
+    .material-card__name { font: 400 23px/1.05 var(--display); }
+    .material-card__note { display: block; margin-top: 8px; color: #9f9c94; font-size: 9px; line-height: 1.55; letter-spacing: .13em; text-transform: uppercase; }
+
+    .process { padding: 13vw var(--pad); }
+    .process__head { display: grid; grid-template-columns: .6fr 1.4fr; margin-bottom: 9vw; }
+    .process__head h2 { max-width: 940px; margin: 0; font: 400 clamp(73px, 8.8vw, 150px)/.84 var(--display); letter-spacing: -.055em; }
+    .process__list { border-top: 1px solid var(--line); }
+    .process__row { position: relative; display: grid; grid-template-columns: 110px 1fr .72fr; gap: 4vw; align-items: baseline; padding: 27px 0 30px; border-bottom: 1px solid var(--line); overflow: hidden; }
+    .process__no { font: 13px/1 var(--serif); }
+    .process__name { position: relative; z-index: 2; font: 400 clamp(38px, 4vw, 68px)/1 var(--display); transition: color .3s ease, transform .45s ease; }
+    .process__row p { position: relative; z-index: 2; max-width: 420px; margin: 0; color: var(--muted); font: 15px/1.55 var(--serif); }
+    .process__row::before { content: ""; position: absolute; inset: 0; background: var(--red); transform: translateY(101%); transition: transform .45s cubic-bezier(.2,.75,.25,1); }
+    .process__row:hover::before { transform: none; }
+    .process__row:hover { color: var(--paper); }
+    .process__row:hover .process__name { transform: translateX(14px); }
+    .process__row:hover p { color: rgba(238,234,224,.72); }
+
+    .studio { display: grid; grid-template-columns: 1.12fr .88fr; min-height: 95vh; background: #dcd7cb; }
+    .studio__image { overflow: hidden; }
+    .studio__image img { height: 110%; object-fit: cover; }
+    .studio__copy { display: flex; flex-direction: column; justify-content: space-between; padding: 7vw var(--pad); }
+    .studio__copy h2 { margin: 6vh 0; font: 400 clamp(76px, 8.6vw, 145px)/.81 var(--display); letter-spacing: -.055em; }
+    .studio__copy h2 em { display: block; padding-left: 20%; font-weight: 400; }
+    .studio__body { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; }
+    .studio__body p { margin: 0; font: 15px/1.6 var(--serif); }
+    .studio__location { color: var(--muted); font-size: 9px; line-height: 1.7; letter-spacing: .15em; text-transform: uppercase; }
+
+    .closing { position: relative; min-height: 100vh; display: grid; align-items: end; overflow: hidden; color: #f4f0e7; background: #211a16; }
+    .closing__image { position: absolute; inset: -8%; }
+    .closing__image img { height: 116%; object-fit: cover; filter: brightness(.45) saturate(.7); }
+    .closing::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(18,14,11,.74), rgba(18,14,11,.08) 65%); }
+    .closing__copy { position: relative; z-index: 2; padding: 8vw var(--pad) 4vw; }
+    .closing__copy h2 { max-width: 1200px; margin: 0 0 7vh; font: 400 clamp(96px, 12.6vw, 210px)/.76 var(--display); letter-spacing: -.065em; }
+    .closing__copy h2 em { display: block; padding-left: 28%; font-weight: 400; }
+    .closing__bottom { display: grid; grid-template-columns: 1fr auto; align-items: end; padding-top: 28px; border-top: 1px solid rgba(244,240,231,.45); }
+    .closing__link { display: inline-flex; align-items: center; gap: 22px; font-size: 11px; letter-spacing: .17em; text-transform: uppercase; }
+    .closing__link i { width: 54px; height: 54px; display: grid; place-items: center; border: 1px solid rgba(244,240,231,.55); border-radius: 50%; font: 400 24px/1 var(--serif); transition: color .3s ease, background .3s ease, transform .3s ease; }
+    .closing__link:hover i { color: var(--ink); background: var(--paper); transform: translateX(5px); }
+    .closing__meta { color: rgba(244,240,231,.62); font-size: 9px; line-height: 1.65; letter-spacing: .14em; text-align: right; text-transform: uppercase; }
+
+    .menu-overlay { position: fixed; inset: 0; z-index: 300; display: grid; grid-template-columns: 1.1fr .9fr; color: var(--paper); background: #171713; opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility .5s; }
+    .menu-overlay.is-open { opacity: 1; visibility: visible; }
+    .menu-overlay__close { position: absolute; top: 28px; right: var(--pad); z-index: 2; padding: 5px 0; border: 0; color: inherit; background: transparent; cursor: pointer; font-size: 10px; letter-spacing: .17em; text-transform: uppercase; }
+    .menu-overlay__nav { display: flex; flex-direction: column; justify-content: center; padding: var(--pad); }
+    .menu-overlay__label { margin-bottom: 6vh; color: #918f87; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+    .menu-overlay__nav a { display: grid; grid-template-columns: 44px 1fr; align-items: baseline; max-width: 650px; padding: 12px 0; border-bottom: 1px solid rgba(238,234,224,.17); }
+    .menu-overlay__nav a span:first-child { color: #77756f; font: 12px/1 var(--serif); }
+    .menu-overlay__nav a span:last-child { font: 400 clamp(42px, 4.8vw, 78px)/1 var(--display); transition: color .3s ease, transform .35s ease; }
+    .menu-overlay__nav a:hover span:last-child { color: #d66757; transform: translateX(14px); }
+    .menu-overlay__visual { overflow: hidden; }
+    .menu-overlay__visual img { height: 100%; object-fit: cover; filter: brightness(.72) saturate(.72); transform: scale(1.06); transition: transform 1.2s ease; }
+    .menu-overlay.is-open .menu-overlay__visual img { transform: scale(1); }
+
+    .lightbox { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; padding: 6vh 6vw; color: white; background: rgba(13,13,12,.96); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility .35s; }
+    .lightbox.is-open { opacity: 1; visibility: visible; }
+    .lightbox img { max-width: 88vw; max-height: 84vh; width: auto; height: auto; object-fit: contain; }
+    .lightbox__close { position: absolute; top: 25px; right: 30px; border: 0; color: white; background: transparent; cursor: pointer; font-size: 10px; letter-spacing: .17em; text-transform: uppercase; }
+    .lightbox__caption { position: absolute; left: 6vw; bottom: 25px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+
+    @media (max-width: 979px) {
+      .desktop-study { display: none; }
+      .mobile-gate { display: flex; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="mobile-gate" aria-label="Desktop concept notice">
+    <div class="mobile-gate__inner">
+      <div class="mobile-gate__eyebrow">Rivington Marx / Study 02</div>
+      <h1>Desktop study only.</h1>
+      <p>This concept has intentionally been designed for desktop presentation. The mobile experience will follow after the selected direction is approved.</p>
+    </div>
+  </aside>
+
+  <main class="desktop-study">
+    <div class="progress" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <div>Study 02 / Editorial House</div>
+      <a class="masthead__brand" href="#top" aria-label="Rivington Marx home">Rivington Marx</a>
+      <button class="masthead__menu" type="button" aria-expanded="false" aria-controls="menu">Index</button>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero__copy">
+        <div>
+          <div class="hero__kicker">Interiors with a point of view</div>
+          <h1 aria-label="A life well collected"><span>A life</span><span class="line-two">well collected.</span></h1>
+        </div>
+        <div class="hero__footer">
+          <div class="hero__folio">02</div>
+          <p class="hero__intro">Rooms composed with instinct, wit and enduring character—where collected objects and confident colour become entirely personal.</p>
+        </div>
+      </div>
+      <div class="hero__visual" data-parallax=".085">
+        <img src="../assets/foyer.jpg" alt="Layered entrance hall with a sculptural staircase, chandelier and artwork">
+        <div class="hero__seal">London<br>Interiors</div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <section class="manifesto" id="philosophy">
+      <aside class="manifesto__aside reveal">
+        <div class="eyebrow">01 / Point of view</div>
+        <p>We begin with the life that will unfold inside a room. The result is layered rather than styled, expressive rather than expected.</p>
+      </aside>
+      <blockquote class="manifesto__quote reveal">The most memorable rooms feel as though they could belong to <em>no one else.</em></blockquote>
+    </section>
+
+    <section class="story-index" id="work">
+      <div class="story-index__copy">
+        <div class="story-index__sticky">
+          <div class="eyebrow">02 / Selected stories</div>
+          <h2>Rooms with <em>something to say.</em></h2>
+          <div class="story-list">
+            <button class="story-link is-active" type="button" data-story="0" aria-pressed="true"><span class="story-link__no">01</span><span class="story-link__name">The Blue Salon</span><span class="story-link__type">Colour / Collection</span></button>
+            <button class="story-link" type="button" data-story="1" aria-pressed="false"><span class="story-link__no">02</span><span class="story-link__name">A Wilder Dining Room</span><span class="story-link__type">Art / Atmosphere</span></button>
+            <button class="story-link" type="button" data-story="2" aria-pressed="false"><span class="story-link__no">03</span><span class="story-link__name">The Green Library</span><span class="story-link__type">Pattern / Comfort</span></button>
+            <button class="story-link" type="button" data-story="3" aria-pressed="false"><span class="story-link__no">04</span><span class="story-link__name">After Dark</span><span class="story-link__type">Drama / Art</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="story-index__stage" aria-live="polite">
+        <div class="story-index__image is-active"><img src="../assets/blue-salon.jpg" alt="Deep blue salon with art and collected furniture"></div>
+        <div class="story-index__image"><img src="../assets/pink-dining.jpg" alt="Vivid pink dining room with mural and sculptural chandelier"></div>
+        <div class="story-index__image"><img src="../assets/green-study.jpg" alt="Layered green library with artwork, seating and patterned rug"></div>
+        <div class="story-index__image"><img src="../assets/black-bath.jpg" alt="Dark dramatic room with vivid abstract artwork"></div>
+        <div class="story-index__caption">Hover to browse / Click to hold</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="chapter-one">
+      <header class="chapter__header reveal">
+        <div class="eyebrow">Chapter I / The unexpected</div>
+        <h2>Polished, then made <em>personal.</em></h2>
+      </header>
+      <div class="chapter__grid">
+        <figure class="figure chapter__lead reveal" data-lightbox>
+          <div class="figure__image"><img src="../assets/gold-dining.jpg" alt="Gold and red dining room with sculptural chandelier" loading="lazy"></div>
+          <figcaption><span>01 / Dining room</span><span>Colour as architecture</span></figcaption>
+        </figure>
+        <div class="chapter__small reveal">
+          <figure class="figure" data-lightbox>
+            <div class="figure__image"><img src="../assets/dining-detail.jpg" alt="Dining detail with brass chairs and dramatic wire light" loading="lazy"></div>
+            <figcaption><span>02 / Detail</span><span>Line + light</span></figcaption>
+          </figure>
+          <p class="chapter__note">An interior gains character through tension: tailored lines against something playful, heritage pieces beside the resolutely new.</p>
+        </div>
+        <figure class="figure chapter__portrait reveal" data-lightbox>
+          <div class="figure__image"><img src="../assets/pink-dining.jpg" alt="Pink dining room with mural and bubble chandelier" loading="lazy"></div>
+          <figcaption><span>03 / Salon</span><span>Art in the round</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="blue-interlude">
+      <div class="blue-interlude__image" data-parallax=".055"><img src="../assets/blue-salon.jpg" alt="Blue layered salon" loading="lazy"></div>
+      <div class="blue-interlude__copy reveal">
+        <h2>More soul.<em>Less beige.</em></h2>
+        <p>Luxury need not whisper. It can be intelligent, joyful and richly observed—while remaining beautifully resolved.</p>
+      </div>
+    </section>
+
+    <section class="pairing" id="chapter-two">
+      <div class="pairing__top">
+        <div class="pairing__copy reveal">
+          <div class="eyebrow">Chapter II / Tailored contrast</div>
+          <h2>Restraint with an <em>edge.</em></h2>
+          <p>Strong proportions and quiet materials make room for the one detail that changes everything.</p>
+        </div>
+        <figure class="figure pairing__main reveal" data-lightbox>
+          <div class="figure__image"><img src="../assets/dark-kitchen.jpg" alt="Tailored dark and cream kitchen with patterned ceiling" loading="lazy"></div>
+          <figcaption><span>04 / Kitchen</span><span>Monochrome, interrupted</span></figcaption>
+        </figure>
+      </div>
+      <div class="pairing__bottom">
+        <figure class="figure reveal" data-lightbox>
+          <div class="figure__image"><img src="../assets/vignette.jpg" alt="Antique console vignette with blue flowers and carved mirror" loading="lazy"></div>
+          <figcaption><span>05 / Vignette</span><span>Collected layers</span></figcaption>
+        </figure>
+        <figure class="figure reveal" data-lightbox>
+          <div class="figure__image"><img src="../assets/tailored-bath.jpg" alt="Marble bathroom with sculptural bath and window" loading="lazy"></div>
+          <figcaption><span>06 / Bath</span><span>Stone + stillness</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="materials" id="details">
+      <header class="materials__head reveal">
+        <h2>A study in <em>detail.</em></h2>
+        <div class="materials__instruction">Drag the collection<br>to explore</div>
+      </header>
+      <div class="materials__rail" aria-label="Material and detail collection">
+        <figure class="material-card">
+          <div class="material-card__image"><img src="../assets/chair-detail.jpg" alt="Layered chair and table detail" loading="lazy"></div>
+          <figcaption><span class="material-card__no">01</span><span class="material-card__name">The lived-in layer<span class="material-card__note">Textiles / books / patina</span></span></figcaption>
+        </figure>
+        <figure class="material-card">
+          <div class="material-card__image"><img src="../assets/red-detail.jpg" alt="Red and brass interior vignette" loading="lazy"></div>
+          <figcaption><span class="material-card__no">02</span><span class="material-card__name">A note of theatre<span class="material-card__note">Lacquer / brass / glow</span></span></figcaption>
+        </figure>
+        <figure class="material-card">
+          <div class="material-card__image"><img src="../assets/stone-kitchen.jpg" alt="Cream stone kitchen with double islands" loading="lazy"></div>
+          <figcaption><span class="material-card__no">03</span><span class="material-card__name">Quiet precision<span class="material-card__note">Stone / joinery / rhythm</span></span></figcaption>
+        </figure>
+        <figure class="material-card">
+          <div class="material-card__image"><img src="../assets/green-study.jpg" alt="Green layered sitting room" loading="lazy"></div>
+          <figcaption><span class="material-card__no">04</span><span class="material-card__name">Pattern in conversation<span class="material-card__note">Colour / print / art</span></span></figcaption>
+        </figure>
+        <figure class="material-card">
+          <div class="material-card__image"><img src="../assets/black-bath.jpg" alt="Black room with vivid red artwork" loading="lazy"></div>
+          <figcaption><span class="material-card__no">05</span><span class="material-card__name">The dark room<span class="material-card__note">Shadow / pigment / impact</span></span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="process" id="approach">
+      <header class="process__head reveal">
+        <div class="eyebrow">03 / Our approach</div>
+        <h2>From first instinct to final object.</h2>
+      </header>
+      <div class="process__list">
+        <div class="process__row reveal"><span class="process__no">01</span><span class="process__name">Discover</span><p>Listening closely to how you live, what you collect and the atmosphere you want to create.</p></div>
+        <div class="process__row reveal"><span class="process__no">02</span><span class="process__name">Compose</span><p>Finding the central idea, then shaping space, colour, light and material around it.</p></div>
+        <div class="process__row reveal"><span class="process__no">03</span><span class="process__name">Collect</span><p>Bringing together art, antiques and made-to-order pieces with confidence and restraint.</p></div>
+        <div class="process__row reveal"><span class="process__no">04</span><span class="process__name">Complete</span><p>Resolving every proportion and finishing detail until the whole feels effortless.</p></div>
+      </div>
+    </section>
+
+    <section class="studio" id="studio">
+      <div class="studio__image" data-parallax=".045"><img src="../assets/studio.jpg" alt="Rivington Marx design studio with material boards" loading="lazy"></div>
+      <div class="studio__copy">
+        <div>
+          <div class="eyebrow">04 / The studio</div>
+          <h2>Serious design.<em>Never solemn.</em></h2>
+        </div>
+        <div class="studio__body reveal">
+          <p>A London studio creating expressive, deeply personal interiors through a mix of architecture, decoration, art and objects.</p>
+          <div class="studio__location">Rivington Marx<br>Interior design studio<br>London</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" id="contact">
+      <div class="closing__image" data-parallax=".05"><img src="../assets/gold-dining.jpg" alt="Richly layered gold and red dining room" loading="lazy"></div>
+      <div class="closing__copy reveal">
+        <h2>Let’s make it <em>unmistakably yours.</em></h2>
+        <div class="closing__bottom">
+          <a class="closing__link" href="https://rivingtonmarx.com/contact/" target="_blank" rel="noopener"><span>Begin a project</span><i aria-hidden="true">↗</i></a>
+          <div class="closing__meta">Rivington Marx / London<br>Study 02 / Desktop concept</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="menu-overlay" id="menu" aria-hidden="true">
+    <button class="menu-overlay__close" type="button">Close — Esc</button>
+    <nav class="menu-overlay__nav" aria-label="Primary navigation">
+      <div class="menu-overlay__label">Index / Study Two</div>
+      <a href="#work"><span>01</span><span>Selected work</span></a>
+      <a href="#philosophy"><span>02</span><span>Point of view</span></a>
+      <a href="#details"><span>03</span><span>Details</span></a>
+      <a href="#approach"><span>04</span><span>Approach</span></a>
+      <a href="#studio"><span>05</span><span>Studio</span></a>
+      <a href="#contact"><span>06</span><span>Contact</span></a>
+    </nav>
+    <div class="menu-overlay__visual"><img src="../assets/red-detail.jpg" alt="Rich red interior detail"></div>
+  </aside>
+
+  <div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Expanded project image">
+    <button class="lightbox__close" type="button">Close — Esc</button>
+    <img alt="">
+    <div class="lightbox__caption"></div>
+  </div>
+
+  <script>
+    (() => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const progress = document.querySelector('.progress');
+      const revealItems = document.querySelectorAll('.reveal');
+      const menu = document.querySelector('.menu-overlay');
+      const menuButton = document.querySelector('.masthead__menu');
+      const menuClose = document.querySelector('.menu-overlay__close');
+      const lightbox = document.querySelector('.lightbox');
+      const lightboxImage = lightbox.querySelector('img');
+      const lightboxCaption = lightbox.querySelector('.lightbox__caption');
+      let frame = null;
+
+      const updateScroll = () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        progress.style.width = `${max > 0 ? (scrollY / max) * 100 : 0}%`;
+        if (!reduceMotion) {
+          document.querySelectorAll('[data-parallax]').forEach((node) => {
+            const rect = node.getBoundingClientRect();
+            if (rect.bottom > 0 && rect.top < innerHeight) {
+              const speed = Number(node.dataset.parallax || .05);
+              const offset = (innerHeight / 2 - (rect.top + rect.height / 2)) * speed;
+              const image = node.querySelector('img');
+              if (image) image.style.transform = `translate3d(0, ${offset}px, 0) scale(1.06)`;
+            }
+          });
+        }
+        frame = null;
+      };
+      addEventListener('scroll', () => {
+        if (!frame) frame = requestAnimationFrame(updateScroll);
+      }, { passive: true });
+      updateScroll();
+
+      if ('IntersectionObserver' in window && !reduceMotion) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+        revealItems.forEach((item) => observer.observe(item));
+      } else {
+        revealItems.forEach((item) => item.classList.add('is-visible'));
+      }
+
+      const storyLinks = [...document.querySelectorAll('.story-link')];
+      const storyImages = [...document.querySelectorAll('.story-index__image')];
+      const showStory = (index) => {
+        storyLinks.forEach((link, i) => {
+          link.classList.toggle('is-active', i === index);
+          link.setAttribute('aria-pressed', String(i === index));
+        });
+        storyImages.forEach((image, i) => image.classList.toggle('is-active', i === index));
+      };
+      storyLinks.forEach((link, index) => {
+        link.addEventListener('mouseenter', () => showStory(index));
+        link.addEventListener('focus', () => showStory(index));
+        link.addEventListener('click', () => showStory(index));
+      });
+
+      const setMenu = (open) => {
+        menu.classList.toggle('is-open', open);
+        menu.setAttribute('aria-hidden', String(!open));
+        menuButton.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+        if (open) menuClose.focus();
+      };
+      menuButton.addEventListener('click', () => setMenu(true));
+      menuClose.addEventListener('click', () => setMenu(false));
+      menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
+
+      const setLightbox = (open, figure) => {
+        lightbox.classList.toggle('is-open', open);
+        lightbox.setAttribute('aria-hidden', String(!open));
+        document.body.style.overflow = open ? 'hidden' : '';
+        if (open && figure) {
+          const source = figure.querySelector('img');
+          const caption = figure.querySelector('figcaption');
+          lightboxImage.src = source.src;
+          lightboxImage.alt = source.alt;
+          lightboxCaption.textContent = caption ? caption.innerText.replace(/\n/g, ' — ') : '';
+          lightbox.querySelector('.lightbox__close').focus();
+        }
+      };
+      document.querySelectorAll('[data-lightbox]').forEach((figure) => figure.addEventListener('click', () => setLightbox(true, figure)));
+      lightbox.querySelector('.lightbox__close').addEventListener('click', () => setLightbox(false));
+      lightbox.addEventListener('click', (event) => { if (event.target === lightbox) setLightbox(false); });
+
+      const rail = document.querySelector('.materials__rail');
+      let dragging = false;
+      let startX = 0;
+      let startScroll = 0;
+      rail.addEventListener('pointerdown', (event) => {
+        dragging = true;
+        startX = event.clientX;
+        startScroll = rail.scrollLeft;
+        rail.classList.add('is-dragging');
+        rail.setPointerCapture(event.pointerId);
+      });
+      rail.addEventListener('pointermove', (event) => {
+        if (dragging) rail.scrollLeft = startScroll - (event.clientX - startX) * 1.25;
+      });
+      const releaseRail = () => { dragging = false; rail.classList.remove('is-dragging'); };
+      rail.addEventListener('pointerup', releaseRail);
+      rail.addEventListener('pointercancel', releaseRail);
+
+      addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (lightbox.classList.contains('is-open')) setLightbox(false);
+          else if (menu.classList.contains('is-open')) setMenu(false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

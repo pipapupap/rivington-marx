@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx — Website Redesign Study One: Cinematic Album.">
+  <title>Rivington Marx — Study One</title>
+  <style>
+    :root {
+      --ink: #151310;
+      --paper: #eee9df;
+      --bone: #f5f0e8;
+      --wine: #5d1f2d;
+      --line: rgba(21, 19, 16, .22);
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      --serif: Didot, "Bodoni 72", "Times New Roman", serif;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--ink); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-x: hidden;
+    }
+    body.menu-open, body.lightbox-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    img { display: block; width: 100%; }
+    ::selection { background: var(--wine); color: white; }
+
+    .desktop-gate { display: none; }
+
+    .progress {
+      position: fixed;
+      z-index: 95;
+      right: 0;
+      top: 0;
+      width: 3px;
+      height: 100vh;
+      background: rgba(255,255,255,.12);
+      mix-blend-mode: difference;
+    }
+    .progress span {
+      display: block;
+      width: 100%;
+      height: 0;
+      background: #fff;
+      transition: height .08s linear;
+    }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 80;
+      height: 92px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 34px;
+      color: #fff;
+      mix-blend-mode: difference;
+      transition: opacity .4s ease;
+    }
+    .header-kicker,
+    .header-action,
+    .eyebrow,
+    .slide-meta,
+    .small-caps {
+      text-transform: uppercase;
+      letter-spacing: .19em;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .header-kicker { justify-self: start; }
+    .wordmark {
+      font-family: var(--serif);
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -.045em;
+      text-transform: uppercase;
+    }
+    .header-action {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: transparent;
+      border: 0;
+      padding: 14px 0;
+      cursor: pointer;
+    }
+    .menu-mark { width: 32px; height: 8px; position: relative; }
+    .menu-mark::before,
+    .menu-mark::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: currentColor;
+      transition: transform .35s var(--ease);
+    }
+    .menu-mark::before { top: 0; }
+    .menu-mark::after { bottom: 0; width: 70%; left: 30%; }
+    .header-action:hover .menu-mark::before { transform: translateX(20%); }
+    .header-action:hover .menu-mark::after { transform: translateX(-28%); }
+
+    .menu-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: var(--wine);
+      color: var(--bone);
+      visibility: hidden;
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path .85s var(--ease), visibility 0s .85s;
+    }
+    .menu-panel.open {
+      visibility: visible;
+      clip-path: inset(0 0 0 0);
+      transition: clip-path .85s var(--ease), visibility 0s;
+    }
+    .menu-close {
+      position: absolute;
+      top: 36px;
+      right: 35px;
+      border: 0;
+      background: none;
+      color: inherit;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 12px 0;
+    }
+    .menu-inner {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1.7fr .65fr;
+      gap: 8vw;
+      align-items: end;
+      padding: 13vh 6vw 7vh;
+    }
+    .menu-nav { display: flex; flex-direction: column; }
+    .menu-nav a {
+      font-family: var(--serif);
+      font-size: clamp(54px, 7.3vw, 120px);
+      line-height: .86;
+      letter-spacing: -.055em;
+      width: fit-content;
+      opacity: .9;
+      transform: translateY(25px);
+      transition: opacity .25s, transform .8s var(--ease);
+    }
+    .menu-panel.open .menu-nav a { transform: translateY(0); }
+    .menu-nav a:nth-child(2) { transition-delay: .06s; }
+    .menu-nav a:nth-child(3) { transition-delay: .12s; }
+    .menu-nav a:nth-child(4) { transition-delay: .18s; }
+    .menu-nav a:hover { opacity: .45; }
+    .menu-aside {
+      border-top: 1px solid rgba(255,255,255,.35);
+      padding-top: 18px;
+      display: grid;
+      gap: 40px;
+    }
+    .menu-aside p { max-width: 28ch; margin: 0; font-size: 12px; }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      color: white;
+      background: #111;
+      overflow: hidden;
+    }
+    .hero-media {
+      position: absolute;
+      inset: -5%;
+      will-change: transform;
+    }
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.2), transparent 42%, rgba(0,0,0,.42));
+    }
+    .hero-media img { height: 110%; object-fit: cover; object-position: center 48%; }
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: 124px 34px 28px;
+    }
+    .hero-intro {
+      align-self: center;
+      width: 260px;
+      margin-left: 3vw;
+      opacity: 0;
+      transform: translateY(25px);
+      animation: reveal .9s var(--ease) .35s forwards;
+    }
+    .hero-intro p { margin: 12px 0 0; font-family: var(--serif); font-size: 21px; line-height: 1.1; }
+    .hero-title-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 30px;
+    }
+    .hero-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(90px, 11.5vw, 184px);
+      font-weight: 400;
+      line-height: .69;
+      letter-spacing: -.075em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(55px);
+      animation: reveal 1.2s var(--ease) .12s forwards;
+    }
+    .scroll-note {
+      width: 140px;
+      padding-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: .17em;
+      font-size: 9px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .scroll-note i { display: block; width: 36px; height: 1px; background: currentColor; transform-origin: left; animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes reveal { to { opacity: 1; transform: none; } }
+    @keyframes pulse { 0%,100% { transform: scaleX(.25); opacity: .4; } 50% { transform: scaleX(1); opacity: 1; } }
+
+    .statement {
+      min-height: 100vh;
+      padding: 13vh 6vw 9vh;
+      display: grid;
+      grid-template-columns: .4fr 1.6fr;
+      gap: 8vw;
+      align-items: center;
+      background: var(--paper);
+    }
+    .statement-side { align-self: start; padding-top: 7vh; }
+    .statement-side p { max-width: 25ch; margin: 26px 0 0; font-size: 12px; color: rgba(21,19,16,.7); }
+    .statement-main h2 {
+      margin: 0;
+      max-width: 12ch;
+      font-family: var(--serif);
+      font-size: clamp(62px, 8.1vw, 128px);
+      line-height: .88;
+      font-weight: 400;
+      letter-spacing: -.065em;
+    }
+    .statement-main h2 em { color: var(--wine); font-weight: 400; }
+    .reveal-line { display: block; overflow: hidden; }
+    .reveal-line span { display: block; transform: translateY(110%); transition: transform 1.05s var(--ease); }
+    .in-view .reveal-line span { transform: translateY(0); }
+
+    .album {
+      position: relative;
+      height: 400vh;
+      background: var(--ink);
+      color: white;
+    }
+    .album-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+    .album-track { height: 100%; display: flex; will-change: transform; }
+    .slide {
+      flex: 0 0 100vw;
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .slide-image { position: absolute; inset: 0; overflow: hidden; }
+    .slide-image::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.42), transparent 48%, rgba(0,0,0,.08)); }
+    .slide-image img { height: 100%; object-fit: cover; transition: transform 1.4s var(--ease), filter .7s ease; }
+    .slide:hover .slide-image img { transform: scale(1.025); }
+    .slide-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      padding: 120px 5vw 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    .slide-top { display: flex; align-items: center; justify-content: space-between; }
+    .slide-number { font-family: var(--serif); font-size: 18px; }
+    .slide-title { margin: auto 0 0; max-width: 9ch; font-family: var(--serif); font-size: clamp(76px, 9vw, 145px); line-height: .82; font-weight: 400; letter-spacing: -.065em; }
+    .slide-bottom { display: flex; justify-content: space-between; align-items: end; margin-top: 40px; }
+    .slide-bottom p { max-width: 36ch; margin: 0; font-size: 12px; }
+    .view-cue { width: 84px; height: 84px; border: 1px solid rgba(255,255,255,.6); border-radius: 50%; display: grid; place-items: center; text-transform: uppercase; letter-spacing: .14em; font-size: 9px; transform: scale(.88); transition: transform .5s var(--ease), background .35s, color .35s; }
+    .slide:hover .view-cue { transform: scale(1); background: white; color: var(--ink); }
+    .album-ui {
+      position: absolute;
+      z-index: 3;
+      left: 5vw;
+      right: 5vw;
+      bottom: 27px;
+      height: 1px;
+      background: rgba(255,255,255,.22);
+      pointer-events: none;
+    }
+    .album-ui span { display: block; width: 25%; height: 100%; background: white; transform-origin: left; }
+
+    .index-section {
+      min-height: 110vh;
+      background: var(--bone);
+      padding: 14vh 6vw 12vh;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 8vw;
+    }
+    .index-list { align-self: center; }
+    .index-heading { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 14px; }
+    .project-link {
+      display: grid;
+      grid-template-columns: 50px 1fr auto;
+      align-items: baseline;
+      gap: 18px;
+      padding: 20px 0 17px;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      transition: padding .5s var(--ease), opacity .3s;
+    }
+    .project-link:hover, .project-link:focus { padding-left: 18px; outline: none; }
+    .project-link .num { font-size: 10px; letter-spacing: .15em; }
+    .project-link .name { font-family: var(--serif); font-size: clamp(38px, 4.1vw, 66px); line-height: .85; letter-spacing: -.05em; }
+    .project-link .kind { text-transform: uppercase; letter-spacing: .15em; font-size: 9px; }
+    .index-visual { position: sticky; top: 12vh; height: 76vh; align-self: start; overflow: hidden; background: #2b2925; }
+    .index-visual img { position: absolute; inset: 0; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .65s ease, transform .9s var(--ease); }
+    .index-visual img.active { opacity: 1; transform: scale(1); }
+    .index-caption { position: absolute; z-index: 3; inset: auto 22px 18px; color: white; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .15em; font-size: 9px; }
+
+    .editorial {
+      min-height: 175vh;
+      position: relative;
+      background: var(--paper);
+      padding: 14vh 5vw 18vh;
+      overflow: hidden;
+    }
+    .editorial-header { display: grid; grid-template-columns: 1fr 2fr; gap: 8vw; align-items: end; margin-bottom: 18vh; }
+    .editorial-header h2 { margin: 0; max-width: 12ch; font-family: var(--serif); font-size: clamp(68px, 9vw, 145px); font-weight: 400; line-height: .8; letter-spacing: -.07em; }
+    .editorial-grid { display: grid; grid-template-columns: 1fr .8fr 1fr; gap: 6vw; align-items: start; }
+    .editorial-card { position: relative; }
+    .editorial-card:nth-child(2) { margin-top: 28vh; }
+    .editorial-card:nth-child(3) { margin-top: 9vh; }
+    .editorial-frame { overflow: hidden; background: #ddd4c6; }
+    .editorial-card:nth-child(1) .editorial-frame { aspect-ratio: 4/5; }
+    .editorial-card:nth-child(2) .editorial-frame { aspect-ratio: 3/4; }
+    .editorial-card:nth-child(3) .editorial-frame { aspect-ratio: 4/5; }
+    .editorial-frame img { height: 112%; object-fit: cover; transform: translateY(-6%); will-change: transform; transition: transform 1s var(--ease); }
+    .editorial-card:hover img { transform: translateY(-6%) scale(1.025); }
+    .editorial-caption { display: flex; justify-content: space-between; gap: 20px; margin-top: 13px; padding-top: 11px; border-top: 1px solid var(--line); text-transform: uppercase; letter-spacing: .14em; font-size: 9px; }
+
+    .approach {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      background: var(--wine);
+      color: var(--bone);
+    }
+    .approach-media { position: relative; overflow: hidden; min-height: 100vh; }
+    .approach-media img { position: absolute; inset: 0; height: 100%; object-fit: cover; object-position: center; transition: transform 1.4s var(--ease); }
+    .approach:hover .approach-media img { transform: scale(1.02); }
+    .approach-copy { padding: 13vh 6vw 7vh; display: flex; flex-direction: column; justify-content: space-between; }
+    .approach-copy h2 { margin: 5vh 0 0; max-width: 8ch; font-family: var(--serif); font-size: clamp(64px, 7vw, 112px); font-weight: 400; line-height: .82; letter-spacing: -.065em; }
+    .approach-points { border-top: 1px solid rgba(255,255,255,.35); }
+    .approach-point { display: grid; grid-template-columns: 40px 1fr; gap: 22px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.35); }
+    .approach-point strong { font-family: var(--serif); font-size: 24px; font-weight: 400; }
+    .approach-point span { align-self: center; text-transform: uppercase; letter-spacing: .16em; font-size: 9px; }
+
+    .studio {
+      min-height: 130vh;
+      background: var(--ink);
+      color: white;
+      padding: 16vh 5vw 12vh;
+      position: relative;
+    }
+    .studio-top { display: flex; justify-content: space-between; align-items: start; margin-bottom: 12vh; }
+    .studio-top h2 { margin: 0; max-width: 11ch; font-family: var(--serif); font-size: clamp(74px, 9vw, 146px); line-height: .8; letter-spacing: -.07em; font-weight: 400; }
+    .studio-top p { width: 300px; margin: 15px 0 0; font-size: 12px; opacity: .72; }
+    .studio-collage { position: relative; height: 74vh; }
+    .studio-collage .wide { position: absolute; left: 0; bottom: 0; width: 66%; height: 74%; object-fit: cover; }
+    .studio-collage .tall { position: absolute; right: 3%; top: 0; width: 31%; height: 82%; object-fit: cover; border: 10px solid var(--ink); }
+    .studio-label { position: absolute; z-index: 2; right: 1%; bottom: 0; width: 31%; border-top: 1px solid rgba(255,255,255,.35); padding-top: 12px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .14em; font-size: 9px; }
+
+    .closing {
+      min-height: 100vh;
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: #181512;
+      overflow: hidden;
+    }
+    .closing > img { position: absolute; inset: 0; height: 100%; object-fit: cover; filter: brightness(.47); transition: transform 2s var(--ease); }
+    .closing:hover > img { transform: scale(1.025); }
+    .closing-copy { position: relative; z-index: 2; text-align: center; }
+    .closing-copy h2 { margin: 22px 0 36px; font-family: var(--serif); font-size: clamp(90px, 11vw, 180px); line-height: .74; letter-spacing: -.075em; font-weight: 400; }
+    .circle-link { width: 128px; height: 128px; margin: 0 auto; border: 1px solid rgba(255,255,255,.65); border-radius: 50%; display: grid; place-items: center; text-transform: uppercase; letter-spacing: .15em; font-size: 9px; transition: background .45s, color .45s, transform .45s var(--ease); }
+    .circle-link:hover { background: white; color: var(--ink); transform: scale(1.06); }
+    .footer-line { position: absolute; z-index: 2; bottom: 23px; left: 34px; right: 34px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .15em; font-size: 9px; }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      background: #090806;
+      color: white;
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .5s ease, visibility 0s .5s;
+    }
+    .lightbox.open { visibility: visible; opacity: 1; transition: opacity .5s ease, visibility 0s; }
+    .lightbox-image { min-width: 0; position: relative; display: grid; place-items: center; padding: 3vh 3vw; }
+    .lightbox-image img { max-height: 94vh; width: 100%; height: 100%; object-fit: contain; transform: scale(.96); transition: transform .75s var(--ease); }
+    .lightbox.open .lightbox-image img { transform: scale(1); }
+    .lightbox-info { border-left: 1px solid rgba(255,255,255,.2); padding: 36px 28px 28px; display: flex; flex-direction: column; justify-content: space-between; }
+    .lightbox-close { align-self: flex-end; background: none; border: 0; color: white; cursor: pointer; text-transform: uppercase; letter-spacing: .15em; font-size: 9px; padding: 10px 0; }
+    .lightbox-info h3 { margin: 0 0 12px; font-family: var(--serif); font-size: 34px; font-weight: 400; line-height: 1; }
+    .lightbox-info p { margin: 0; font-size: 11px; opacity: .65; }
+
+    [data-reveal] { opacity: 0; transform: translateY(40px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+    [data-reveal].in-view { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .album { height: auto; }
+      .album-sticky { position: static; height: auto; overflow: visible; }
+      .album-track { display: block; transform: none !important; }
+      .slide { height: 100vh; }
+      .album-ui { display: none; }
+    }
+
+    @media (max-width: 979px) {
+      body > *:not(.desktop-gate) { display: none !important; }
+      .desktop-gate { min-height: 100vh; display: grid; place-items: center; padding: 40px; background: var(--paper); text-align: center; }
+      .desktop-gate h1 { margin: 0 0 18px; font-family: var(--serif); font-size: 52px; line-height: .9; font-weight: 400; }
+      .desktop-gate p { max-width: 38ch; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="desktop-gate">
+    <div>
+      <h1>Desktop study only.</h1>
+      <p>This first Rivington Marx design study is intentionally presented at desktop scale. The mobile experience will be designed after direction approval.</p>
+    </div>
+  </div>
+
+  <div class="progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header">
+    <div class="header-kicker">Study 01 / Cinematic Album</div>
+    <a class="wordmark" href="#top" aria-label="Rivington Marx home">Rivington Marx</a>
+    <button class="header-action" type="button" aria-expanded="false" aria-controls="menuPanel">
+      <span>Menu</span><i class="menu-mark" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <aside class="menu-panel" id="menuPanel" aria-hidden="true">
+    <button class="menu-close" type="button">Close ×</button>
+    <div class="menu-inner">
+      <nav class="menu-nav" aria-label="Primary navigation">
+        <a href="#work">Selected work</a>
+        <a href="#approach">Approach</a>
+        <a href="#studio">Studio</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="menu-aside">
+        <p class="small-caps">Interior architecture<br>Design + construction</p>
+        <p>Denver based.<br>Working nationwide.</p>
+        <p>Study One is a direction prototype. Links and final copy are illustrative pending client approval.</p>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-media"><img src="../assets/collected-living.jpg" alt="Pattern-rich Rivington Marx living room with carved millwork and layered furnishings"></div>
+      <div class="hero-copy">
+        <div class="hero-intro">
+          <span class="eyebrow">Denver / Nationwide</span>
+          <p>Interiors with<br>a point of view.</p>
+        </div>
+        <div class="hero-title-row">
+          <h1 class="hero-title">Rivington Marx</h1>
+          <div class="scroll-note"><i></i><span>Scroll to explore</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="statement observe-lines">
+      <div class="statement-side" data-reveal>
+        <span class="eyebrow">Interior architecture / Design / Construction</span>
+        <p>One vision from first gesture to final detail. Spaces shaped around the people who live in them.</p>
+      </div>
+      <div class="statement-main">
+        <h2>
+          <span class="reveal-line"><span>Bespoke.</span></span>
+          <span class="reveal-line"><span>Unexpected.</span></span>
+          <span class="reveal-line"><span><em>Deeply personal.</em></span></span>
+        </h2>
+      </div>
+    </section>
+
+    <section class="album" id="work" aria-label="Selected work">
+      <div class="album-sticky">
+        <div class="album-track">
+          <article class="slide" data-title="Tailored in Stone" data-note="Selected residence / Image album" data-full="../assets/stone-kitchen.jpg">
+            <div class="slide-image"><img src="../assets/stone-kitchen.jpg" alt="Tailored in Stone kitchen with sculptural lighting and marble islands"></div>
+            <div class="slide-content">
+              <div class="slide-top"><span class="slide-meta">Selected work / 2026</span><span class="slide-number">01</span></div>
+              <h2 class="slide-title">Tailored<br>in Stone</h2>
+              <div class="slide-bottom"><p>Material restraint, sculptural lighting and a meticulous marble composition.</p><span class="view-cue">View</span></div>
+            </div>
+          </article>
+          <article class="slide" data-title="Private Residence I" data-note="Collected rooms / Image album" data-full="../assets/collected-bath.jpg">
+            <div class="slide-image"><img src="../assets/collected-bath.jpg" alt="Collected bathroom with exposed brick, patterned tile and abundant flowers"></div>
+            <div class="slide-content">
+              <div class="slide-top"><span class="slide-meta">Selected residence / Colorado</span><span class="slide-number">02</span></div>
+              <h2 class="slide-title">Collected<br>Rooms</h2>
+              <div class="slide-bottom"><p>Old bones, vivid botanicals and a lived-in dialogue between eras.</p><span class="view-cue">View</span></div>
+            </div>
+          </article>
+          <article class="slide" data-title="Private Residence II" data-note="Character study / Image album" data-full="../assets/portrait-vignette.jpg">
+            <div class="slide-image"><img src="../assets/portrait-vignette.jpg" alt="Layered sitting room with expressive portrait, burl cabinet and patterned textiles"></div>
+            <div class="slide-content">
+              <div class="slide-top"><span class="slide-meta">Selected residence / Denver</span><span class="slide-number">03</span></div>
+              <h2 class="slide-title">Art &<br>Character</h2>
+              <div class="slide-bottom"><p>Rooms that reward a second look—art, objects and pattern held in deliberate tension.</p><span class="view-cue">View</span></div>
+            </div>
+          </article>
+          <article class="slide" data-title="Studio Study" data-note="Rivington Marx / Image album" data-full="../assets/studio-detail.jpg">
+            <div class="slide-image"><img src="../assets/studio-detail.jpg" alt="Dark Rivington Marx studio room with carved cabinet, art and layered furnishings"></div>
+            <div class="slide-content">
+              <div class="slide-top"><span class="slide-meta">The studio / Denver</span><span class="slide-number">04</span></div>
+              <h2 class="slide-title">A Point<br>of View</h2>
+              <div class="slide-bottom"><p>Rigorous enough to build. Personal enough to feel inevitable.</p><span class="view-cue">View</span></div>
+            </div>
+          </article>
+        </div>
+        <div class="album-ui"><span></span></div>
+      </div>
+    </section>
+
+    <section class="index-section" aria-label="Project index">
+      <div class="index-list" data-reveal>
+        <div class="index-heading"><span class="eyebrow">Project index</span><span class="eyebrow">Hover to reveal</span></div>
+        <a class="project-link" href="#work" data-image="../assets/tailored-bath.jpg" data-caption="Tailored in Stone / Bath">
+          <span class="num">01</span><span class="name">Tailored in Stone</span><span class="kind">Residence</span>
+        </a>
+        <a class="project-link" href="#work" data-image="../assets/kitchen-dark.jpg" data-caption="Selected residence / Kitchen">
+          <span class="num">02</span><span class="name">The Collected Kitchen</span><span class="kind">Residence</span>
+        </a>
+        <a class="project-link" href="#work" data-image="../assets/desk.jpg" data-caption="Selected residence / Study">
+          <span class="num">03</span><span class="name">A Study in Character</span><span class="kind">Residence</span>
+        </a>
+        <a class="project-link" href="#studio" data-image="../assets/studio.jpg" data-caption="Rivington Marx / Studio">
+          <span class="num">04</span><span class="name">The Studio</span><span class="kind">Denver</span>
+        </a>
+      </div>
+      <div class="index-visual" aria-live="polite">
+        <img class="active" src="../assets/tailored-bath.jpg" alt="Tailored in Stone marble bath">
+        <div class="index-caption"><span>Tailored in Stone / Bath</span><span>01—04</span></div>
+      </div>
+    </section>
+
+    <section class="editorial" aria-label="Details and atmosphere">
+      <div class="editorial-header">
+        <span class="eyebrow" data-reveal>Character lives<br>in the details</span>
+        <h2 data-reveal>Less sameness.<br>More soul.</h2>
+      </div>
+      <div class="editorial-grid">
+        <figure class="editorial-card" data-reveal>
+          <div class="editorial-frame"><img src="../assets/powder-detail.jpg" alt="Powder room detail with sculptural light, flowers and mirror"></div>
+          <figcaption class="editorial-caption"><span>Light / Reflection</span><span>01</span></figcaption>
+        </figure>
+        <figure class="editorial-card" data-reveal>
+          <div class="editorial-frame"><img src="../assets/tailored-bar.jpg" alt="Dark stone bar with glass cabinetry, flowers and artwork"></div>
+          <figcaption class="editorial-caption"><span>Stone / Ritual</span><span>02</span></figcaption>
+        </figure>
+        <figure class="editorial-card" data-reveal>
+          <div class="editorial-frame"><img src="../assets/window-seat.jpg" alt="Tailored window seat with layered textiles, art and game table"></div>
+          <figcaption class="editorial-caption"><span>Pattern / Play</span><span>03</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="approach" id="approach">
+      <div class="approach-media"><img src="../assets/tailored-bath.jpg" alt="Sculptural stone bath framed by a large window"></div>
+      <div class="approach-copy">
+        <div>
+          <span class="eyebrow">An integrated practice</span>
+          <h2>One vision.<br>Fully realized.</h2>
+        </div>
+        <div class="approach-points">
+          <div class="approach-point"><strong>01</strong><span>Interior architecture</span></div>
+          <div class="approach-point"><strong>02</strong><span>Interior design</span></div>
+          <div class="approach-point"><strong>03</strong><span>Construction + execution</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="studio" id="studio">
+      <div class="studio-top">
+        <h2 data-reveal>Designed here.<br>Built to belong.</h2>
+        <p data-reveal>The studio brings creative direction, architectural thinking and construction fluency into one continuous process.</p>
+      </div>
+      <div class="studio-collage" data-reveal>
+        <img class="wide" src="../assets/studio.jpg" alt="Rivington Marx studio reception and material boards">
+        <img class="tall" src="../assets/studio-detail.jpg" alt="Rivington Marx studio detail with carved cabinet and layered objects">
+        <div class="studio-label"><span>Rivington Marx studio</span><span>Denver, Colorado</span></div>
+      </div>
+    </section>
+
+    <section class="closing" id="contact">
+      <img src="../assets/stone-kitchen.jpg" alt="Tailored in Stone marble kitchen">
+      <div class="closing-copy" data-reveal>
+        <span class="eyebrow">Have a project in mind?</span>
+        <h2>Let’s make it<br>personal.</h2>
+        <a class="circle-link" href="https://rivingtonmarx.com/contact/" target="_blank" rel="noreferrer">Begin a project</a>
+      </div>
+      <div class="footer-line"><span>Rivington Marx / Study 01</span><span>Interior architecture + design + construction</span><span>© 2026</span></div>
+    </section>
+  </main>
+
+  <div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Project image viewer">
+    <div class="lightbox-image"><img src="../assets/stone-kitchen.jpg" alt=""></div>
+    <div class="lightbox-info">
+      <button class="lightbox-close" type="button">Close ×</button>
+      <div><h3>Tailored in Stone</h3><p>Selected residence / Image album</p></div>
+      <span class="small-caps">Rivington Marx / Study 01</span>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const body = document.body;
+      const menuButton = document.querySelector('.header-action');
+      const menuPanel = document.querySelector('.menu-panel');
+      const menuClose = document.querySelector('.menu-close');
+      const menuLinks = [...document.querySelectorAll('.menu-nav a')];
+      const progress = document.querySelector('.progress span');
+      const heroMedia = document.querySelector('.hero-media');
+      const album = document.querySelector('.album');
+      const albumTrack = document.querySelector('.album-track');
+      const albumBar = document.querySelector('.album-ui span');
+      const slides = [...document.querySelectorAll('.slide')];
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function setMenu(open) {
+        menuPanel.classList.toggle('open', open);
+        menuPanel.setAttribute('aria-hidden', String(!open));
+        menuButton.setAttribute('aria-expanded', String(open));
+        body.classList.toggle('menu-open', open);
+        if (open) menuClose.focus();
+      }
+      menuButton.addEventListener('click', () => setMenu(true));
+      menuClose.addEventListener('click', () => setMenu(false));
+      menuLinks.forEach(link => link.addEventListener('click', () => setMenu(false)));
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('in-view');
+        });
+      }, { threshold: .16 });
+      document.querySelectorAll('[data-reveal], .observe-lines').forEach(el => observer.observe(el));
+
+      function updateScroll() {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        const pageProgress = max > 0 ? scrollY / max : 0;
+        progress.style.height = `${pageProgress * 100}%`;
+
+        if (!reducedMotion) {
+          heroMedia.style.transform = `translate3d(0, ${Math.min(scrollY * .12, 85)}px, 0) scale(1.015)`;
+          const rect = album.getBoundingClientRect();
+          const available = album.offsetHeight - innerHeight;
+          const local = Math.min(1, Math.max(0, -rect.top / available));
+          albumTrack.style.transform = `translate3d(${-local * (slides.length - 1) * 100}vw, 0, 0)`;
+          albumBar.style.width = `${25 + local * 75}%`;
+        }
+      }
+      addEventListener('scroll', updateScroll, { passive: true });
+      addEventListener('resize', updateScroll);
+      updateScroll();
+
+      document.querySelector('.hero').addEventListener('pointermove', event => {
+        if (reducedMotion) return;
+        const x = (event.clientX / innerWidth - .5) * 16;
+        const y = (event.clientY / innerHeight - .5) * 10;
+        heroMedia.style.marginLeft = `${x}px`;
+        heroMedia.style.marginTop = `${y}px`;
+      });
+
+      const visual = document.querySelector('.index-visual');
+      const visualImage = visual.querySelector('img');
+      const visualCaption = visual.querySelector('.index-caption span');
+      document.querySelectorAll('.project-link').forEach(link => {
+        const activate = () => {
+          visualImage.classList.remove('active');
+          setTimeout(() => {
+            visualImage.src = link.dataset.image;
+            visualImage.alt = link.dataset.caption;
+            visualCaption.textContent = link.dataset.caption;
+            visualImage.classList.add('active');
+          }, 180);
+        };
+        link.addEventListener('mouseenter', activate);
+        link.addEventListener('focus', activate);
+      });
+
+      const lightbox = document.querySelector('.lightbox');
+      const lightboxImage = lightbox.querySelector('.lightbox-image img');
+      const lightboxTitle = lightbox.querySelector('h3');
+      const lightboxNote = lightbox.querySelector('.lightbox-info p');
+      const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        body.classList.remove('lightbox-open');
+      }
+      slides.forEach(slide => slide.addEventListener('click', () => {
+        lightboxImage.src = slide.dataset.full;
+        lightboxImage.alt = slide.querySelector('img').alt;
+        lightboxTitle.textContent = slide.dataset.title;
+        lightboxNote.textContent = slide.dataset.note;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        body.classList.add('lightbox-open');
+        lightboxClose.focus();
+      }));
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', event => { if (event.target === lightbox) closeLightbox(); });
+
+      addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          if (lightbox.classList.contains('open')) closeLightbox();
+          else if (menuPanel.classList.contains('open')) setMenu(false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

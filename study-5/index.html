@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx — Study Five, The Project Story. Desktop interactive design concept.">
+  <link rel="icon" href="data:,">
+  <title>Rivington Marx — Study Five / The Project Story</title>
+  <style>
+    :root {
+      --paper: #ece9df;
+      --paper-deep: #e3ded1;
+      --ink: #191a17;
+      --stage: #141512;
+      --cream: #f2efe6;
+      --muted: #77766e;
+      --accent: #a64635;
+      --line: rgba(25, 26, 23, .2);
+      --serif: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --sans: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+      --ease: cubic-bezier(.22, .77, .24, 1);
+      --rail: clamp(355px, 31vw, 560px);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+    html { background: var(--stage); }
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, a { color: inherit; font: inherit; }
+    button { border: 0; }
+    a { text-decoration: none; }
+    img { display: block; width: 100%; }
+    ::selection { color: var(--cream); background: var(--accent); }
+
+    .mobile-gate {
+      display: none;
+      min-height: 100svh;
+      align-items: center;
+      justify-content: center;
+      padding: 38px;
+      color: var(--cream);
+      background: var(--stage);
+      text-align: center;
+    }
+    .mobile-gate__inner { max-width: 440px; }
+    .mobile-gate__label { margin-bottom: 30px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; }
+    .mobile-gate h1 { margin: 0 0 20px; font: 400 46px/.98 var(--serif); letter-spacing: -.035em; }
+    .mobile-gate p { margin: 0; color: #aaa99f; font: 15px/1.65 var(--serif); }
+
+    .site { width: 100%; height: 100%; display: grid; grid-template-columns: var(--rail) 1fr; }
+    .left-rail {
+      position: relative;
+      z-index: 20;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 31px clamp(34px, 3.5vw, 64px) 34px;
+      color: var(--rail-ink, var(--ink));
+      border-right: 1px solid var(--rail-line, rgba(25, 26, 23, .35));
+      background: var(--rail-bg, var(--paper));
+      transition: color .55s ease, background-color .9s var(--ease), border-color .55s ease;
+    }
+    .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 1;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .study-mark { color: var(--rail-muted, var(--muted)); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+
+    .copy-area {
+      min-height: 0;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      padding: 9vh 0 4vh;
+    }
+    .copy-stack { width: 100%; transition: opacity .28s ease, transform .5s var(--ease); }
+    .copy-stack.is-switching { opacity: 0; transform: translateX(-16px); }
+    .copy-viewport { display: none; width: 100%; overflow: hidden; opacity: 1; transition: opacity .28s ease; }
+    .copy-viewport.is-switching { opacity: 0; }
+    .copy-track { display: flex; width: 100%; will-change: transform; transition: transform .9s var(--ease); }
+    .copy-panel { flex: 0 0 100%; min-width: 0; }
+    .left-rail.has-horizontal-copy .copy-stack { display: none; }
+    .left-rail.has-horizontal-copy .copy-viewport { display: block; }
+    .section-label { margin-bottom: clamp(23px, 3vh, 38px); color: var(--accent); font-size: 9px; letter-spacing: .22em; text-transform: uppercase; transition: color .5s ease; }
+    .title {
+      margin: 0;
+      max-width: 450px;
+      font: 400 clamp(48px, 4.8vw, 78px)/.94 var(--serif);
+      letter-spacing: -.052em;
+      text-wrap: balance;
+    }
+    .title em { font-weight: 400; }
+    .description { max-width: 375px; margin: clamp(22px, 3.4vh, 38px) 0 0; font: 15px/1.58 var(--serif); }
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 30px;
+      max-width: 385px;
+      margin-top: clamp(27px, 4.8vh, 54px);
+      padding-top: 19px;
+      border-top: 1px solid var(--rail-line, var(--line));
+    }
+    .meta__item { min-width: 0; }
+    .meta__key { display: block; margin-bottom: 6px; color: var(--rail-muted, var(--muted)); font-size: 8px; letter-spacing: .18em; text-transform: uppercase; }
+    .meta__value { display: block; font: 13px/1.25 var(--serif); }
+
+    .controls { margin-top: auto; }
+    .controls__main { display: flex; align-items: center; gap: 11px; }
+    .arrow {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--rail-line, rgba(25, 26, 23, .38));
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font: 19px/1 var(--serif);
+      transition: color .3s ease, background .3s ease, border-color .3s ease, transform .3s var(--ease), opacity .3s ease;
+    }
+    .arrow:hover:not(:disabled) { color: var(--cream); border-color: var(--accent); background: var(--accent); transform: translateY(-2px); }
+    .arrow:disabled { opacity: .25; cursor: default; }
+    .counter { min-width: 70px; margin-left: 7px; font-size: 9px; letter-spacing: .16em; }
+    .progress-line { position: relative; height: 1px; flex: 1; overflow: hidden; background: var(--rail-line, rgba(25, 26, 23, .19)); }
+    .progress-line span { position: absolute; inset: 0; background: var(--accent); transform: scaleX(.15); transform-origin: left; transition: transform .85s var(--ease), background .5s ease; }
+    .controls__hint { display: flex; justify-content: space-between; gap: 15px; margin-top: 18px; color: var(--rail-muted, var(--muted)); font-size: 8px; letter-spacing: .15em; text-transform: uppercase; }
+    .left-rail.is-contact .arrow { display: none; }
+
+    .right-stage { position: relative; min-width: 0; height: 100vh; overflow: hidden; color: var(--cream); background: var(--stage); }
+    .right-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: .34;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+    .stage-nav {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 15;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(28px, 3.5vw, 58px);
+      border-bottom: 1px solid rgba(242, 239, 230, .18);
+      background: linear-gradient(180deg, rgba(20,21,18,.88), rgba(20,21,18,.38));
+      backdrop-filter: blur(7px);
+    }
+    .nav-list { display: flex; align-items: center; gap: clamp(20px, 2.7vw, 46px); }
+    .nav-button, .index-button {
+      position: relative;
+      padding: 8px 0;
+      color: rgba(242,239,230,.55);
+      background: transparent;
+      cursor: pointer;
+      font-size: 9px;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      transition: color .3s ease;
+    }
+    .nav-button::after { content: ""; position: absolute; right: 0; bottom: 2px; left: 0; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease), background .5s ease; }
+    .nav-button:hover, .nav-button.is-active, .index-button:hover { color: var(--cream); }
+    .nav-button.is-active::after { transform: scaleX(1); }
+    .index-button { display: inline-flex; align-items: center; gap: 10px; color: var(--cream); }
+    .index-button i { width: 18px; height: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .index-button i span { border: 1px solid currentColor; }
+
+    .stage-viewport { position: absolute; inset: 64px 0 0; overflow: hidden; }
+    .media-track {
+      height: 100%;
+      display: flex;
+      gap: 0;
+      transform: translate3d(0,0,0);
+      transition: transform .95s var(--ease), opacity .42s ease, filter .42s ease;
+      will-change: transform;
+      cursor: grab;
+      touch-action: pan-y;
+    }
+    .media-track.is-dragging { cursor: grabbing; transition: none; }
+    .right-stage.is-swapping .media-track { opacity: 0; filter: blur(4px); }
+    .slide {
+      position: relative;
+      flex: 0 0 100%;
+      height: 100%;
+      overflow: hidden;
+      color: var(--cream);
+      background: #23231f;
+      opacity: .42;
+      transform: scale(.985);
+      transform-origin: center;
+      transition: opacity .8s ease, transform 1s var(--ease), box-shadow .6s ease;
+    }
+    .slide.is-active { opacity: 1; transform: scale(1); box-shadow: 0 22px 70px rgba(0,0,0,.28); }
+    .slide__media, .slide__media img { width: 100%; height: 100%; }
+    .slide__media { overflow: hidden; }
+    .slide__media img { object-fit: cover; transform: scale(1.018); transition: transform 1.6s var(--ease), filter .6s ease; pointer-events: none; }
+    .slide.is-active:hover .slide__media img { transform: scale(1.045); }
+    .slide.is-active { cursor: zoom-in; }
+    .slide__shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(9,10,8,.67)); pointer-events: none; }
+    .slide__caption { position: absolute; right: 24px; bottom: 22px; left: 24px; display: flex; justify-content: space-between; align-items: end; gap: 25px; font-size: 8px; line-height: 1.5; letter-spacing: .16em; text-transform: uppercase; }
+    .slide__caption strong { font-weight: 500; }
+    .slide__open { opacity: 0; transform: translateX(-7px); transition: opacity .35s ease, transform .35s ease; }
+    .slide.is-active:hover .slide__open { opacity: 1; transform: none; }
+    .slide--diptych { display: grid; grid-template-columns: 1.22fr .78fr; gap: 1px; background: #dedad0; }
+    .slide--diptych .slide__media { position: relative; }
+    .slide--diptych .slide__media:nth-child(2) { margin-top: 12%; height: 76%; }
+    .slide--diptych .slide__media img { object-fit: cover; }
+    .slide--step::after { content: attr(data-step); position: absolute; left: 28px; bottom: 40px; z-index: 2; color: rgba(255,255,255,.82); font: 400 clamp(95px, 11vw, 180px)/.7 var(--serif); letter-spacing: -.07em; }
+    .slide--contact .slide__media img { filter: brightness(.54) saturate(.72); }
+    .slide--contact .slide__cta { position: absolute; top: 50%; left: 50%; z-index: 3; text-align: center; transform: translate(-50%,-50%); }
+    .slide__cta span { display: block; margin-bottom: 22px; font: 400 clamp(48px, 5vw, 82px)/.95 var(--serif); letter-spacing: -.04em; }
+    .slide__cta a { display: inline-flex; align-items: center; gap: 15px; padding: 14px 22px; border: 1px solid rgba(255,255,255,.7); border-radius: 100px; font-size: 9px; letter-spacing: .17em; text-transform: uppercase; transition: color .3s ease, background .3s ease; }
+    .slide__cta a:hover { color: var(--ink); background: var(--cream); }
+
+    .stage-note { position: absolute; right: 15px; bottom: 14px; z-index: 5; color: rgba(242,239,230,.35); font-size: 7px; letter-spacing: .13em; text-transform: uppercase; writing-mode: vertical-rl; }
+
+    .index-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: var(--rail) 1fr;
+      color: var(--cream);
+      background: #121310;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .45s ease, visibility .45s;
+    }
+    .index-overlay.is-open { opacity: 1; visibility: visible; }
+    .index-panel { display: flex; flex-direction: column; padding: 31px clamp(34px, 3.5vw, 64px) 34px; border-right: 1px solid rgba(242,239,230,.2); }
+    .index-head { display: flex; align-items: center; justify-content: space-between; }
+    .index-head strong { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; }
+    .overlay-close { padding: 8px 0; color: rgba(242,239,230,.6); background: transparent; cursor: pointer; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; transition: color .3s ease; }
+    .overlay-close:hover { color: white; }
+    .project-list { margin: auto 0; border-top: 1px solid rgba(242,239,230,.22); }
+    .project-link { width: 100%; display: grid; grid-template-columns: 32px 1fr auto; gap: 15px; align-items: baseline; padding: 17px 0; border-bottom: 1px solid rgba(242,239,230,.18); color: rgba(242,239,230,.62); background: transparent; cursor: pointer; text-align: left; transition: color .3s ease, padding .4s var(--ease); }
+    .project-link:hover, .project-link:focus, .project-link.is-active { padding-left: 10px; color: white; }
+    .project-link__no { color: #6f7069; font-size: 8px; }
+    .project-link__title { font: 400 clamp(22px, 2vw, 34px)/1 var(--serif); letter-spacing: -.025em; }
+    .project-link__type { font-size: 7px; letter-spacing: .15em; text-transform: uppercase; }
+    .index-foot { display: flex; justify-content: space-between; color: #77786f; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
+    .index-preview { position: relative; overflow: hidden; background: #24241f; }
+    .index-preview img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.025); transition: opacity .4s ease, transform 1s var(--ease); }
+    .index-preview.is-changing img { opacity: .25; transform: scale(1.055); }
+    .index-preview__caption { position: absolute; right: 38px; bottom: 33px; left: 38px; display: flex; justify-content: space-between; gap: 30px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.5); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 1px 10px #000; }
+
+    .project-view {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      grid-template-columns: 68% 32%;
+      color: var(--cream);
+      background: #121310;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity .45s ease, transform .65s var(--ease), visibility .45s;
+    }
+    .project-view.is-open { opacity: 1; visibility: visible; transform: none; }
+    .project-gallery { position: relative; height: 100vh; overflow: hidden; background: #24241f; }
+    .project-gallery__track { height: 100%; will-change: transform; transition: transform .9s var(--ease); }
+    .project-gallery__slide { position: relative; width: 100%; height: 100vh; margin: 0; overflow: hidden; }
+    .project-gallery__slide img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.025); transition: transform 1.1s var(--ease); }
+    .project-gallery__slide.is-active img { transform: scale(1); }
+    .project-gallery__shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,7,.42), transparent 35%); pointer-events: none; }
+    .project-gallery__position { position: absolute; z-index: 3; top: 28px; left: 30px; font-size: 8px; letter-spacing: .18em; text-transform: uppercase; text-shadow: 0 1px 12px #000; }
+    .project-gallery__hint { position: absolute; z-index: 3; bottom: 29px; left: 30px; font-size: 8px; letter-spacing: .15em; text-transform: uppercase; text-shadow: 0 1px 12px #000; }
+    .gallery-controls { position: absolute; z-index: 4; top: 50%; right: 22px; display: grid; gap: 7px; opacity: 0; transform: translateY(-50%) translateX(8px); transition: opacity .35s ease, transform .45s var(--ease); }
+    .project-gallery:hover .gallery-controls, .gallery-controls:focus-within { opacity: 1; transform: translateY(-50%); }
+    .gallery-arrow { width: 46px; height: 46px; display: grid; place-items: center; color: var(--cream); background: rgba(18,19,16,.76); border: 1px solid rgba(242,239,230,.55); border-radius: 50%; cursor: pointer; font: 18px/1 var(--serif); backdrop-filter: blur(8px); transition: color .3s ease, background .3s ease, opacity .3s ease; }
+    .gallery-arrow:hover { color: var(--ink); background: var(--cream); }
+    .gallery-arrow:disabled { opacity: .25; cursor: default; }
+
+    .project-story { position: relative; height: 100vh; overflow: hidden; border-left: 1px solid rgba(242,239,230,.2); }
+    .project-view__top { position: absolute; z-index: 4; top: 0; right: 0; left: 0; display: flex; justify-content: space-between; padding: 31px clamp(30px, 3vw, 52px) 0; }
+    .project-story__viewport { position: absolute; inset: 86px 0 112px; overflow: hidden; }
+    .project-story__track { display: flex; width: 100%; height: 100%; will-change: transform; transition: transform .85s var(--ease); }
+    .story-panel { flex: 0 0 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 12px clamp(30px, 3vw, 52px); overflow: hidden; }
+    .story-panel__label { color: var(--accent); font-size: 8px; letter-spacing: .2em; text-transform: uppercase; }
+    .story-panel h2, .story-panel h3 { max-width: 7.5ch; margin: 24px 0; font: 400 clamp(40px, 4.2vw, 68px)/.92 var(--serif); letter-spacing: -.045em; }
+    .story-panel h3 { font-size: clamp(34px, 3.35vw, 54px); }
+    .story-panel p { max-width: 370px; margin: 0; color: rgba(242,239,230,.7); font: 15px/1.62 var(--serif); }
+    .story-panel p + p { margin-top: 16px; }
+    .project-view__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 34px; padding-top: 17px; border-top: 1px solid rgba(242,239,230,.22); }
+    .project-view__meta span { font-size: 8px; line-height: 1.55; letter-spacing: .13em; text-transform: uppercase; }
+    .project-story__footer { position: absolute; z-index: 4; right: 0; bottom: 0; left: 0; padding: 0 clamp(30px, 3vw, 52px) 30px; }
+    .story-controls { display: grid; grid-template-columns: 42px 42px auto; gap: 10px; align-items: center; }
+    .story-prev, .story-next { width: 42px; height: 42px; display: grid; place-items: center; color: var(--cream); background: transparent; border: 1px solid rgba(242,239,230,.32); border-radius: 50%; cursor: pointer; transition: color .3s ease, border-color .3s ease; }
+    .story-prev:hover, .story-next:hover { color: var(--accent); border-color: var(--accent); }
+    .story-prev:disabled, .story-next:disabled { opacity: .25; cursor: default; }
+    .story-counter { color: #87887f; font-size: 8px; letter-spacing: .15em; }
+    .story-progress { width: 100%; height: 1px; margin-top: 15px; overflow: hidden; background: rgba(242,239,230,.18); }
+    .story-progress span { display: block; width: 100%; height: 100%; background: var(--accent); transform: scaleX(.333); transform-origin: left; transition: transform .75s var(--ease); }
+    .project-story__note { display: flex; justify-content: space-between; margin-top: 13px; color: #77786f; font-size: 7px; letter-spacing: .13em; text-transform: uppercase; }
+
+    @media (max-width: 1120px) {
+      :root { --rail: 360px; }
+      .left-rail { padding-right: 38px; padding-left: 38px; }
+      .title { font-size: 50px; }
+      .nav-list { gap: 18px; }
+      .stage-nav { padding-right: 28px; padding-left: 28px; }
+    }
+    @media (max-width: 979px) {
+      .site, .index-overlay, .project-view { display: none; }
+      .mobile-gate { display: flex; }
+      body { overflow: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="mobile-gate" aria-label="Desktop study notice">
+    <div class="mobile-gate__inner">
+      <div class="mobile-gate__label">Rivington Marx / Study 05</div>
+      <h1>The Project Story is a desktop study.</h1>
+      <p>The mobile experience is intentionally deferred until the selected desktop direction has been approved.</p>
+    </div>
+  </aside>
+
+  <main class="site">
+    <aside class="left-rail">
+      <div class="brand-row">
+        <a class="brand" href="#" aria-label="Rivington Marx">Rivington Marx</a>
+        <span class="study-mark">Study 05</span>
+      </div>
+
+      <div class="copy-area">
+        <div class="copy-stack">
+          <div class="section-label">Selected work / 01</div>
+          <h1 class="title">A room is never <em>only</em> a room.</h1>
+          <p class="description">Collected, expressive interiors shaped around the people who live in them.</p>
+          <div class="meta">
+            <div class="meta__item"><span class="meta__key">Character</span><span class="meta__value">Collected living</span></div>
+            <div class="meta__item"><span class="meta__key">Focus</span><span class="meta__value">Art, pattern + form</span></div>
+          </div>
+        </div>
+        <div class="copy-viewport" aria-live="polite">
+          <div class="copy-track"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="controls__main">
+          <button class="arrow arrow--prev" type="button" aria-label="Previous slide">←</button>
+          <button class="arrow arrow--next" type="button" aria-label="Next slide">→</button>
+          <span class="counter" aria-live="polite">01 — 07</span>
+          <div class="progress-line" aria-hidden="true"><span></span></div>
+        </div>
+        <div class="controls__hint"><span class="controls__action">Use arrows or drag</span><span>Desktop presentation</span></div>
+      </div>
+    </aside>
+
+    <section class="right-stage" aria-label="Interactive presentation">
+      <nav class="stage-nav" aria-label="Study sections">
+        <div class="nav-list">
+          <button class="nav-button is-active" type="button" data-group="work">Work</button>
+          <button class="nav-button" type="button" data-group="point">Point of view</button>
+          <button class="nav-button" type="button" data-group="approach">Approach</button>
+          <button class="nav-button" type="button" data-group="studio">Studio</button>
+          <button class="nav-button" type="button" data-group="contact">Contact</button>
+        </div>
+        <button class="index-button" type="button" aria-expanded="false" aria-controls="project-index"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i>Index</button>
+      </nav>
+
+      <div class="stage-viewport">
+        <div class="media-track" aria-live="polite"></div>
+      </div>
+      <div class="stage-note">Horizontal study / Client imagery only</div>
+    </section>
+  </main>
+
+  <aside class="index-overlay" id="project-index" aria-hidden="true">
+    <div class="index-panel">
+      <div class="index-head"><strong>Project index</strong><button class="overlay-close index-close" type="button">Close — Esc</button></div>
+      <div class="project-list"></div>
+      <div class="index-foot"><span>07 selected stories</span><span>Hover to preview</span></div>
+    </div>
+    <div class="index-preview">
+      <img src="../assets/collected-living.jpg" alt="Collected living room">
+      <div class="index-preview__caption"><span class="index-preview__title">Collected Living</span><span class="index-preview__meta">Residential / Character</span></div>
+    </div>
+  </aside>
+
+  <section class="project-view" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Project story">
+    <div class="project-gallery">
+      <div class="project-gallery__track"></div>
+      <div class="project-gallery__position">Image <span>01 / 04</span></div>
+      <div class="project-gallery__hint">Scroll vertically / Hover for arrows</div>
+      <div class="gallery-controls">
+        <button class="gallery-arrow gallery-prev" type="button" aria-label="Previous project image">↑</button>
+        <button class="gallery-arrow gallery-next" type="button" aria-label="Next project image">↓</button>
+      </div>
+    </div>
+    <div class="project-story">
+      <div class="project-view__top"><span class="brand">Rivington Marx</span><button class="overlay-close project-close" type="button">Close — Esc</button></div>
+      <div class="project-story__viewport"><div class="project-story__track"></div></div>
+      <div class="project-story__footer">
+        <div class="story-controls">
+          <button class="story-prev" type="button" aria-label="Previous text chapter">←</button>
+          <button class="story-next" type="button" aria-label="Next text chapter">→</button>
+          <span class="story-counter">01 / 03</span>
+        </div>
+        <div class="story-progress" aria-hidden="true"><span></span></div>
+        <div class="project-story__note"><span>Scroll down to read horizontally</span><span>Concept copy / Client approval</span></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const groups = {
+        work: {
+          label: 'Selected work',
+          entries: [
+            { title: 'A room is never <em>only</em> a room.', short: 'Collected Living', description: 'Collected, expressive interiors shaped around the people who live in them.', image: '../assets/collected-living.jpg', alt: 'Collected living room with patterned seating, artwork and dark architectural trim', meta: [['Character','Collected living'],['Focus','Art, pattern + form']], accent: '#c8674f', panel: '#283832', tag: 'Residential / Character' },
+            { title: 'Colour becomes <em>architecture.</em>', short: 'The Blue Salon', description: 'A single saturated tone makes a confident frame for art, objects and conversation.', image: '../assets/blue-salon.jpg', alt: 'Deep blue salon with collected furniture and chinoiserie cabinet', meta: [['Character','Immersive colour'],['Focus','Atmosphere + art']], accent: '#79a9c5', panel: '#173b50', tag: 'Residential / Colour' },
+            { title: 'A sense of <em>occasion.</em>', short: 'The Pink Pony', description: 'A dining room composed as theatre—vivid, generous and completely personal.', image: '../assets/pink-dining.jpg', alt: 'Pink dining room with mural, books and sculptural chandelier', meta: [['Character','Expressive dining'],['Focus','Colour + mural']], accent: '#d8879e', panel: '#6b3948', tag: 'Residential / Colour' },
+            { title: 'Precision, <em>softened.</em>', short: 'Tailored in Stone', description: 'Quiet stone, measured joinery and warm light create luxury through proportion.', image: '../assets/stone-kitchen.jpg', alt: 'Light stone kitchen with two sculptural islands', meta: [['Character','Tailored calm'],['Focus','Stone + joinery']], accent: '#d1ae7c', panel: '#615647', tag: 'Residential / Craft' },
+            { title: 'A room tuned to <em>evening.</em>', short: 'The Gold Room', description: 'Metallic walls, shadow and sculptural light give the dining room its after-dark rhythm.', image: '../assets/gold-dining.jpg', alt: 'Gold and red dining room with dramatic chandelier', meta: [['Character','Atmospheric'],['Focus','Light + reflection']], accent: '#d6a05d', panel: '#6e4d2f', tag: 'Residential / Atmosphere' },
+            { title: 'Pattern in <em>conversation.</em>', short: 'The Green Library', description: 'Comfort is built through layers: colour, print, art and pieces gathered over time.', image: '../assets/green-study.jpg', alt: 'Green library with layered seating, artwork and patterned rug', meta: [['Character','Layered comfort'],['Focus','Pattern + collection']], accent: '#a9bc91', panel: '#4b5b49', tag: 'Residential / Collection' },
+            { title: 'Utility with <em>soul.</em>', short: 'The Collected Bath', description: 'An everyday room becomes memorable through age, texture and a little irreverence.', image: '../assets/collected-bath.jpg', alt: 'Collected bathroom with exposed brick, plants and patterned floor', meta: [['Character','Historic texture'],['Focus','Patina + planting']], accent: '#c99275', panel: '#60473d', tag: 'Residential / Detail' }
+          ]
+        },
+        point: {
+          label: 'Point of view',
+          entries: [
+            { title: 'Character before <em>convention.</em>', short: 'Character', description: 'The room begins with the life inside it—not with a prescribed look.', image: '../assets/collected-living.jpg', second: '../assets/portrait-vignette.jpg', alt: 'Collected living room and portrait vignette', meta: [['Principle','Personal first'],['Method','Layer + edit']], accent: '#94613f', tag: 'Point of view / 01' },
+            { title: 'The whole and the <em>telling detail.</em>', short: 'Craft', description: 'Architecture sets the rhythm; materials, objects and light make it intimate.', image: '../assets/stone-kitchen.jpg', second: '../assets/tailored-bar.jpg', alt: 'Stone kitchen and tailored bar detail', meta: [['Principle','Big idea, fine detail'],['Method','Resolve + refine']], accent: '#706554', tag: 'Point of view / 02' },
+            { title: 'A little tension makes it <em>memorable.</em>', short: 'Contrast', description: 'Tailored lines meet unexpected art, deep colour and objects with a point of view.', image: '../assets/blue-salon.jpg', second: '../assets/black-bath.jpg', alt: 'Blue salon and dark art-filled room', meta: [['Principle','Restraint + surprise'],['Method','Contrast + balance']], accent: '#3f5870', tag: 'Point of view / 03' }
+          ]
+        },
+        approach: {
+          label: 'Design + build',
+          entries: [
+            { title: 'First, we <em>listen.</em>', short: 'Discover', description: 'How you live, what you collect and how the house should feel set the direction.', image: '../assets/foyer.jpg', alt: 'Layered foyer with staircase, artwork and flowers', meta: [['Stage','01 / Discover'],['Output','A clear point of view']], accent: '#77513f', tag: 'Approach / Discover', step: '01' },
+            { title: 'Then, we <em>compose.</em>', short: 'Design', description: 'Space, colour, material and light are developed as one connected idea.', image: '../assets/desk.jpg', alt: 'Tailored desk in front of stained glass window', meta: [['Stage','02 / Design'],['Output','Space + material']], accent: '#8e6f3f', tag: 'Approach / Design', step: '02' },
+            { title: 'We find what belongs <em>nowhere else.</em>', short: 'Collect', description: 'Art, antiques and custom pieces bring individuality into the architectural frame.', image: '../assets/portrait-vignette.jpg', alt: 'Portrait artwork above a collected wood cabinet', meta: [['Stage','03 / Collect'],['Output','Art + objects']], accent: '#526851', tag: 'Approach / Collect', step: '03' },
+            { title: 'Every line is <em>resolved.</em>', short: 'Deliver', description: 'Documentation, coordination and construction fluency protect the final experience.', image: '../assets/powder-detail.jpg', alt: 'Refined powder room detail with stone, mirror and red flowers', meta: [['Stage','04 / Deliver'],['Output','A complete interior']], accent: '#8b3b42', tag: 'Approach / Deliver', step: '04' }
+          ]
+        },
+        studio: {
+          label: 'The studio',
+          entries: [
+            { title: 'One studio. <em>Many disciplines.</em>', short: 'Rivington Marx Studio', description: 'Interior design, architectural thinking and construction fluency working as one.', image: '../assets/studio.jpg', alt: 'Rivington Marx studio with material boards and reception desk', meta: [['Based in','Denver, Colorado'],['Working','Nationwide']], accent: '#80413b', tag: 'Studio / Denver' },
+            { title: 'Bold ideas. <em>Precisely delivered.</em>', short: 'Integrated Practice', description: 'A single creative thread carries the project from early concept to the final object.', image: '../assets/dark-kitchen.jpg', alt: 'Tailored dark and cream kitchen with art and patterned ceiling', meta: [['Practice','Design + architecture'],['Capability','Project delivery']], accent: '#74633e', tag: 'Studio / Integrated practice' }
+          ]
+        },
+        contact: {
+          label: 'Begin a project',
+          entries: [
+            { title: 'Make it <em>unmistakably yours.</em>', short: 'Begin a Project', description: 'A conversation is the first step toward a home with character, clarity and a life of its own.', image: '../assets/gold-dining.jpg', alt: 'Atmospheric gold dining room', meta: [['Studio','Rivington Marx'],['Location','Denver / Nationwide']], accent: '#aa6d3d', tag: 'Contact / New enquiries', contact: true }
+          ]
+        }
+      };
+
+      const projectStories = [
+        {
+          gallery: [
+            ['../assets/collected-living.jpg', 'Collected living room with patterned seating and dark architectural trim'],
+            ['../assets/portrait-vignette.jpg', 'Portrait artwork above a collected wood cabinet'],
+            ['../assets/collected-bath.jpg', 'Collected bathroom with exposed brick and patterned floor'],
+            ['../assets/desk.jpg', 'Tailored desk in front of a stained glass window']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'Collected Living', copy: ['Collected, expressive interiors shaped around the people who live in them.'], meta: ['Residential / Character', 'Concept presentation'] },
+            { label: '02 / Character', title: 'Layered, never crowded.', copy: ['Pattern, artwork and objects are treated as one composition. The room feels assembled over time rather than delivered all at once.', 'Dark architectural lines give the collection a disciplined frame.'] },
+            { label: '03 / Detail', title: 'A room that rewards time.', copy: ['The larger gestures establish atmosphere; the quieter details make the interior personal. Each view reveals another relationship between colour, texture and form.'] }
+          ]
+        },
+        {
+          gallery: [
+            ['../assets/blue-salon.jpg', 'Deep blue salon with collected furniture and chinoiserie cabinet'],
+            ['../assets/green-study.jpg', 'Green library with layered seating and patterned rug'],
+            ['../assets/tailored-bar.jpg', 'Tailored bar with dark joinery and warm lighting'],
+            ['../assets/portrait-vignette.jpg', 'Collected portrait vignette']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'The Blue Salon', copy: ['A single saturated tone makes a confident frame for art, objects and conversation.'], meta: ['Residential / Colour', 'Concept presentation'] },
+            { label: '02 / Atmosphere', title: 'Colour becomes structure.', copy: ['Blue moves across walls, joinery and objects until it reads as architecture rather than decoration.', 'Warm woods and patterned surfaces keep the saturation intimate.'] },
+            { label: '03 / Collection', title: 'Every object holds its ground.', copy: ['Furniture, art and lighting are allowed distinct silhouettes. The result is immersive without losing the individuality of each piece.'] }
+          ]
+        },
+        {
+          gallery: [
+            ['../assets/pink-dining.jpg', 'Pink dining room with mural and sculptural chandelier'],
+            ['../assets/gold-dining.jpg', 'Gold dining room with dramatic chandelier'],
+            ['../assets/powder-detail.jpg', 'Powder room detail with stone and red flowers'],
+            ['../assets/blue-salon.jpg', 'Deep blue salon']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'The Pink Pony', copy: ['A dining room composed as theatre—vivid, generous and completely personal.'], meta: ['Residential / Colour', 'Concept presentation'] },
+            { label: '02 / Occasion', title: 'Dinner becomes a scene.', copy: ['Colour establishes the mood before the table is set. Art, mural and chandelier build a room with a strong sense of arrival.'] },
+            { label: '03 / Balance', title: 'Expressive, with control.', copy: ['The palette is exuberant, but proportion keeps it composed. Each saturated moment is balanced by a quieter material or line.'] }
+          ]
+        },
+        {
+          gallery: [
+            ['../assets/stone-kitchen.jpg', 'Light stone kitchen with sculptural islands'],
+            ['../assets/dark-kitchen.jpg', 'Tailored dark and cream kitchen'],
+            ['../assets/foyer.jpg', 'Layered foyer with staircase and artwork'],
+            ['../assets/desk.jpg', 'Tailored desk and stained glass']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'Tailored in Stone', copy: ['Quiet stone, measured joinery and warm light create luxury through proportion.'], meta: ['Residential / Craft', 'Concept presentation'] },
+            { label: '02 / Architecture', title: 'Precision, softened.', copy: ['Large stone forms give the room clarity. Rounded edges, filtered light and natural variation prevent that precision from feeling severe.'] },
+            { label: '03 / Use', title: 'Made for the everyday.', copy: ['The architectural idea remains present in every view, while circulation and working surfaces support the ordinary rituals of the room.'] }
+          ]
+        },
+        {
+          gallery: [
+            ['../assets/gold-dining.jpg', 'Gold and red dining room with dramatic chandelier'],
+            ['../assets/pink-dining.jpg', 'Expressive pink dining room'],
+            ['../assets/tailored-bar.jpg', 'Tailored bar detail'],
+            ['../assets/portrait-vignette.jpg', 'Portrait artwork and collected cabinet']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'The Gold Room', copy: ['Metallic walls, shadow and sculptural light give the dining room its after-dark rhythm.'], meta: ['Residential / Atmosphere', 'Concept presentation'] },
+            { label: '02 / Light', title: 'The room changes at dusk.', copy: ['Reflective surfaces hold the last natural light, then give way to a warmer, more theatrical glow.'] },
+            { label: '03 / Mood', title: 'An interior with a second life.', copy: ['By day the materials read as texture; after dark they become atmosphere. The room is designed for both conditions.'] }
+          ]
+        },
+        {
+          gallery: [
+            ['../assets/green-study.jpg', 'Green library with layered seating and artwork'],
+            ['../assets/desk.jpg', 'Tailored desk in front of stained glass'],
+            ['../assets/portrait-vignette.jpg', 'Portrait vignette and collected cabinet'],
+            ['../assets/tailored-bar.jpg', 'Dark tailored bar']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'The Green Library', copy: ['Comfort is built through layers: colour, print, art and pieces gathered over time.'], meta: ['Residential / Collection', 'Concept presentation'] },
+            { label: '02 / Comfort', title: 'A room to settle into.', copy: ['Deep colour reduces the scale of the room and brings books, textiles and artwork into a single warm field.'] },
+            { label: '03 / Rhythm', title: 'Pattern in conversation.', copy: ['Prints repeat without matching exactly. Their differences create movement while the green architectural envelope keeps the whole composed.'] }
+          ]
+        },
+        {
+          gallery: [
+            ['../assets/collected-bath.jpg', 'Collected bathroom with exposed brick and plants'],
+            ['../assets/black-bath.jpg', 'Dark bathroom with artwork and patterned surfaces'],
+            ['../assets/powder-detail.jpg', 'Refined powder room detail'],
+            ['../assets/studio.jpg', 'Rivington Marx studio and material library']
+          ],
+          chapters: [
+            { label: '01 / Overview', title: 'The Collected Bath', copy: ['An everyday room becomes memorable through age, texture and a little irreverence.'], meta: ['Residential / Detail', 'Concept presentation'] },
+            { label: '02 / Patina', title: 'New work, lived-in spirit.', copy: ['Brick, planting and patterned surfaces introduce the sense that the room has evolved rather than arrived fully formed.'] },
+            { label: '03 / Detail', title: 'Utility with soul.', copy: ['Functional elements remain clear, but the material choices and collected pieces ensure the room belongs to the wider story of the home.'] }
+          ]
+        }
+      ];
+
+      let activeGroup = 'work';
+      let activeIndex = 0;
+      let dragStart = 0;
+      let dragBase = 0;
+      let dragDistance = 0;
+      let dragging = false;
+      let swapTimer = null;
+      let sectionWheelLock = false;
+
+      const root = document.documentElement;
+      const site = document.querySelector('.site');
+      const leftRail = document.querySelector('.left-rail');
+      const stage = document.querySelector('.right-stage');
+      const viewport = document.querySelector('.stage-viewport');
+      const track = document.querySelector('.media-track');
+      const copy = document.querySelector('.copy-stack');
+      const copyViewport = document.querySelector('.copy-viewport');
+      const copyTrack = document.querySelector('.copy-track');
+      const label = document.querySelector('.section-label');
+      const title = document.querySelector('.title');
+      const description = document.querySelector('.description');
+      const meta = document.querySelector('.meta');
+      const counter = document.querySelector('.counter');
+      const progress = document.querySelector('.progress-line span');
+      const prev = document.querySelector('.arrow--prev');
+      const next = document.querySelector('.arrow--next');
+      const controlsAction = document.querySelector('.controls__action');
+      const navButtons = [...document.querySelectorAll('.nav-button')];
+      const indexOverlay = document.querySelector('.index-overlay');
+      const indexButton = document.querySelector('.index-button');
+      const indexClose = document.querySelector('.index-close');
+      const projectList = document.querySelector('.project-list');
+      const indexPreview = document.querySelector('.index-preview');
+      const indexImage = indexPreview.querySelector('img');
+      const indexTitle = document.querySelector('.index-preview__title');
+      const indexMeta = document.querySelector('.index-preview__meta');
+      const projectView = document.querySelector('.project-view');
+      const projectClose = document.querySelector('.project-close');
+      const projectGallery = document.querySelector('.project-gallery');
+      const projectGalleryTrack = document.querySelector('.project-gallery__track');
+      const projectGalleryPosition = document.querySelector('.project-gallery__position span');
+      const galleryPrev = document.querySelector('.gallery-prev');
+      const galleryNext = document.querySelector('.gallery-next');
+      const projectStory = document.querySelector('.project-story');
+      const projectStoryTrack = document.querySelector('.project-story__track');
+      const storyPrev = document.querySelector('.story-prev');
+      const storyNext = document.querySelector('.story-next');
+      const storyCounter = document.querySelector('.story-counter');
+      const storyProgress = document.querySelector('.story-progress span');
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let openProjectIndex = 0;
+      let galleryIndex = 0;
+      let storyIndex = 0;
+      let galleryWheelLock = false;
+      let storyWheelLock = false;
+
+      const pad = (value) => String(value).padStart(2, '0');
+      const horizontalCopyGroups = new Set(['work', 'point', 'approach', 'studio']);
+      const currentEntries = () => groups[activeGroup].entries;
+      const usesHorizontalCopy = () => horizontalCopyGroups.has(activeGroup);
+      const slideStep = () => viewport.clientWidth;
+      const targetX = () => -(activeIndex * slideStep());
+      const copyTargetX = () => -(activeIndex * 100);
+
+      const copyPanelMarkup = (entry, index) => `<section class="copy-panel" aria-hidden="${index === activeIndex ? 'false' : 'true'}"><div class="section-label">${groups[activeGroup].label} / ${pad(index + 1)}</div><h1 class="title">${entry.title}</h1><p class="description">${entry.description}</p><div class="meta">${entry.meta.map(([key, value]) => `<div class="meta__item"><span class="meta__key">${key}</span><span class="meta__value">${value}</span></div>`).join('')}</div></section>`;
+
+      const renderCopyTrack = () => {
+        copyTrack.innerHTML = currentEntries().map(copyPanelMarkup).join('');
+        copyTrack.dataset.group = activeGroup;
+        copyTrack.style.transform = `translate3d(${copyTargetX()}%,0,0)`;
+      };
+
+      const updateCopyTrack = () => {
+        if (copyTrack.dataset.group !== activeGroup) renderCopyTrack();
+        copyTrack.style.transform = `translate3d(${copyTargetX()}%,0,0)`;
+        [...copyTrack.children].forEach((panel, index) => panel.setAttribute('aria-hidden', String(index !== activeIndex)));
+      };
+
+      const buildSlide = (entry, index) => {
+        const node = document.createElement('article');
+        node.className = 'slide';
+        node.dataset.index = index;
+        if (entry.second) node.classList.add('slide--diptych');
+        if (entry.step) { node.classList.add('slide--step'); node.dataset.step = entry.step; }
+        if (entry.contact) node.classList.add('slide--contact');
+        const firstMedia = `<div class="slide__media"><img src="${entry.image}" alt="${entry.alt}" ${index ? 'loading="lazy"' : ''} decoding="async"></div>`;
+        const secondMedia = entry.second ? `<div class="slide__media"><img src="${entry.second}" alt="" loading="lazy" decoding="async"></div>` : '';
+        const contact = entry.contact ? `<div class="slide__cta"><span>Begin a conversation.</span><a href="https://rivingtonmarx.com/contact/" target="_blank" rel="noopener">Contact the studio <b aria-hidden="true">↗</b></a></div>` : '';
+        node.innerHTML = `${firstMedia}${secondMedia}<div class="slide__shade"></div>${contact}<div class="slide__caption"><strong>${entry.short}</strong><span class="slide__open">${activeGroup === 'work' ? 'Open project ↗' : entry.tag}</span></div>`;
+        if (activeGroup === 'work') node.addEventListener('click', () => { if (index === activeIndex && dragDistance < 8) openProject(index); });
+        return node;
+      };
+
+      const renderTrack = () => {
+        track.innerHTML = '';
+        currentEntries().forEach((entry, index) => track.appendChild(buildSlide(entry, index)));
+        requestAnimationFrame(() => {
+          track.style.transform = `translate3d(${targetX()}px,0,0)`;
+          updateActiveSlides();
+        });
+      };
+
+      const renderCopy = (immediate = false) => {
+        const entry = currentEntries()[activeIndex];
+        const apply = () => {
+          root.style.setProperty('--accent', entry.accent);
+          leftRail.classList.toggle('has-horizontal-copy', usesHorizontalCopy());
+          leftRail.classList.toggle('is-contact', activeGroup === 'contact');
+          if (activeGroup === 'work') {
+            leftRail.style.setProperty('--rail-bg', entry.panel);
+            leftRail.style.setProperty('--rail-ink', 'var(--cream)');
+            leftRail.style.setProperty('--rail-muted', 'rgba(242,239,230,.58)');
+            leftRail.style.setProperty('--rail-line', 'rgba(242,239,230,.28)');
+          } else {
+            ['--rail-bg', '--rail-ink', '--rail-muted', '--rail-line'].forEach((property) => leftRail.style.removeProperty(property));
+          }
+          if (usesHorizontalCopy()) updateCopyTrack();
+          else {
+            label.textContent = `${groups[activeGroup].label} / ${pad(activeIndex + 1)}`;
+            title.innerHTML = entry.title;
+            description.textContent = entry.description;
+            meta.innerHTML = entry.meta.map(([key, value]) => `<div class="meta__item"><span class="meta__key">${key}</span><span class="meta__value">${value}</span></div>`).join('');
+          }
+          counter.textContent = `${pad(activeIndex + 1)} — ${pad(currentEntries().length)}`;
+          progress.style.transform = `scaleX(${(activeIndex + 1) / currentEntries().length})`;
+          prev.disabled = activeIndex === 0;
+          next.disabled = activeIndex === currentEntries().length - 1;
+          controlsAction.textContent = activeGroup === 'contact' ? 'Single contact panel' : activeGroup === 'work' ? 'Scroll, arrows or drag' : usesHorizontalCopy() ? 'Scroll down or use arrows' : 'Use arrows or drag';
+          copy.classList.remove('is-switching');
+          copyViewport.classList.remove('is-switching');
+        };
+        if (immediate || reduceMotion || usesHorizontalCopy()) apply();
+        else {
+          copy.classList.add('is-switching');
+          setTimeout(apply, 230);
+        }
+      };
+
+      const updateActiveSlides = () => {
+        [...track.children].forEach((slide, index) => slide.classList.toggle('is-active', index === activeIndex));
+      };
+
+      const goTo = (index) => {
+        const max = currentEntries().length - 1;
+        const target = Math.max(0, Math.min(max, index));
+        if (target === activeIndex) return;
+        activeIndex = target;
+        track.style.transform = `translate3d(${targetX()}px,0,0)`;
+        updateActiveSlides();
+        renderCopy();
+        preloadNearby();
+      };
+
+      const setGroup = (name) => {
+        if (!groups[name] || name === activeGroup) return;
+        clearTimeout(swapTimer);
+        stage.classList.add('is-swapping');
+        copy.classList.add('is-switching');
+        copyViewport.classList.add('is-switching');
+        activeGroup = name;
+        activeIndex = 0;
+        navButtons.forEach((button) => button.classList.toggle('is-active', button.dataset.group === name));
+        swapTimer = setTimeout(() => {
+          renderTrack();
+          renderCopy(true);
+          requestAnimationFrame(() => stage.classList.remove('is-swapping'));
+        }, reduceMotion ? 0 : 360);
+      };
+
+      const preloadNearby = () => {
+        [activeIndex - 1, activeIndex + 1].forEach((index) => {
+          const entry = currentEntries()[index];
+          if (entry) [entry.image, entry.second].filter(Boolean).forEach((src) => { const image = new Image(); image.src = src; });
+        });
+      };
+
+      const renderIndex = () => {
+        projectList.innerHTML = '';
+        groups.work.entries.forEach((entry, index) => {
+          const button = document.createElement('button');
+          button.className = `project-link${index === activeIndex && activeGroup === 'work' ? ' is-active' : ''}`;
+          button.type = 'button';
+          button.innerHTML = `<span class="project-link__no">${pad(index + 1)}</span><span class="project-link__title">${entry.short}</span><span class="project-link__type">${entry.tag.split('/')[1]}</span>`;
+          const preview = () => showIndexPreview(index);
+          button.addEventListener('mouseenter', preview);
+          button.addEventListener('focus', preview);
+          button.addEventListener('click', () => {
+            activeGroup = 'work';
+            activeIndex = index;
+            navButtons.forEach((item) => item.classList.toggle('is-active', item.dataset.group === 'work'));
+            renderTrack();
+            renderCopy(true);
+            setIndex(false);
+          });
+          projectList.appendChild(button);
+        });
+      };
+
+      const showIndexPreview = (index) => {
+        const entry = groups.work.entries[index];
+        indexPreview.classList.add('is-changing');
+        setTimeout(() => {
+          indexImage.src = entry.image;
+          indexImage.alt = entry.alt;
+          indexTitle.textContent = entry.short;
+          indexMeta.textContent = entry.tag;
+          indexPreview.classList.remove('is-changing');
+        }, reduceMotion ? 0 : 190);
+        [...projectList.children].forEach((item, itemIndex) => item.classList.toggle('is-active', itemIndex === index));
+      };
+
+      const setIndex = (open) => {
+        if (open) renderIndex();
+        indexOverlay.classList.toggle('is-open', open);
+        indexOverlay.setAttribute('aria-hidden', String(!open));
+        indexButton.setAttribute('aria-expanded', String(open));
+        if (open) { showIndexPreview(activeGroup === 'work' ? activeIndex : 0); indexClose.focus(); }
+        else indexButton.focus();
+      };
+
+      const renderProjectGallery = () => {
+        const story = projectStories[openProjectIndex];
+        projectGalleryTrack.innerHTML = story.gallery.map(([src, alt], imageIndex) => `<figure class="project-gallery__slide${imageIndex === 0 ? ' is-active' : ''}"><img src="${src}" alt="${alt}" ${imageIndex ? 'loading="lazy"' : ''} decoding="async"><span class="project-gallery__shade"></span></figure>`).join('');
+      };
+
+      const renderProjectStory = () => {
+        const story = projectStories[openProjectIndex];
+        projectStoryTrack.innerHTML = story.chapters.map((chapter, chapterIndex) => `<section class="story-panel"><div class="story-panel__label">${chapter.label}</div><${chapterIndex ? 'h3' : 'h2'}>${chapter.title}</${chapterIndex ? 'h3' : 'h2'}>${chapter.copy.map(paragraph => `<p>${paragraph}</p>`).join('')}${chapter.meta ? `<div class="project-view__meta">${chapter.meta.map(item => `<span>${item}</span>`).join('')}</div>` : ''}</section>`).join('');
+      };
+
+      const updateGallery = (index) => {
+        const total = projectStories[openProjectIndex].gallery.length;
+        galleryIndex = Math.max(0, Math.min(total - 1, index));
+        projectGalleryTrack.style.transform = `translate3d(0,${-(galleryIndex * 100)}%,0)`;
+        [...projectGalleryTrack.children].forEach((slide, slideIndex) => slide.classList.toggle('is-active', slideIndex === galleryIndex));
+        projectGalleryPosition.textContent = `${pad(galleryIndex + 1)} / ${pad(total)}`;
+        galleryPrev.disabled = galleryIndex === 0;
+        galleryNext.disabled = galleryIndex === total - 1;
+      };
+
+      const updateStory = (index) => {
+        const total = projectStories[openProjectIndex].chapters.length;
+        storyIndex = Math.max(0, Math.min(total - 1, index));
+        projectStoryTrack.style.transform = `translate3d(${-(storyIndex * 100)}%,0,0)`;
+        storyCounter.textContent = `${pad(storyIndex + 1)} / ${pad(total)}`;
+        storyProgress.style.transform = `scaleX(${(storyIndex + 1) / total})`;
+        storyPrev.disabled = storyIndex === 0;
+        storyNext.disabled = storyIndex === total - 1;
+        storyNext.setAttribute('aria-label', storyIndex === total - 1 ? 'Story complete' : 'Next text chapter');
+      };
+
+      const stepOnWheel = (event, axis) => {
+        if (!projectView.classList.contains('is-open')) return;
+        event.preventDefault();
+        const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+        if (Math.abs(delta) < 8) return;
+        if (axis === 'gallery') {
+          if (galleryWheelLock) return;
+          galleryWheelLock = true;
+          updateGallery(galleryIndex + (delta > 0 ? 1 : -1));
+          setTimeout(() => { galleryWheelLock = false; }, reduceMotion ? 50 : 780);
+        } else {
+          if (storyWheelLock) return;
+          storyWheelLock = true;
+          updateStory(storyIndex + (delta > 0 ? 1 : -1));
+          setTimeout(() => { storyWheelLock = false; }, reduceMotion ? 50 : 720);
+        }
+      };
+
+      const openProject = (index) => {
+        openProjectIndex = index;
+        galleryIndex = 0;
+        storyIndex = 0;
+        renderProjectGallery();
+        renderProjectStory();
+        updateGallery(0);
+        updateStory(0);
+        projectView.classList.add('is-open');
+        projectView.setAttribute('aria-hidden', 'false');
+        projectClose.focus();
+      };
+
+      const closeProject = () => {
+        projectView.classList.remove('is-open');
+        projectView.setAttribute('aria-hidden', 'true');
+      };
+
+      prev.addEventListener('click', () => goTo(activeIndex - 1));
+      next.addEventListener('click', () => goTo(activeIndex + 1));
+      navButtons.forEach((button) => button.addEventListener('click', () => setGroup(button.dataset.group)));
+      indexButton.addEventListener('click', () => setIndex(true));
+      indexClose.addEventListener('click', () => setIndex(false));
+      projectClose.addEventListener('click', closeProject);
+      galleryPrev.addEventListener('click', () => updateGallery(galleryIndex - 1));
+      galleryNext.addEventListener('click', () => updateGallery(galleryIndex + 1));
+      storyPrev.addEventListener('click', () => updateStory(storyIndex - 1));
+      storyNext.addEventListener('click', () => updateStory(storyIndex + 1));
+      projectGallery.addEventListener('wheel', (event) => stepOnWheel(event, 'gallery'), { passive: false });
+      projectStory.addEventListener('wheel', (event) => stepOnWheel(event, 'story'), { passive: false });
+      site.addEventListener('wheel', (event) => {
+        if (!usesHorizontalCopy() || projectView.classList.contains('is-open') || indexOverlay.classList.contains('is-open')) return;
+        const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+        if (Math.abs(delta) < 8) return;
+        event.preventDefault();
+        if (sectionWheelLock) return;
+        sectionWheelLock = true;
+        goTo(activeIndex + (delta > 0 ? 1 : -1));
+        setTimeout(() => { sectionWheelLock = false; }, reduceMotion ? 50 : 760);
+      }, { passive: false });
+
+      track.addEventListener('pointerdown', (event) => {
+        dragging = true;
+        dragDistance = 0;
+        dragStart = event.clientX;
+        dragBase = targetX();
+        track.classList.add('is-dragging');
+      });
+      track.addEventListener('pointermove', (event) => {
+        if (!dragging) return;
+        const delta = event.clientX - dragStart;
+        dragDistance = Math.abs(delta);
+        if (dragDistance > 8 && !track.hasPointerCapture(event.pointerId)) track.setPointerCapture(event.pointerId);
+        track.style.transform = `translate3d(${dragBase + delta}px,0,0)`;
+      });
+      const endDrag = (event) => {
+        if (!dragging) return;
+        const delta = event.clientX - dragStart;
+        dragging = false;
+        track.classList.remove('is-dragging');
+        if (Math.abs(delta) > 70) goTo(activeIndex + (delta < 0 ? 1 : -1));
+        else track.style.transform = `translate3d(${targetX()}px,0,0)`;
+        setTimeout(() => { dragging = false; }, 30);
+      };
+      track.addEventListener('pointerup', endDrag);
+      track.addEventListener('pointercancel', endDrag);
+
+      addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (projectView.classList.contains('is-open')) closeProject();
+          else if (indexOverlay.classList.contains('is-open')) setIndex(false);
+        }
+        if (projectView.classList.contains('is-open')) {
+          if (event.key === 'ArrowUp') updateGallery(galleryIndex - 1);
+          if (event.key === 'ArrowDown') updateGallery(galleryIndex + 1);
+          if (event.key === 'ArrowLeft') updateStory(storyIndex - 1);
+          if (event.key === 'ArrowRight') updateStory(storyIndex + 1);
+          return;
+        }
+        if (!projectView.classList.contains('is-open') && !indexOverlay.classList.contains('is-open')) {
+          if (event.key === 'ArrowLeft') goTo(activeIndex - 1);
+          if (event.key === 'ArrowRight') goTo(activeIndex + 1);
+        }
+      });
+      addEventListener('resize', () => { track.style.transform = `translate3d(${targetX()}px,0,0)`; });
+
+      renderTrack();
+      renderCopy(true);
+      preloadNearby();
+    })();
+  </script>
+</body>
+</html>

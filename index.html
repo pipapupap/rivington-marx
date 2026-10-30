@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rivington Marx | Design Studies</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #F4F1EB;
+      color: #2D2D2D;
+      font-family: 'Playfair Display', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+    .logo {
+      max-width: 340px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    p.subtitle {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: #4A4A4A;
+      margin-bottom: 56px;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+    .btn {
+      display: inline-block;
+      width: 100%;
+      max-width: 320px;
+      padding: 18px 24px;
+      border: 1px solid #2D2D2D;
+      background: transparent;
+      color: #2D2D2D;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      transition: all 0.4s ease;
+    }
+    .btn:hover {
+      background-color: #2D2D2D;
+      color: #F4F1EB;
+    }
+    .btn-number {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      margin-right: 12px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="./assets/rivington-marx-logo.png" alt="Rivington Marx Interiors" class="logo">
+    <p class="subtitle">Design Explorations</p>
+
+    <div class="nav-links">
+      <a href="./study-1/" class="btn"><span class="btn-number">01</span> Study</a>
+      <a href="./study-2/" class="btn"><span class="btn-number">02</span> Study</a>
+      <a href="./study-3/" class="btn"><span class="btn-number">03</span> Study</a>
+      <a href="./study-4/" class="btn"><span class="btn-number">04</span> Study</a>
+      <a href="./study-5/" class="btn"><span class="btn-number">05</span> Study</a>
+    </div>
+  </div>
+</body>
+</html>
