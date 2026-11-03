@@ -1,45 +1,59 @@
-RIVINGTON MARX — STUDY 04
-THE IMAGE CHESSBOARD
+RIVINGTON MARX — WEBSITE REDESIGN STUDY 04
+The Project Story / Desktop Interactive Concept
 
-Desktop-only interactive HTML design study.
+HOW TO VIEW
+Open index.html in a modern desktop browser. Use a window at least 1280px wide
+for the intended presentation. No installation, internet connection or build
+step is required.
 
-OPENING THE STUDY
-1. Keep this study folder beside the shared root assets folder.
-2. Open the project hub or this index.html in a modern desktop browser.
-3. The presentation is intentionally replaced by a desktop notice below 980px.
+CONCEPT
+Study Four builds on the earlier Horizontal Room homepage and retains its fixed
+editorial rail, horizontal image reel, section navigation and full project
+index. The secondary editorial sections and click-to-open project experience
+have been expanded.
 
-CREATIVE DIRECTION
-Study 04 turns the portfolio into an explorable collection surface rather than
-a conventional hero, vertical homepage or carousel. Its defining interaction is
-an irregular image chessboard paired with a fixed Board/Index control dock.
+SECTION INTERACTION
+- Work now uses the same scroll-driven horizontal text and image movement as
+  the secondary editorial sections. Each Work story also introduces its own
+  deep, image-related colour on the left editorial rail.
+- Point of View, Approach and Studio pair horizontally transitioning text with
+  the existing horizontal image reel.
+- Use the left/right controls, drag the image reel, or scroll down over either
+  side to advance both text and imagery together.
+- Contact contains a single panel, so its left-side arrow controls are removed.
+- All primary section imagery fills the complete right-hand stage, without the
+  previous inset frame or top-right number marker.
 
-INTERACTIONS
-- The complete image chessboard is contained in the desktop viewport above the
-  fixed navigation strip; no panning or board dragging is required.
-- The study label is contained inside its black grid cell, the project action is
-  housed in the bottom strip, and narrow image captions use a collision-safe stack.
-- Hover or keyboard-focus a tile to isolate it from the surrounding board.
-- Select a project tile to open its full-screen project layer and filmstrip.
-- Use the character filters to reorganise the visible project pieces.
-- Switch between Board and Index without moving the control dock.
-- Open Studio, Design + Build and Begin a Project as special collection cells.
-- Press Escape to close a project or return from Index to Board.
-- Press B or I to switch views.
+PROJECT STORY INTERACTION
+- Click an active Work image to open the full-screen project story.
+- The left image remains in a fixed stage while multiple client images travel
+  vertically through it.
+- Hover over the image stage to reveal previous and next image arrows.
+- Scroll vertically over the left stage, use its arrows, or press the keyboard
+  up/down keys to move through project imagery.
+- The existing project title, description and metadata remain the first text
+  chapter on the right.
+- Minimal previous and next arrow controls reveal additional editorial chapters.
+- Scrolling down over the right rail advances those chapters horizontally.
+- The left/right keyboard arrows and chapter controls provide equivalent access.
+- Escape closes the project and returns to the same homepage position.
+
+REFERENCE PRINCIPLE
+The dual-axis storytelling takes interaction inspiration from the supplied
+Sean Anderson Design project reference: a persistent visual field paired with
+editorial content that reveals progressively through scroll. Its imagery,
+typography, copy and interface are original to this Rivington Marx study.
 
 TYPOGRAPHY
-The display direction uses a Cochin / Hoefler Text style serif paired with
-compact Helvetica metadata. This is intentionally distinct from the Didot/Bodoni
-direction of Studies 01 and 02 and the Palatino/Avenir direction of Study 03.
+Study Four preserves the earlier Horizontal Room concept's Palatino-style serif and Avenir-style sans
+system so the client can compare the expanded project experience without a
+change in the approved homepage art direction.
 
-IMAGERY
-All photographic assets in this package are from the supplied Client Images
-collection. No generated or third-party imagery has been introduced.
+IMAGE USE
+Every photograph in this prototype comes from the supplied Rivington Marx
+Client Images collection. No stock or AI-generated photography has been used.
 
-CONTENT NOTE
-Project titles, descriptors, locations/scopes and sequencing in this concept are
-presentation copy. They should be replaced or approved against the final client
-project schedule before production.
-
-DELIVERY
-This package is local-only and has not been published. The contact action points
-to the current Rivington Marx contact page and opens in a new tab.
+SCOPE NOTE
+This is intentionally a desktop-only study. Screens below 980px display a
+desktop-study notice. Project names, descriptions and extended editorial copy
+are concept content that require client approval before production.

@@ -45,10 +45,12 @@
       margin-bottom: 56px;
     }
     .nav-links {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(3, auto);
+      grid-auto-flow: column;
       gap: 16px;
-      align-items: center;
+      align-items: stretch;
     }
     .btn {
       display: inline-block;
@@ -65,6 +67,10 @@
       letter-spacing: 0.15em;
       text-decoration: none;
       transition: all 0.4s ease;
+    }
+    .btn:focus-visible {
+      outline: 2px solid #2D2D2D;
+      outline-offset: 4px;
     }
     .btn:hover {
       background-color: #2D2D2D;
@@ -84,11 +90,12 @@
     <p class="subtitle">Design Explorations</p>
 
     <div class="nav-links">
-      <a href="./study-1/" class="btn" target="_blank" rel="noopener noreferrer"><span class="btn-number">01</span> Study</a>
-      <a href="./study-2/" class="btn" target="_blank" rel="noopener noreferrer"><span class="btn-number">02</span> Study</a>
-      <a href="./study-3/" class="btn" target="_blank" rel="noopener noreferrer"><span class="btn-number">03</span> Study</a>
-      <a href="./study-4/" class="btn" target="_blank" rel="noopener noreferrer"><span class="btn-number">04</span> Study</a>
-      <a href="./study-5/" class="btn" target="_blank" rel="noopener noreferrer"><span class="btn-number">05</span> Study</a>
+      <a href="./study-1/index.html" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Study 1 (opens in a new tab)"><span class="btn-number">01</span> Study</a>
+      <a href="./study-2/index.html" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Study 2 (opens in a new tab)"><span class="btn-number">02</span> Study</a>
+      <a href="./study-3/index.html" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Study 3 (opens in a new tab)"><span class="btn-number">03</span> Study</a>
+      <a href="./study-4/index.html" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Study 4 (opens in a new tab)"><span class="btn-number">04</span> Study</a>
+      <a href="./study-5/index.html" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Study 5 (opens in a new tab)"><span class="btn-number">05</span> Study</a>
+      <a href="./study-6/index.html" class="btn" target="_blank" rel="noopener noreferrer" aria-label="Study 6 (opens in a new tab)"><span class="btn-number">06</span> Study</a>
     </div>
   </div>
 </body>
