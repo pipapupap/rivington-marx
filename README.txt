@@ -2,7 +2,7 @@ RIVINGTON MARX — DESIGN STUDY HUB
 
 LOCAL USE
 Open this folder's index.html, not the folder itself.
-The six buttons open study-1/index.html through study-6/index.html in new tabs.
+The eight buttons open study-1/index.html through study-8/index.html in new tabs.
 Explicit HTML filenames work both from disk and on a static web server.
 Keep the whole folder structure together; do not upload just the HTML files.
 
@@ -20,6 +20,8 @@ study-3/
 study-4/
 study-5/
 study-6/
+study-7/
+study-8/
 
 All assets are shared. Studies refer to ../assets/ with exact, case-sensitive
 filenames. Keep the images inside assets/ and the CSS/JS beside their HTML.
