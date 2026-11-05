@@ -6,9 +6,9 @@ Open study-8/index.html (or the hub index.html, button 08).
 FILES
 index.html, styles.css, script.js   the study
 vendor/                             GSAP 3.12.5 + Observer, stored locally
-Images: ../assets/s7-*.jpg (shared with Study 07), ../assets/thumbs/ (480px
-copies for frames, filmstrip and contact sheet), ../assets/s8-logo-ivory.png
-and ../assets/s8-monogram-ivory.png.
+Images: ../assets/*.jpg (shared with Study 07 and Studies 1-6), ../assets/thumbs/ (480px
+copies for frames, filmstrip and contact sheet), ../assets/logo-ivory.png
+and ../assets/monogram-ivory.png.
 
 HOW IT BEHAVES
 Home       Seven portrait frames in one row on a dark wall. No scroll.

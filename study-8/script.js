@@ -14,13 +14,13 @@
   const thumb = (k) => `${A}thumbs/${k}.jpg`;
 
   const WIDE = new Set([
-    's7-stone-kitchen-island', 's7-stone-kitchen-corner', 's7-stone-kitchen-side',
-    's7-holiday-dining', 's7-holiday-living',
-    's7-salon-living', 's7-salon-gold-table', 's7-salon-blue-chair', 's7-salon-blue-wall',
-    's7-glass-living', 's7-glass-guest', 's7-garnet-kitchen',
-    's7-teal-kitchen', 's7-teal-bedroom', 's7-teal-desk',
-    's7-tudor-range', 's7-tudor-bedroom', 's7-velvet-gold-room', 's7-velvet-red-wall',
-    's7-light-living', 's7-light-dining', 's7-studio-exterior'
+    'stone-kitchen', 'stone-kitchen-corner', 'stone-kitchen-side',
+    'holiday-dining', 'holiday-living',
+    'salon-living', 'salon-gold-table', 'salon-blue-chair', 'salon-blue-wall',
+    'collected-living', 'glass-guest', 'garnet-kitchen',
+    'teal-kitchen', 'teal-bedroom', 'teal-desk',
+    'dark-kitchen', 'tudor-bedroom', 'gold-dining', 'velvet-red-wall',
+    'light-living', 'light-dining', 'studio-exterior'
   ]);
 
   const credits = (photo) => ({
@@ -31,49 +31,49 @@
   });
 
   const PROJECTS = [
-    { id: 'salon', shade: '#22344f', name: 'The Blue Salon', type: 'Living & Bar', tint: '#1f3550', frame: 's7-salon-blue-room',
-      imgs: ['s7-salon-blue-room', 's7-salon-blue-bar', 's7-salon-blue-chair', 's7-salon-blue-wall', 's7-salon-velvet-corner', 's7-salon-living', 's7-salon-gold-table', 's7-salon-gilt-figure'],
+    { id: 'salon', shade: '#22344f', name: 'The Blue Salon', type: 'Living & Bar', tint: '#1f3550', frame: 'blue-salon',
+      imgs: ['blue-salon', 'salon-blue-bar', 'salon-blue-chair', 'salon-blue-wall', 'salon-velvet-corner', 'salon-living', 'salon-gold-table', 'salon-gilt-figure'],
       story: 'Deep blue walls, velvet and gilt. The salon is built around a painted bar cabinet and a collection of gold pieces, with a lounge in sand and teal beside it. Pattern stays on the walls and the textiles; the furniture stays low and generous.', credits: credits() },
-    { id: 'stone', shade: '#5a3a35', name: 'Tailored in Stone', type: 'Kitchen & Baths', tint: '#7a4f47', frame: 's7-stone-powder-sink',
-      imgs: ['s7-stone-powder-sink', 's7-stone-coffee-bar', 's7-stone-coffee-doors', 's7-stone-kitchen-island', 's7-stone-kitchen-vignette', 's7-stone-kitchen-corner', 's7-stone-bar', 's7-stone-bar-vignette', 's7-stone-kitchen-side', 's7-stone-powder-lights', 's7-stone-powder-tile', 's7-stone-primary-bath', 's7-stone-primary-tub', 's7-stone-shower'],
+    { id: 'stone', shade: '#5a3a35', name: 'Tailored in Stone', type: 'Kitchen & Baths', tint: '#7a4f47', frame: 'stone-powder-sink',
+      imgs: ['stone-powder-sink', 'stone-coffee-bar', 'stone-coffee-doors', 'stone-kitchen', 'stone-kitchen-vignette', 'stone-kitchen-corner', 'stone-bar', 'tailored-bar', 'stone-kitchen-side', 'stone-powder-lights', 'stone-powder-tile', 'stone-primary-bath', 'tailored-bath', 'stone-shower'],
       story: 'A kitchen, a bar and three baths drawn from one quiet palette: veined marble, warm oak and a rose-coloured stone that carries from the coffee bar into the powder room. The joinery is tailored to the inch, so storage disappears and the stone is left to speak.', credits: credits('Eric Lucero Photography') },
-    { id: 'glass', shade: '#343c40', name: 'The Stained Glass House', type: 'Whole Home', tint: '#33393a', frame: 's7-glass-window',
-      imgs: ['s7-glass-window', 's7-glass-foyer', 's7-glass-hall', 's7-glass-console', 's7-glass-living', 's7-glass-sofa', 's7-glass-desk', 's7-glass-guest', 's7-glass-bedroom', 's7-glass-bath', 's7-glass-powder'],
+    { id: 'glass', shade: '#343c40', name: 'The Stained Glass House', type: 'Whole Home', tint: '#33393a', frame: 'glass-window',
+      imgs: ['glass-window', 'foyer', 'glass-hall', 'portrait-vignette', 'collected-living', 'glass-sofa', 'desk', 'glass-guest', 'glass-bedroom', 'black-bath', 'glass-powder'],
       story: 'A tall house of stained glass, a dark staircase and gold light fittings that read like jewellery against grey grasscloth. Blue-and-white pottery, patterned rugs and strong art keep the darker palette warm from the front door to the powder room.', credits: credits() },
-    { id: 'light', shade: '#6b6255', name: 'Soft Light', type: 'Whole Home', tint: '#6f6455', frame: 's7-light-wall-hanging',
-      imgs: ['s7-light-wall-hanging', 's7-light-living', 's7-light-fireplace', 's7-light-sitting', 's7-light-reading', 's7-light-console', 's7-light-dining', 's7-light-kitchen', 's7-light-desk', 's7-light-vanity', 's7-light-bath'],
+    { id: 'light', shade: '#6b6255', name: 'Soft Light', type: 'Whole Home', tint: '#6f6455', frame: 'light-wall-hanging',
+      imgs: ['light-wall-hanging', 'light-living', 'light-fireplace', 'light-sitting', 'light-reading', 'light-console', 'light-dining', 'light-kitchen', 'light-desk', 'powder-detail', 'light-bath'],
       story: 'Plaster white, linen and pale stone, with sculptural lighting and black accents. A calm house made for daylight, where a woven wall hanging, a curved vanity and a reading corner carry all the texture.', credits: credits() },
-    { id: 'garnet', shade: '#4f1c27', name: 'The Garnet Room', type: 'Dining & Library', tint: '#5a1f2b', frame: 's7-garnet-dining',
-      imgs: ['s7-garnet-dining', 's7-garnet-library', 's7-garnet-study', 's7-garnet-nook', 's7-garnet-kitchen', 's7-garnet-glassware', 's7-garnet-brick', 's7-garnet-cellar'],
+    { id: 'garnet', shade: '#4f1c27', name: 'The Garnet Room', type: 'Dining & Library', tint: '#5a1f2b', frame: 'garnet-dining',
+      imgs: ['garnet-dining', 'pink-dining', 'green-study', 'garnet-nook', 'garnet-kitchen', 'garnet-glassware', 'collected-bath', 'garnet-cellar'],
       story: 'A dining room and library lacquered in garnet, under a sculptural pendant and painted branches. Below, an exposed-brick hall, a glass-fronted bar and a wine room in leather and stone carry the same warmth through the house.', credits: credits() },
-    { id: 'teal', shade: '#1f4446', name: 'The Teal Kitchen House', type: 'Whole Home', tint: '#1f4a4d', frame: 's7-teal-pink-bedroom',
-      imgs: ['s7-teal-pink-bedroom', 's7-teal-fireplace', 's7-teal-kitchen', 's7-teal-nook', 's7-teal-doors', 's7-teal-window-seat', 's7-teal-desk', 's7-teal-powder', 's7-teal-bedroom'],
+    { id: 'teal', shade: '#1f4446', name: 'The Teal Kitchen House', type: 'Whole Home', tint: '#1f4a4d', frame: 'teal-pink-bedroom',
+      imgs: ['teal-pink-bedroom', 'teal-fireplace', 'teal-kitchen', 'teal-nook', 'teal-doors', 'window-seat', 'teal-desk', 'teal-powder', 'teal-bedroom'],
       story: 'Teal tile, navy cabinetry and brass in the kitchen; a fireside sitting room in stone and silver; and upstairs, a pink bedroom with flamingo wallpaper. Each room takes one confident colour and lets the detail follow.', credits: credits() },
-    { id: 'holiday', shade: '#5a1b1a', name: 'Holiday House', type: 'Seasonal', tint: '#6e1f1d', frame: 's7-holiday-red-tree',
-      imgs: ['s7-holiday-red-tree', 's7-holiday-living', 's7-holiday-window', 's7-holiday-candles', 's7-holiday-dining', 's7-holiday-cabinet', 's7-holiday-hearth', 's7-holiday-garland-stair', 's7-holiday-stripe-stair', 's7-holiday-tree-lounge', 's7-holiday-silver-tree', 's7-holiday-mantel', 's7-holiday-breakfast', 's7-holiday-kitchen'],
+    { id: 'holiday', shade: '#5a1b1a', name: 'Holiday House', type: 'Seasonal', tint: '#6e1f1d', frame: 'holiday-red-tree',
+      imgs: ['holiday-red-tree', 'holiday-living', 'holiday-window', 'holiday-candles', 'holiday-dining', 'holiday-cabinet', 'holiday-hearth', 'holiday-garland-stair', 'holiday-stripe-stair', 'holiday-tree-lounge', 'holiday-silver-tree', 'holiday-mantel', 'red-detail', 'holiday-kitchen'],
       story: 'The house dressed for the season. Garland runs the stair, candles gather on the table and one tree is lit entirely in red. Every room keeps its own colour story, so the decoration reads as part of the interior rather than a layer on top of it.', credits: credits() },
-    { id: 'velvet', shade: '#561f1a', name: 'Red Velvet House', type: 'Whole Home', tint: '#6b2a22', frame: 's7-velvet-arch',
-      imgs: ['s7-velvet-arch', 's7-velvet-sofa', 's7-velvet-red-wall', 's7-velvet-piano', 's7-velvet-throw', 's7-velvet-chest', 's7-velvet-gold-room', 's7-velvet-brick-bar', 's7-velvet-dining', 's7-velvet-koi-powder'],
+    { id: 'velvet', shade: '#561f1a', name: 'Red Velvet House', type: 'Whole Home', tint: '#6b2a22', frame: 'velvet-arch',
+      imgs: ['velvet-arch', 'velvet-sofa', 'velvet-red-wall', 'velvet-piano', 'velvet-throw', 'vignette', 'gold-dining', 'velvet-brick-bar', 'dining-detail', 'velvet-koi-powder'],
       story: 'Red velvet, carved wood and gold. A collected house where an arched passage frames a portrait, a brick wall holds the bar and the living room gathers a piano, a fireplace and a lifetime of art.', credits: credits() },
-    { id: 'tudor', shade: '#3a3029', name: 'Patterned Ceilings', type: 'Whole Home', tint: '#3a3128', frame: 's7-tudor-kitchen',
-      imgs: ['s7-tudor-kitchen', 's7-tudor-range', 's7-tudor-stair', 's7-tudor-shelves', 's7-tudor-chair', 's7-tudor-portrait', 's7-tudor-bedroom', 's7-tudor-bath', 's7-tudor-powder'],
+    { id: 'tudor', shade: '#3a3029', name: 'Patterned Ceilings', type: 'Whole Home', tint: '#3a3128', frame: 'kitchen-dark',
+      imgs: ['kitchen-dark', 'dark-kitchen', 'tudor-stair', 'tudor-shelves', 'tudor-chair', 'tudor-portrait', 'tudor-bedroom', 'tudor-bath', 'tudor-powder'],
       story: 'Printed ceilings, black millwork and old rugs. The kitchen sits beneath a patterned ceiling with an arched hood, the powder room pairs black tile with butter yellow, and portraits hang throughout.', credits: credits() }
   ];
   const P = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
   const HANG = ['salon', 'stone', 'glass', 'light', 'garnet', 'teal', 'holiday'];
 
   const SERVICES = [
-    { word: 'Interiors', name: 'Interior Design', cover: 's7-salon-living', imgs: ['s7-velvet-piano', 's7-glass-sofa'],
+    { word: 'Interiors', name: 'Interior Design', cover: 'salon-living', imgs: ['velvet-piano', 'glass-sofa'],
       copy: 'Full-service interior design, from the plan and the palette to the last object on the shelf. Rooms are layered slowly, with pieces chosen to last.' },
-    { word: 'Kitchens', name: 'Kitchen Design', cover: 's7-stone-kitchen-island', imgs: ['s7-tudor-kitchen', 's7-stone-coffee-bar'],
+    { word: 'Kitchens', name: 'Kitchen Design', cover: 'stone-kitchen', imgs: ['kitchen-dark', 'stone-coffee-bar'],
       copy: 'Kitchens planned around the way a household cooks and gathers. Cabinetry, stone and light are designed together, so the room works as hard as it looks.' },
-    { word: 'Baths', name: 'Bathroom Design', cover: 's7-stone-primary-tub', imgs: ['s7-stone-powder-sink', 's7-glass-powder'],
+    { word: 'Baths', name: 'Bathroom Design', cover: 'tailored-bath', imgs: ['stone-powder-sink', 'glass-powder'],
       copy: 'Primary baths and powder rooms treated as rooms in their own right. Stone, tile and light are chosen to feel calm every day and memorable for guests.' },
-    { word: 'Remodeling', name: 'Home Remodeling', cover: 's7-glass-living', imgs: ['s7-garnet-brick', 's7-tudor-stair'],
+    { word: 'Remodeling', name: 'Home Remodeling', cover: 'collected-living', imgs: ['collected-bath', 'tudor-stair'],
       copy: 'Remodels that respect what a house already has. Walls, flow and finishes are reworked so the home suits the way you live now.' },
-    { word: 'Design Build', name: 'Design Build', cover: 's7-garnet-kitchen', imgs: ['s7-garnet-glassware', 's7-stone-bar'],
+    { word: 'Design Build', name: 'Design Build', cover: 'garnet-kitchen', imgs: ['garnet-glassware', 'stone-bar'],
       copy: 'Design and construction managed as one process. A single team carries the drawings through the build, so the details survive to the finish.' },
-    { word: 'Architecture', name: 'Architectural Design', cover: 's7-tudor-range', imgs: ['s7-glass-foyer', 's7-glass-window'],
+    { word: 'Architecture', name: 'Architectural Design', cover: 'dark-kitchen', imgs: ['foyer', 'glass-window'],
       copy: 'Interior architecture that sets the bones before the decoration: plans, elevations, millwork and the proportions of every room.' }
   ];
 
@@ -642,9 +642,9 @@
   /* ------------------------------------------------------------------
      STUDIO — one frame alone, Details + reveals the rest
   ------------------------------------------------------------------ */
-  const STUDIO_IMGS = ['s7-studio-lounge', 's8-studio-office', 's8-studio-lounge-wide', 's7-studio-doors', 's8-studio-chair',
-    's7-studio-cabinet', 's8-studio-conference', 's8-studio-bar-cart', 's7-studio-samples', 's8-studio-logo-wall', 's8-studio-desk',
-    's7-studio-gallery', 's8-studio-reception', 's8-studio-red-room', 's7-studio-powder', 's8-studio-workroom', 's7-studio-exterior'];
+  const STUDIO_IMGS = ['studio-lounge', 'studio-office', 'studio-lounge-wide', 'studio-doors', 'studio-chair',
+    'studio-cabinet', 'studio-conference', 'studio-bar-cart', 'studio-samples', 'studio-logo-wall', 'studio-detail',
+    'studio-gallery', 'studio', 'studio-red-room', 'studio-powder', 'studio-workroom', 'studio-exterior'];
   const studio = (() => {
     const view = $('#studio'), row = $('#studioRow'), drawer = $('#studioDrawer'), btn = $('#studioDetails');
     let isOpen = false, target = 0;
