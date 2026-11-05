@@ -8,7 +8,8 @@ index.html      page markup
 styles.css      all styling
 script.js       data (projects, services, contact) and all interaction
 vendor/         GSAP 3.12.5 + Observer, stored locally so the study works offline
-Images are in ../assets/ and all start with "s7-" (101 photos + 2 logo files).
+Images are shared in ../assets/ (101 photos + 2 logo files). 22 of the photos are the
+original files also used by Studies 1-6 (e.g. black-bath.jpg, foyer.jpg).
 
 HOW IT BEHAVES
 Home       One screen, no scroll. Two photographs from one project.
