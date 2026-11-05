@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx Interiors — a boutique interior architecture and design firm based in Denver, Colorado. Study 07, The Diptych.">
+  <meta name="theme-color" content="#1d1a17">
+  <title>Rivington Marx — Study 07 / The Diptych</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="../assets/s7-stone-coffee-bar.jpg">
+  <link rel="preload" as="image" href="../assets/s7-stone-powder-sink.jpg">
+  <link rel="stylesheet" href="styles.css?v=20261105-1">
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/Observer.min.js" defer></script>
+  <script src="script.js?v=20261105-1" defer></script>
+</head>
+<body class="is-loading">
+
+  <!-- Descriptive copy for search engines and screen readers; kept out of the opening view -->
+  <div class="sr-only">
+    <h1>Rivington Marx Interiors</h1>
+    <p>Rivington Marx Interiors is a nationally recognized boutique interior architecture and design firm based in Denver, Colorado, providing residential design services locally and nationwide: interior design, kitchen design, bathroom design, home remodeling, design build and architectural design.</p>
+  </div>
+
+  <!-- ============ HOME: one screen, two photographs ============ -->
+  <main class="view view-home is-active" id="home" aria-label="Featured projects">
+    <div class="diptych" id="diptych">
+      <button class="half half-left" type="button" data-side="left" aria-label="Open project">
+        <img class="layer is-front" alt="" decoding="async">
+        <img class="layer" alt="" decoding="async">
+      </button>
+      <span class="seam" aria-hidden="true"></span>
+      <button class="half half-right" type="button" data-side="right" aria-label="Open project">
+        <img class="layer is-front" alt="" decoding="async">
+        <img class="layer" alt="" decoding="async">
+      </button>
+      <div class="scrim" aria-hidden="true"></div>
+    </div>
+
+    <button class="home-logo" type="button" data-open="menu" aria-label="Rivington Marx Interiors — open menu">
+      <img src="../assets/s7-logo-white.png" alt="" width="190" height="88">
+    </button>
+
+    <nav class="home-words" aria-label="Main">
+      <button class="word word-tl" type="button" data-go="work">Work</button>
+      <button class="word word-tr" type="button" data-open="studio">Studio</button>
+      <button class="word word-br" type="button" data-open="contact">Contact</button>
+    </nav>
+
+    <p class="home-caption" id="homeCaption" aria-live="polite"><em></em></p>
+
+    <div class="progress">
+      <div class="ticks" id="ticks" role="tablist" aria-label="Featured projects"></div>
+      <button class="word pause" type="button" id="pauseBtn" aria-pressed="false">Pause</button>
+    </div>
+  </main>
+
+  <!-- ============ WORK: gentle vertical scroll ============ -->
+  <section class="view view-work" id="work" aria-label="Work" hidden>
+    <header class="page-bar">
+      <button class="bar-logo" type="button" data-open="menu" aria-label="Rivington Marx Interiors — open menu"><img src="../assets/s7-logo-ink.png" alt="" width="96" height="44"></button>
+      <button class="word ink" type="button" data-open="index">Index</button>
+    </header>
+    <div class="work-scroll" id="workScroll"></div>
+    <div class="work-arrows" aria-label="Step through projects">
+      <button type="button" class="hair-arrow" data-step="-1" aria-label="Previous project"><svg viewBox="0 0 20 40" aria-hidden="true"><path d="M10 39V2M2 10l8-8 8 8"/></svg></button>
+      <span class="work-count" id="workCount">01 / 09</span>
+      <button type="button" class="hair-arrow" data-step="1" aria-label="Next project"><svg viewBox="0 0 20 40" aria-hidden="true"><path d="M10 1v37M2 30l8 8 8-8"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES: one screen, six panels ============ -->
+  <section class="view view-services" id="services" aria-label="Services" hidden>
+    <header class="page-bar on-photo">
+      <button class="bar-logo" type="button" data-open="menu" aria-label="Rivington Marx Interiors — open menu"><img src="../assets/s7-logo-white.png" alt="" width="96" height="44"></button>
+    </header>
+    <div class="panels" id="panels"></div>
+  </section>
+
+  <!-- ============ WINDOW: project / service / studio / contact ============ -->
+  <div class="window" id="win" role="dialog" aria-modal="true" aria-label="Project" hidden>
+    <div class="win-frame" id="winFrame" data-cursor="Next">
+      <div class="win-track" id="winTrack"></div>
+    </div>
+    <div class="win-right" id="winRight">
+      <div class="win-companion" id="winCompanion">
+        <img class="layer is-front" alt="" decoding="async">
+        <img class="layer" alt="" decoding="async">
+      </div>
+      <div class="win-text" id="winText"></div>
+    </div>
+    <aside class="story" id="story" aria-label="Project story" hidden></aside>
+    <div class="album" id="album" hidden><div class="album-grid" id="albumGrid"></div></div>
+    <div class="win-bar">
+      <div class="bar-left">
+        <em class="bar-name" id="barName"></em>
+        <span class="bar-meta" id="barMeta"></span>
+        <span class="bar-meta" id="barCount"></span>
+      </div>
+      <div class="bar-right">
+        <button class="word" type="button" id="storyBtn" aria-expanded="false">Story +</button>
+        <button class="word" type="button" id="albumBtn" aria-pressed="false">Album</button>
+        <span class="bar-steps" id="barSteps">
+          <button class="word" type="button" id="prevProj" aria-label="Previous">&larr;</button>
+          <button class="word" type="button" id="nextProj" aria-label="Next">&rarr;</button>
+        </span>
+        <button class="word" type="button" id="winClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ INDEX: list with fixed preview ============ -->
+  <div class="index-ov" id="indexOv" role="dialog" aria-modal="true" aria-label="Project index" hidden>
+    <button class="word ink ov-close" type="button" data-close>Close</button>
+    <ol class="index-list" id="indexList"></ol>
+    <div class="index-preview" aria-hidden="true">
+      <img class="layer is-front" alt="">
+      <img class="layer" alt="">
+    </div>
+  </div>
+
+  <!-- ============ MENU: plain bone field ============ -->
+  <div class="menu-ov" id="menuOv" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+    <button class="word ink ov-close" type="button" data-close>Close</button>
+    <button class="menu-logo" type="button" data-go="home" aria-label="Home"><img src="../assets/s7-logo-ink.png" alt="Rivington Marx Interiors" width="190" height="88"></button>
+    <nav class="menu-list" aria-label="Site">
+      <button type="button" data-go="work">Work</button>
+      <button type="button" data-go="services">Services</button>
+      <button type="button" data-open="studio">Studio</button>
+      <button type="button" data-open="press">Press</button>
+      <button type="button" data-open="contact">Contact</button>
+    </nav>
+    <p class="menu-foot"><a href="mailto:hello@rivingtonmarx.com">hello@rivingtonmarx.com</a><span>Denver, Colorado</span><a href="https://www.instagram.com/rivingtonmarx/" target="_blank" rel="noopener">Instagram</a></p>
+  </div>
+
+  <!-- transitions + cursor -->
+  <div class="wipe" id="wipe" aria-hidden="true"></div>
+  <div class="cursor-label" id="cursorLabel" aria-hidden="true">View</div>
+</body>
+</html>

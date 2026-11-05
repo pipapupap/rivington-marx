@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx Interiors — a boutique interior architecture and design firm based in Denver, Colorado. Study 08, The Eye-Line Hang.">
+  <meta name="theme-color" content="#14110f">
+  <title>Rivington Marx — Study 08 / The Eye-Line Hang</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20261105-2">
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/Observer.min.js" defer></script>
+  <script src="script.js?v=20261105-2" defer></script>
+</head>
+<body>
+
+  <div class="sr-only">
+    <h1>Rivington Marx Interiors</h1>
+    <p>Rivington Marx Interiors is a nationally recognized boutique interior architecture and design firm based in Denver, Colorado, providing residential design services locally and nationwide: interior design, kitchen design, bathroom design, home remodeling, design build and architectural design.</p>
+  </div>
+
+  <!-- the wall: dimmed photograph or sampled colour -->
+  <div class="wall" id="wall" aria-hidden="true">
+    <div class="wall-colour" id="wallColour"></div>
+    <img class="wall-img" alt="">
+    <img class="wall-img" alt="">
+    <div class="wall-dim"></div>
+    <div class="wall-grid"></div>
+  </div>
+
+  <header class="head" id="head">
+    <button class="head-logo" type="button" data-go="home" aria-label="Rivington Marx Interiors — home">
+      <img src="../assets/s8-logo-ivory.png" alt="" width="124" height="57">
+    </button>
+    <nav class="head-nav" aria-label="Main">
+      <button class="cap" type="button" data-go="work">Work</button>
+      <button class="cap" type="button" data-go="services">Services</button>
+      <button class="cap" type="button" data-go="studio">Studio</button>
+      <button class="cap" type="button" data-open="contact">Contact</button>
+    </nav>
+  </header>
+
+  <!-- ============ HOME: the hang ============ -->
+  <main class="view view-home" id="home" aria-label="Featured projects">
+    <div class="hang" id="hang" role="list"></div>
+    <p class="label" id="label" aria-live="polite"><span class="label-name"></span><span class="label-sub"></span></p>
+  </main>
+
+  <!-- ============ WORK: contact sheet / index ============ -->
+  <section class="view view-work" id="work" aria-label="Work" hidden>
+    <div class="sheet-scroll" id="sheetScroll">
+      <div class="sheet" id="sheet"></div>
+    </div>
+    <div class="index" id="index" hidden>
+      <ol class="index-list" id="indexList"></ol>
+      <div class="index-preview" id="indexPreview" aria-hidden="true"></div>
+    </div>
+    <button class="cap work-toggle" type="button" id="workToggle" aria-pressed="false">Index</button>
+  </section>
+
+  <!-- ============ SERVICES: six chapters ============ -->
+  <section class="view view-services" id="services" aria-label="Services" hidden>
+    <div class="chapters" id="chapters"></div>
+    <div class="chapter-progress" id="chapterProgress" aria-label="Services"></div>
+    <aside class="svc-sheet" id="svcSheet" role="dialog" aria-modal="true" aria-label="Service" hidden>
+      <button class="cap ink svc-close" type="button" id="svcClose">Close</button>
+      <div class="svc-body" id="svcBody"></div>
+    </aside>
+  </section>
+
+  <!-- ============ STUDIO: one frame alone ============ -->
+  <section class="view view-studio" id="studio" aria-label="Studio" hidden>
+    <div class="studio-row" id="studioRow" tabindex="0" aria-label="Photographs of the studio. Scroll sideways."></div>
+    <div class="studio-foot">
+      <p class="label studio-label is-on"><span class="label-name">The Studio</span><span class="label-sub">Denver, Colorado</span></p>
+      <button class="cap studio-details" type="button" id="studioDetails" aria-expanded="false">Details +</button>
+    </div>
+    <div class="studio-progress" aria-hidden="true"><span id="studioBar"></span></div>
+    <div class="drawer studio-drawer" id="studioDrawer" hidden>
+      <p class="eyebrow">Studio</p>
+      <h2>Rivington Marx Interiors</h2>
+      <p>A nationally recognized boutique interior architecture and design firm, founded in Denver and led by Troy Rivington and Chandra Marx. Residential work, locally and nationwide.</p>
+      <p class="press"><span>Houzz</span><span>LUXE</span><span>5280</span><span>Colorado Homes &amp; Lifestyles</span><span>House Beautiful</span></p>
+    </div>
+  </section>
+
+  <!-- ============ PROJECT WINDOW ============ -->
+  <div class="window" id="win" role="dialog" aria-modal="true" aria-label="Project" hidden>
+    <div class="strip" id="strip" aria-label="Images in this project"></div>
+    <div class="stage" id="stage">
+      <div class="track" id="track"></div>
+      <div class="drawer" id="drawer" hidden></div>
+    </div>
+    <div class="win-side">
+      <button class="cap" type="button" id="detailsBtn" aria-expanded="false">Details +</button>
+      <button class="cap" type="button" id="winClose">Close</button>
+      <span class="cap dim win-count" id="winCount">01 / 08</span>
+    </div>
+    <div class="win-foot">
+      <button class="cap" type="button" id="prevProj">&larr; Previous project</button>
+      <span class="dot" aria-hidden="true">·</span>
+      <button class="cap" type="button" id="nextProj">Next project &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ============ CONTACT drawer ============ -->
+  <div class="contact" id="contact" role="dialog" aria-modal="true" aria-label="Contact" hidden>
+    <div class="contact-scrim" data-close-contact></div>
+    <aside class="contact-panel" id="contactPanel">
+      <button class="cap ink contact-close" type="button" data-close-contact>Close</button>
+      <div class="contact-body" id="contactBody">
+        <p class="eyebrow">Contact</p>
+        <h2>Begin a project</h2>
+        <ul class="lines">
+          <li><a href="mailto:hello@rivingtonmarx.com">hello@rivingtonmarx.com</a></li>
+          <li><a href="tel:+13032254448">303 225 4448</a></li>
+          <li>450 Lincoln Street, Suite 102<br>Denver, Colorado 80203</li>
+        </ul>
+        <form class="form" id="contactForm" novalidate>
+          <label>Name<input name="name" autocomplete="name"></label>
+          <label>Email<input name="email" type="email" autocomplete="email"></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
+          <label>The project<textarea name="message" rows="2"></textarea></label>
+          <button class="cap ink send" type="submit">Send</button>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <div class="intro" id="intro" aria-hidden="true"><img src="../assets/s8-monogram-ivory.png" alt="" width="96" height="96"></div>
+  <div class="toast" id="toast" aria-live="polite"></div>
+</body>
+</html>
