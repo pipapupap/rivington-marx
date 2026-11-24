@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Share your project details with Rivington Marx Interiors.">
+  <link rel="icon" href="data:,">
+  <title>Get a Quote | Rivington Marx Interiors</title>
+  <style>
+    @font-face {
+      font-family: "Social Brands";
+      src: url("../assets/study10-social-brands.woff2") format("woff2");
+      font-display: block;
+    }
+    :root {
+      --paper: #ece9df;
+      --paper-deep: #e3ded1;
+      --ink: #191a17;
+      --stage: #141512;
+      --cream: #f2efe6;
+      --red: #a62a20;
+      --line: rgba(25,26,23,.25);
+      --serif: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --sans: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+      --gutter: clamp(24px, 5.5vw, 100px);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.58 var(--serif); }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+    .site-header, .contact-inner, .quote { max-width: 1600px; margin-inline: auto; padding-inline: var(--gutter); }
+    .site-header {
+      min-height: 88px; border-bottom: 1px solid var(--line); display: flex;
+      align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .wordmark { display: block; width: clamp(140px, 17vw, 250px); height: auto; }
+    .back, .action {
+      font: 600 11px/1.3 var(--sans); letter-spacing: .13em; text-transform: uppercase;
+    }
+    .back { padding-block: 8px; text-decoration: none; }
+    .back:hover, .back:focus-visible { color: var(--red); }
+    .quote { display: grid; grid-template-columns: minmax(0, .76fr) minmax(0, 1.45fr); gap: clamp(34px, 7vw, 115px); padding-block: clamp(44px, 6vw, 102px); }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font: 400 clamp(58px, 7.1vw, 114px)/.88 var(--serif); letter-spacing: -.065em; }
+    h1 em { display: block; color: var(--red); }
+    .intro p { margin-top: 24px; max-width: 29ch; }
+    form { min-width: 0; }
+    fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+    form > fieldset + fieldset { margin-top: clamp(56px, 6vw, 88px); }
+    form > fieldset:last-of-type { margin-bottom: 36px; }
+    .group-title {
+      float: left; width: 100%; margin: 0 0 22px; padding: 0 0 12px;
+      border-bottom: 1px solid var(--line); font: 400 clamp(26px, 2.7vw, 38px)/1.05 var(--serif);
+      letter-spacing: -.028em;
+    }
+    .fields { display: grid; clear: both; gap: 18px 14px; grid-template-columns: repeat(6, minmax(0,1fr)); }
+    .field { display: grid; align-content: start; gap: 7px; grid-column: span 6; }
+    .half { grid-column: span 3; }
+    .third { grid-column: span 2; }
+    .field-label, .choices legend {
+      font: 600 11px/1.4 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%; min-height: 48px; border: 1px solid var(--line); border-radius: 0;
+      padding: 10px 12px; background: rgba(255,255,255,.18); color: var(--ink);
+      font: 17px/1.4 var(--serif);
+    }
+    .field select { font-size: max(16px, 1rem); }
+    .field textarea { min-height: 120px; resize: vertical; }
+    .choices { grid-column: 1 / -1; margin: 0; }
+    .choices legend { padding: 0; margin-bottom: 8px; }
+    .choices-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .choice {
+      min-height: 39px; display: flex; align-items: center; gap: 7px;
+      border: 1px solid var(--line); padding: 5px 10px; cursor: pointer;
+    }
+    .choice:has(input:checked) { background: var(--paper-deep); border-color: var(--ink); }
+    .choice input { accent-color: var(--red); }
+    .submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+    .action {
+      display: inline-flex; align-items: center; gap: 14px; min-height: 48px;
+      padding: 12px 19px; color: var(--cream); background: var(--ink);
+      border: 1px solid var(--ink); cursor: pointer;
+    }
+    .action:hover { color: var(--ink); background: transparent; }
+    .status { margin-top: 12px; color: #49473e; }
+    .contact {
+      background: radial-gradient(ellipse at 0% 0%, #332822 0%, var(--stage) 58%);
+      border-top: 1px solid rgba(166,42,32,.55);
+      color: var(--cream);
+    }
+    .contact-inner { display: grid; grid-template-columns: minmax(0, .76fr) minmax(0, 1.45fr); gap: 24px clamp(34px, 7vw, 115px); padding-block: clamp(54px, 7.5vw, 112px); }
+    .contact h2 { font: 400 clamp(47px, 5.1vw, 77px)/.95 var(--serif); letter-spacing: -.05em; }
+    .contact h2 em { color: #f1ad8b; }
+    .contact h2::after { content: ""; display: block; width: 52px; height: 1px; margin-top: 24px; background: #f1ad8b; }
+    .contact-details { display: grid; gap: 32px clamp(22px, 3.2vw, 52px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .contact-details > div { padding-top: 16px; border-top: 1px solid rgba(242,239,230,.26); }
+    .contact-details a { text-decoration-color: rgba(242,239,230,.4); text-underline-offset: .22em; }
+    .contact-details a:hover { text-decoration-color: #f1ad8b; }
+    .contact-hours { margin-top: 23px; color: #ded6c8; }
+    .contact-hours strong { display: block; margin-bottom: 5px; color: #f1ad8b; font-weight: 500; }
+    .contact h3 { margin-bottom: 12px; font: 600 11px/1.4 var(--sans); letter-spacing: .12em; text-transform: uppercase; }
+    address { font-style: normal; }
+    .social { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .social a {
+      display: grid; place-items: center; width: 40px; height: 40px;
+      border: 1px solid rgba(242,239,230,.43); border-radius: 50%; text-decoration: none;
+    }
+    .social a:hover, .social a:focus-visible { color: var(--stage); background: #f1ad8b; border-color: #f1ad8b; }
+    .social-icon { font: 15px/1 "Social Brands"; }
+    @media (max-width: 860px) {
+      .quote, .contact-inner { grid-template-columns: 1fr; gap: 32px; }
+      .intro p { max-width: 42ch; }
+    }
+    @media (max-width: 520px) {
+      .fields, .contact-details { column-gap: 10px; }
+      .half { grid-column: 1 / -1; }
+      .third { grid-column: span 2; }
+      .contact-details { grid-template-columns: 1fr; }
+      .back { text-align: right; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="./index.html"><img class="wordmark" src="../assets/study10-rivington-marx-logo.png" alt="Rivington Marx Interiors"></a>
+    <a class="back" href="./index.html">← Back to Study 10</a>
+  </header>
+
+  <main>
+    <section class="quote" aria-labelledby="quote-title">
+      <div class="intro">
+        <h1 id="quote-title">Get a <em>quote</em></h1>
+        <p>Tell us where you’re starting and what you’d like to change. We’ll use these details to guide our first conversation.</p>
+      </div>
+
+      <form id="quote-form" aria-label="Project inquiry">
+        <fieldset>
+          <legend class="group-title">Your details</legend>
+          <div class="fields">
+            <label class="field"><span class="field-label">Full name *</span><input name="fullName" autocomplete="name" required></label>
+            <label class="field half"><span class="field-label">Phone *</span><input name="phone" type="tel" autocomplete="tel" required></label>
+            <label class="field half"><span class="field-label">Email address *</span><input name="email" type="email" autocomplete="email" required></label>
+            <label class="field"><span class="field-label">Street address *</span><input name="street" autocomplete="section-project street-address" required></label>
+            <label class="field third"><span class="field-label">City *</span><input name="city" autocomplete="section-project address-level2" required></label>
+            <label class="field third"><span class="field-label">State *</span><input name="state" autocomplete="section-project address-level1" required></label>
+            <label class="field third"><span class="field-label">ZIP code *</span><input name="zip" inputmode="numeric" autocomplete="section-project postal-code" required></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="group-title">Your project</legend>
+          <div class="fields">
+            <label class="field half"><span class="field-label">Project type *</span>
+              <select name="projectType" required>
+                <option value="">Select one</option>
+                <option>New Construction</option><option>Renovation/Remodel</option><option>Furnishing/Decor</option>
+              </select>
+            </label>
+            <label class="field half"><span class="field-label">Full project budget *</span>
+              <select name="budget" required>
+                <option value="">Select one</option>
+                <option>$100,000 – $250,000</option><option>$250,000 – $500,000</option>
+                <option>$500,000 – $1,000,000</option><option>$1,000,000+</option>
+              </select>
+            </label>
+            <fieldset class="choices" data-required-group="rooms">
+              <legend>Rooms included * <span>(select all that apply)</span></legend>
+              <div class="choices-list">
+                <label class="choice"><input name="rooms" type="checkbox" value="Entire Home">Entire Home</label>
+                <label class="choice"><input name="rooms" type="checkbox" value="Bath">Bath</label>
+                <label class="choice"><input name="rooms" type="checkbox" value="Bedroom">Bedroom</label>
+                <label class="choice"><input name="rooms" type="checkbox" value="Dining">Dining</label>
+                <label class="choice"><input name="rooms" type="checkbox" value="Kitchen">Kitchen</label>
+                <label class="choice"><input name="rooms" type="checkbox" value="Living">Living</label>
+                <label class="choice"><input name="rooms" type="checkbox" value="Office">Office</label>
+              </div>
+            </fieldset>
+            <label class="field"><span class="field-label">Additional project details</span><textarea name="details" rows="4" maxlength="2400"></textarea></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="group-title">How to reach you</legend>
+          <div class="fields">
+            <fieldset class="choices" data-required-group="time">
+              <legend>Best time to reach you * <span>(select all that apply)</span></legend>
+              <div class="choices-list">
+                <label class="choice"><input name="time" type="checkbox" value="Morning">Morning</label>
+                <label class="choice"><input name="time" type="checkbox" value="Afternoon">Afternoon</label>
+                <label class="choice"><input name="time" type="checkbox" value="Evening">Evening</label>
+              </div>
+            </fieldset>
+            <label class="field"><span class="field-label">How did you hear about us? *</span>
+              <select name="referral" required>
+                <option value="">Select one</option>
+                <option>Referral</option><option>Instagram</option><option>Pinterest</option><option>Google</option>
+                <option>Publication</option><option>ChatGPT or other AI</option><option>Other</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="submit-row">
+          <button class="action" type="submit" disabled>Open email draft <span aria-hidden="true">↗</span></button>
+          <a href="https://rivingtonmarx.com/contact/">Use the studio’s live form</a>
+        </div>
+        <p class="status" id="quote-status" role="status">Review and send the draft from your email app.</p>
+        <noscript><p>To submit online, use the studio’s live form above.</p></noscript>
+      </form>
+    </section>
+
+    <section class="contact" aria-labelledby="contact-title">
+      <div class="contact-inner">
+        <h2 id="contact-title">Contact <em>us</em></h2>
+        <div class="contact-details">
+          <div>
+            <h3>Visit the studio</h3>
+            <address><a href="https://maps.app.goo.gl/zu8nsJPJ4UFvSqjD6">450 Lincoln Street, Suite 102<br>Denver, CO 80203</a></address>
+            <p class="contact-hours"><strong>By appointment only</strong>Monday–Friday, 9 a.m.–5 p.m.<br>Saturday and Sunday closed</p>
+          </div>
+          <div>
+            <h3>Get in touch</h3>
+            <p><a href="tel:+13032254448">(303) 225-4448</a><br><a href="mailto:hello@rivingtonmarx.com">hello@rivingtonmarx.com</a></p>
+            <nav class="social" aria-label="Social profiles">
+              <a href="https://www.instagram.com/rivingtonmarx/" aria-label="Instagram"><span class="social-icon" aria-hidden="true">&#xf16d;</span></a>
+              <a href="https://www.facebook.com/profile.php?id=61576584714815" aria-label="Facebook"><span class="social-icon" aria-hidden="true">&#xf39e;</span></a>
+              <a href="https://www.pinterest.com/RivingtonMarxInteriors/" aria-label="Pinterest"><span class="social-icon" aria-hidden="true">&#xf231;</span></a>
+              <a href="https://www.houzz.com/pro/rivingtonmarxinteriors" aria-label="Houzz"><span class="social-icon" aria-hidden="true">&#xf27c;</span></a>
+              <a href="https://www.linkedin.com/company/rivington-marx-interiors/" aria-label="LinkedIn"><span class="social-icon" aria-hidden="true">&#xf0e1;</span></a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.querySelector('#quote-form');
+    const requiredGroups = [...form.querySelectorAll('[data-required-group]')];
+    const status = document.querySelector('#quote-status');
+
+    const validateGroup = group => {
+      const firstOption = group.querySelector('input');
+      if (group.querySelector('input:checked')) {
+        firstOption.setCustomValidity('');
+      } else {
+        firstOption.setCustomValidity('Select at least one option.');
+      }
+    };
+
+    requiredGroups.forEach(group => group.addEventListener('change', () => validateGroup(group)));
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      requiredGroups.forEach(validateGroup);
+      if (!form.reportValidity()) return;
+
+      const fields = new FormData(form);
+      const field = name => String(fields.get(name) || '').trim();
+      const body = [
+        'Hello Rivington Marx Interiors,',
+        '',
+        'I would like to discuss a quote for my project.',
+        '',
+        'Full name: ' + field('fullName'),
+        'Phone: ' + field('phone'),
+        'Email: ' + field('email'),
+        'Project address: ' + field('street') + ', ' + field('city') + ', ' + field('state') + ' ' + field('zip'),
+        'Project type: ' + field('projectType'),
+        'Budget: ' + field('budget'),
+        'Rooms: ' + fields.getAll('rooms').join(', '),
+        'Best time to reach me: ' + fields.getAll('time').join(', '),
+        'How I heard about the studio: ' + field('referral'),
+        '',
+        'Additional details:',
+        field('details') || 'None provided.'
+      ].join('\r\n');
+      const draft = 'mailto:hello@rivingtonmarx.com?subject=' + encodeURIComponent('Project quote inquiry') +
+        '&body=' + encodeURIComponent(body);
+      status.textContent = 'Your email draft is ready. If your email app did not open, use the studio’s live form.';
+      window.location.href = draft;
+    });
+
+    form.querySelector('button[type="submit"]').disabled = false;
+  </script>
+</body>
+</html>

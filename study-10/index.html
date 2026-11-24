@@ -1,0 +1,1308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rivington Marx — Study Ten, The Project Story, featuring The Nile Nocturne. Desktop interactive design concept.">
+  <link rel="icon" href="data:,">
+  <title>Rivington Marx — Study Ten / The Project Story</title>
+  <style>
+    :root {
+      --paper: #ece9df;
+      --paper-deep: #e3ded1;
+      --ink: #191a17;
+      --stage: #141512;
+      --cream: #f2efe6;
+      --muted: #77766e;
+      --accent: #a64635;
+      --line: rgba(25, 26, 23, .2);
+      --serif: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --sans: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+      --ease: cubic-bezier(.22, .77, .24, 1);
+      --rail: clamp(355px, 31vw, 560px);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+    html { background: var(--stage); }
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, a { color: inherit; font: inherit; }
+    button { border: 0; }
+    a { text-decoration: none; }
+    img { display: block; width: 100%; }
+    ::selection { color: var(--cream); background: var(--accent); }
+
+    .mobile-gate {
+      display: none;
+      min-height: 100svh;
+      align-items: center;
+      justify-content: center;
+      padding: 38px;
+      color: var(--cream);
+      background: var(--stage);
+      text-align: center;
+    }
+    .mobile-gate__inner { max-width: 440px; }
+    .mobile-gate__label { margin-bottom: 30px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; }
+    .mobile-gate h1 { margin: 0 0 20px; font: 400 46px/.98 var(--serif); letter-spacing: -.035em; }
+    .mobile-gate p { margin: 0; color: #aaa99f; font: 17px/1.65 var(--serif); }
+
+    .site { position: relative; width: 100%; height: 100%; display: grid; grid-template-columns: var(--rail) 1fr; }
+    .left-rail {
+      position: relative;
+      z-index: 20;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 31px clamp(34px, 3.5vw, 64px) 34px;
+      color: var(--rail-ink, var(--ink));
+      border-right: 1px solid var(--rail-line, rgba(25, 26, 23, .35));
+      background: var(--rail-bg, var(--paper));
+      transition: color .55s ease, background-color .9s var(--ease), border-color .55s ease, transform .95s var(--ease);
+    }
+    .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 1;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .study-mark { color: var(--rail-muted, var(--muted)); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; }
+
+    .copy-area {
+      min-height: 0;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      padding: 9vh 0 4vh;
+    }
+    .copy-stack { width: 100%; transition: opacity .28s ease, transform .5s var(--ease); }
+    .copy-stack.is-switching { opacity: 0; transform: translateX(-16px); }
+    .copy-viewport { display: none; width: 100%; overflow: hidden; opacity: 1; transition: opacity .28s ease; }
+    .copy-viewport.is-switching { opacity: 0; }
+    .copy-track { display: flex; width: 100%; will-change: transform; transition: transform .9s var(--ease); }
+    .copy-panel { flex: 0 0 100%; min-width: 0; }
+    .left-rail.has-horizontal-copy .copy-stack { display: none; }
+    .left-rail.has-horizontal-copy .copy-viewport { display: block; }
+    .title {
+      margin: 0;
+      max-width: 450px;
+      font: 400 clamp(48px, 4.8vw, 78px)/.94 var(--serif);
+      letter-spacing: -.052em;
+      text-wrap: balance;
+    }
+    .title em { font-weight: 400; }
+    .title--featured em, .copy-track[data-group="studio"] .title em { color: var(--accent); }
+    .editorial-quote em, .copy-track:is([data-group="point"], [data-group="approach"]) .title em { color: #a62a20; font-weight: 400; }
+    .copy-panel--editorial .description { margin-top: 20px; }
+
+    @media (max-height: 760px) {
+      .title.editorial-quote { font-size: clamp(43px, 4.6vw, 59px); }
+      .copy-panel--editorial .description { margin-top: 16px; }
+    }
+    .description { max-width: 375px; margin: clamp(22px, 3.4vh, 38px) 0 0; font: 17px/1.58 var(--serif); }
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 30px;
+      max-width: 385px;
+      margin-top: clamp(27px, 4.8vh, 54px);
+      padding-top: 19px;
+      border-top: 1px solid var(--rail-line, var(--line));
+    }
+    .meta__item { min-width: 0; }
+    .meta__key { display: block; margin-bottom: 6px; color: var(--rail-muted, var(--muted)); font-size: 8px; letter-spacing: .18em; text-transform: uppercase; }
+    .meta__value { display: block; font: 13px/1.25 var(--serif); }
+
+    .controls { margin-top: auto; }
+    .controls__main { display: flex; align-items: center; gap: 11px; }
+    .arrow {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--rail-line, rgba(25, 26, 23, .38));
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font: 19px/1 var(--serif);
+      transition: color .3s ease, background .3s ease, border-color .3s ease, transform .3s var(--ease), opacity .3s ease;
+    }
+    .arrow:hover:not(:disabled) { color: var(--cream); border-color: var(--accent); background: var(--accent); transform: translateY(-2px); }
+    .arrow:disabled { opacity: .25; cursor: default; }
+    .counter { min-width: 70px; margin-left: 7px; font-size: 9px; letter-spacing: .16em; }
+    .progress-line { position: relative; height: 1px; flex: 1; overflow: hidden; background: var(--rail-line, rgba(25, 26, 23, .19)); }
+    .progress-line span { position: absolute; inset: 0; background: var(--accent); transform: scaleX(.15); transform-origin: left; transition: transform .85s var(--ease), background .5s ease; }
+    .left-rail.is-contact .arrow { display: none; }
+
+    .right-stage { position: relative; min-width: 0; height: 100vh; overflow: hidden; color: var(--cream); background: var(--stage); }
+    .right-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: .34;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+    .stage-nav {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 15;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(28px, 3.5vw, 58px);
+      border-bottom: 1px solid rgba(242, 239, 230, .18);
+      background: linear-gradient(180deg, rgba(20,21,18,.88), rgba(20,21,18,.38));
+      backdrop-filter: blur(7px);
+    }
+    .nav-list { display: flex; align-items: center; gap: clamp(20px, 2.7vw, 46px); }
+    .nav-button, .index-button {
+      position: relative;
+      padding: 8px 0;
+      color: rgba(242,239,230,.55);
+      background: transparent;
+      cursor: pointer;
+      font-size: 9px;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      transition: color .3s ease;
+    }
+    .nav-button::after { content: ""; position: absolute; right: 0; bottom: 2px; left: 0; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease), background .5s ease; }
+    .nav-button:hover, .nav-button.is-active, .index-button:hover { color: var(--cream); }
+    .nav-button.is-active::after { transform: scaleX(1); }
+    .index-button { display: inline-flex; align-items: center; gap: 10px; color: var(--cream); }
+    .index-button i { width: 18px; height: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .index-button i span { border: 1px solid currentColor; }
+
+    .stage-viewport { position: absolute; inset: 64px 0 0; overflow: hidden; }
+    .media-track {
+      height: 100%;
+      display: flex;
+      gap: 0;
+      transform: translate3d(0,0,0);
+      transition: transform .95s var(--ease), opacity .42s ease, filter .42s ease;
+      will-change: transform;
+      cursor: grab;
+      touch-action: pan-y;
+    }
+    .media-track.is-dragging { cursor: grabbing; transition: none; }
+    .right-stage.is-swapping .media-track { opacity: 0; filter: blur(4px); }
+    .slide {
+      position: relative;
+      flex: 0 0 100%;
+      height: 100%;
+      overflow: hidden;
+      color: var(--cream);
+      background: #23231f;
+      opacity: .42;
+      transform: scale(.985);
+      transform-origin: center;
+      transition: opacity .8s ease, transform 1s var(--ease), box-shadow .6s ease;
+    }
+    .slide.is-active { opacity: 1; transform: scale(1); box-shadow: 0 22px 70px rgba(0,0,0,.28); }
+    .slide__media, .slide__media img { width: 100%; height: 100%; }
+    .slide__media { overflow: hidden; }
+    .slide__media img { object-fit: cover; transform: scale(1.018); transition: transform 1.6s var(--ease), filter .6s ease; pointer-events: none; }
+    .slide.is-active:hover .slide__media img { transform: scale(1.045); }
+    .slide.is-active { cursor: pointer; }
+    .slide__shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(9,10,8,.67)); pointer-events: none; }
+    .slide__caption { position: absolute; right: 24px; bottom: 22px; left: 24px; display: flex; justify-content: space-between; align-items: end; gap: 25px; font-size: 8px; line-height: 1.5; letter-spacing: .16em; text-transform: uppercase; }
+    .slide__caption strong { font-weight: 500; }
+    .slide__open {
+      position: absolute; top: 24px; right: 24px; padding: 9px 12px;
+      border: 1px solid rgba(242,239,230,.55); background: rgba(20,21,18,.68);
+      color: var(--cream); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    }
+    .work-view:hover .slide__open, .work-view:focus-visible .slide__open { background: var(--paper); color: var(--ink); }
+    .slide--diptych { display: grid; grid-template-columns: 1.22fr .78fr; gap: 1px; background: #dedad0; }
+    .slide--diptych .slide__media { position: relative; }
+    .slide--diptych .slide__media:nth-child(2) { margin-top: 12%; height: 76%; }
+    .slide--diptych .slide__media img { object-fit: cover; }
+    .slide__testimonial {
+      position: absolute;
+      inset: auto 0 0;
+      z-index: 1;
+      margin: 0;
+      padding: 46px clamp(24px, 3vw, 54px) 68px;
+      color: var(--cream);
+      background: linear-gradient(to top, rgba(12, 10, 9, .94), rgba(12, 10, 9, .8) 58%, transparent);
+      pointer-events: none;
+    }
+    .slide__testimonial blockquote {
+      max-width: 24ch;
+      margin: 0;
+      font: italic 400 clamp(27px, 2.9vw, 46px)/1.04 var(--serif);
+      letter-spacing: -.025em;
+      text-wrap: balance;
+    }
+    .slide__testimonial figcaption {
+      margin-top: 13px;
+      color: var(--cream);
+      font-size: 9px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .slide:has(.slide__testimonial) .slide__caption { z-index: 2; }
+    .slide--step::after { content: attr(data-step); position: absolute; left: 28px; bottom: 40px; z-index: 2; color: rgba(255,255,255,.82); font: 400 clamp(95px, 11vw, 180px)/.7 var(--serif); letter-spacing: -.07em; }
+    .slide--contact.is-active { cursor: default; }
+    .slide--contact .slide__cta a { cursor: pointer; }
+    .slide--contact .slide__media img { filter: brightness(.54) saturate(.72); }
+    .slide--contact .slide__cta { position: absolute; top: 50%; left: 50%; z-index: 3; text-align: center; transform: translate(-50%,-50%); }
+    .slide__cta span { display: block; margin-bottom: 22px; font: 400 clamp(48px, 5vw, 82px)/.95 var(--serif); letter-spacing: -.04em; }
+    .slide__cta a { display: inline-flex; align-items: center; gap: 15px; padding: 14px 22px; border: 1px solid rgba(255,255,255,.7); border-radius: 100px; font-size: 9px; letter-spacing: .17em; text-transform: uppercase; transition: color .3s ease, background .3s ease; }
+    .slide__cta a:hover { color: var(--ink); background: var(--cream); }
+
+    .site.is-reading .left-rail { transform: translateX(-100%); }
+    .site.is-reading .stage-nav {
+      border-color: var(--line);
+      background: var(--paper);
+      backdrop-filter: none;
+    }
+    .site.is-reading :is(.nav-button, .index-button) { color: #615d55; }
+    .site.is-reading :is(.nav-button:hover, .nav-button.is-active, .index-button:hover) { color: var(--ink); }
+    .slide.slide--essay { background: var(--paper); box-shadow: none; }
+
+    .point-essay {
+      --essay-gutter: clamp(52px, 8vw, 148px);
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      visibility: hidden;
+      transform: translateX(100%);
+      background: var(--paper);
+      color: var(--ink);
+      transition: transform .95s var(--ease), visibility 0s .95s;
+    }
+    .site.is-reading .point-essay {
+      visibility: visible;
+      transform: translateX(0);
+      transition-delay: 0s;
+    }
+    .point-essay__bar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 0 clamp(28px, 3.5vw, 58px);
+      border-bottom: 1px solid var(--line);
+    }
+    .point-essay__bar .counter { margin: 0; color: #615d55; }
+    .point-essay__control {
+      color: var(--ink);
+      padding: 8px 0;
+      background: transparent;
+      cursor: pointer;
+      font: 600 10px/1.25 var(--sans);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .point-essay__control span { margin-right: 8px; color: #a62a20; }
+    .point-essay__control:hover { color: #a62a20; }
+    .point-essay__scroll {
+      position: absolute;
+      inset: 64px 0 0;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+    }
+    .point-essay__scroll:focus-visible { outline: none; }
+    .point-essay:has(.point-essay__scroll:focus-visible) .point-essay__bar { box-shadow: inset 0 -2px #a62a20; }
+    .point-essay__hero {
+      min-height: 100%;
+      display: grid;
+      align-items: center;
+      padding: clamp(44px, 8vh, 88px) var(--essay-gutter);
+    }
+    .point-essay h1, .point-essay h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -.065em;
+      line-height: .9;
+    }
+    .point-essay h1 { font-size: clamp(85px, 10.45vw, 182px); }
+    .point-essay h1 em, .point-essay h1 span, .point-essay h2 em { display: block; }
+    .point-essay em { color: #a62a20; font-weight: 400; }
+    .point-essay p {
+      width: min(100%, 35ch);
+      margin: 0;
+      font: 400 clamp(22px, 1.9vw, 32px)/1.46 var(--serif);
+    }
+    .point-essay__intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 32px;
+      margin-top: clamp(32px, 5vh, 62px);
+    }
+    .point-essay__block {
+      position: relative;
+      isolation: isolate;
+      min-height: min(820px, calc(100vh - 64px));
+      display: flex;
+      align-items: end;
+      padding: clamp(70px, 10vh, 140px) var(--essay-gutter);
+      color: var(--cream);
+      background: var(--stage);
+    }
+    .point-essay__block + .point-essay__block { border-top: 18px solid var(--paper); }
+    .point-essay__image, .point-essay__block::before {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .point-essay__image { z-index: -2; object-fit: cover; object-position: center 54%; }
+    .point-essay__block::before {
+      content: "";
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(15, 12, 10, .82), rgba(15, 12, 10, .44) 50%, transparent 83%),
+        linear-gradient(0deg, rgba(15, 12, 10, .74), transparent 75%);
+    }
+    .point-essay__block--right { justify-content: flex-end; text-align: left; }
+    .point-essay__block--right > div { max-width: 44%; }
+    .point-essay__block--right::before {
+      background:
+        linear-gradient(270deg, rgba(15, 12, 10, .82), rgba(15, 12, 10, .44) 50%, transparent 83%),
+        linear-gradient(0deg, rgba(15, 12, 10, .74), transparent 75%);
+    }
+    .point-essay__block h2 { font-size: clamp(59px, 7.8vw, 136px); }
+    .point-essay__block em { color: #f1ad8b; }
+    .point-essay__block p {
+      width: min(100%, 41ch);
+      margin-top: clamp(20px, 3.6vh, 42px);
+      font-size: clamp(21px, 1.8vw, 29px);
+    }
+    .point-essay__contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 28px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #f1ad8b;
+      color: #f1ad8b;
+      font: 600 11px/1.3 var(--sans);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .stage-note { position: absolute; right: 15px; bottom: 14px; z-index: 5; color: rgba(242,239,230,.35); font-size: 7px; letter-spacing: .13em; text-transform: uppercase; writing-mode: vertical-rl; }
+
+    .index-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: var(--rail) 1fr;
+      color: var(--cream);
+      background: #121310;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .45s ease, visibility .45s;
+    }
+    .index-overlay.is-open { opacity: 1; visibility: visible; }
+    .index-panel { display: flex; flex-direction: column; padding: 31px clamp(34px, 3.5vw, 64px) 34px; border-right: 1px solid rgba(242,239,230,.2); }
+    .index-head { display: flex; align-items: center; justify-content: space-between; }
+    .index-head strong { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; }
+    .overlay-close { padding: 8px 0; color: rgba(242,239,230,.6); background: transparent; cursor: pointer; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; transition: color .3s ease; }
+    .overlay-close:hover { color: white; }
+    .project-list { min-height: 0; overflow-y: auto; margin: auto 0; border-top: 1px solid rgba(242,239,230,.22); }
+    .project-link { width: 100%; display: grid; grid-template-columns: 32px 1fr auto; gap: 15px; align-items: baseline; padding: 17px 0; border-bottom: 1px solid rgba(242,239,230,.18); color: rgba(242,239,230,.62); background: transparent; cursor: pointer; text-align: left; transition: color .3s ease, padding .4s var(--ease); }
+    .project-link:hover, .project-link:focus, .project-link.is-active { padding-left: 10px; color: white; }
+    .project-link__no { color: #6f7069; font-size: 8px; }
+    .project-link__title { font: 400 clamp(22px, 2vw, 34px)/1 var(--serif); letter-spacing: -.025em; }
+    .project-link__type { font-size: 7px; letter-spacing: .15em; text-transform: uppercase; }
+    .index-foot { display: flex; justify-content: space-between; color: #77786f; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; }
+    .index-preview { position: relative; overflow: hidden; background: #24241f; }
+    .index-preview img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.025); transition: opacity .4s ease, transform 1s var(--ease); }
+    .index-preview.is-changing img { opacity: .25; transform: scale(1.055); }
+    .index-preview__caption { position: absolute; right: 38px; bottom: 33px; left: 38px; display: flex; justify-content: space-between; gap: 30px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.5); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 1px 10px #000; }
+
+    .project-view {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      grid-template-columns: 68% 32%;
+      color: var(--cream);
+      background: #121310;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity .45s ease, transform .65s var(--ease), visibility .45s;
+    }
+    .project-view.is-open { opacity: 1; visibility: visible; transform: none; }
+    .project-gallery { position: relative; height: 100vh; overflow: hidden; background: #24241f; }
+    .project-gallery__track { height: 100%; will-change: transform; transition: transform .9s var(--ease); }
+    .project-gallery__slide { position: relative; width: 100%; height: 100vh; margin: 0; overflow: hidden; }
+    .project-gallery__slide img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.025); transition: transform 1.1s var(--ease); }
+    .project-gallery__slide.is-active img { transform: scale(1); }
+    .project-gallery__slide img[width][height] { object-fit: contain; }
+    .project-gallery__shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,7,.42), transparent 35%); pointer-events: none; }
+    .project-gallery__position { position: absolute; z-index: 3; top: 28px; left: 30px; font-size: 8px; letter-spacing: .18em; text-transform: uppercase; text-shadow: 0 1px 12px #000; }
+    .project-gallery__hint { position: absolute; z-index: 3; bottom: 29px; left: 30px; font-size: 8px; letter-spacing: .15em; text-transform: uppercase; text-shadow: 0 1px 12px #000; }
+    .gallery-controls { position: absolute; z-index: 4; top: 50%; right: 22px; display: grid; gap: 7px; opacity: 0; transform: translateY(-50%) translateX(8px); transition: opacity .35s ease, transform .45s var(--ease); }
+    .project-gallery:hover .gallery-controls, .gallery-controls:focus-within { opacity: 1; transform: translateY(-50%); }
+    .gallery-arrow { width: 46px; height: 46px; display: grid; place-items: center; color: var(--cream); background: rgba(18,19,16,.76); border: 1px solid rgba(242,239,230,.55); border-radius: 50%; cursor: pointer; font: 18px/1 var(--serif); backdrop-filter: blur(8px); transition: color .3s ease, background .3s ease, opacity .3s ease; }
+    .gallery-arrow:hover { color: var(--ink); background: var(--cream); }
+    .gallery-arrow:disabled { opacity: .25; cursor: default; }
+
+    .project-story { position: relative; height: 100vh; overflow: hidden; border-left: 1px solid rgba(242,239,230,.2); }
+    .project-view__top { position: absolute; z-index: 4; top: 0; right: 0; left: 0; display: flex; justify-content: flex-end; padding: 31px clamp(30px, 3vw, 52px) 0; }
+    .project-story__viewport { position: absolute; inset: 86px 0 112px; overflow: hidden; }
+    .project-story__track { display: flex; width: 100%; height: 100%; will-change: transform; transition: transform .85s var(--ease); }
+    .story-panel { flex: 0 0 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 12px clamp(30px, 3vw, 52px); overflow: hidden; }
+    .story-panel__label { color: var(--accent); font-size: 8px; letter-spacing: .2em; text-transform: uppercase; }
+    .story-panel h2, .story-panel h3 { max-width: 7.5ch; margin: 24px 0; font: 400 clamp(40px, 4.2vw, 68px)/.92 var(--serif); letter-spacing: -.045em; }
+    .story-panel h2 { max-width: 9ch; }
+    .story-panel h3 { font-size: clamp(34px, 3.35vw, 54px); }
+    .story-panel p { max-width: 370px; margin: 0; color: rgba(242,239,230,.7); font: 17px/1.62 var(--serif); }
+    .story-panel p + p { margin-top: 16px; }
+    .project-view__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 34px; padding-top: 17px; border-top: 1px solid rgba(242,239,230,.22); }
+    .project-view__meta span { font-size: 8px; line-height: 1.55; letter-spacing: .13em; text-transform: uppercase; }
+    .project-story__footer { position: absolute; z-index: 4; right: 0; bottom: 0; left: 0; padding: 0 clamp(30px, 3vw, 52px) 30px; }
+    .story-controls { display: grid; grid-template-columns: 42px 42px auto; gap: 10px; align-items: center; }
+    .story-prev, .story-next { width: 42px; height: 42px; display: grid; place-items: center; color: var(--cream); background: transparent; border: 1px solid rgba(242,239,230,.32); border-radius: 50%; cursor: pointer; transition: color .3s ease, border-color .3s ease; }
+    .story-prev:hover, .story-next:hover { color: var(--accent); border-color: var(--accent); }
+    .story-prev:disabled, .story-next:disabled { opacity: .25; cursor: default; }
+    .story-counter { color: #87887f; font-size: 8px; letter-spacing: .15em; }
+    .story-progress { width: 100%; height: 1px; margin-top: 15px; overflow: hidden; background: rgba(242,239,230,.18); }
+    .story-progress span { display: block; width: 100%; height: 100%; background: var(--accent); transform: scaleX(.333); transform-origin: left; transition: transform .75s var(--ease); }
+
+    @media (max-width: 1120px) {
+      :root { --rail: 360px; }
+      .left-rail { padding-right: 38px; padding-left: 38px; }
+      .title { font-size: 50px; }
+      .nav-list { gap: 18px; }
+      .stage-nav { padding-right: 28px; padding-left: 28px; }
+    }
+    @media (max-width: 979px) {
+      .site, .index-overlay, .project-view { display: none; }
+      .mobile-gate { display: flex; }
+      body { overflow: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    .study-home { position: fixed; inset: 0; z-index: 30; overflow: hidden; color: var(--cream); background: var(--stage); transition: transform .95s var(--ease), visibility 0s; }
+    .study-home.is-away { transform: translateX(-100%); visibility: hidden; transition-delay: 0s, .95s; }
+    .home-view { position: absolute; inset: 0; width: 100%; display: grid; grid-template-columns: 1.22fr .78fr; gap: 1px; background: var(--stage); cursor: pointer; }
+    .home-view img { width: 100%; height: 100%; min-width: 0; object-fit: cover; }
+    .home-view::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, rgba(14,12,9,.52), transparent 53%), linear-gradient(0deg, rgba(14,12,9,.65), transparent 25%, transparent 78%, rgba(14,12,9,.5)); }
+    .home-caption, .home-view-label { position: absolute; z-index: 1; bottom: clamp(25px, 4vw, 62px); color: var(--cream); }
+    .home-caption { left: clamp(25px, 4vw, 62px); font: italic 400 clamp(24px, 3vw, 48px)/1 var(--serif); text-shadow: 0 2px 12px #000; }
+    .home-view-label { right: clamp(25px, 4vw, 62px); width: 74px; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid rgba(242,239,230,.72); border-radius: 50%; background: rgba(20,21,18,.46); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .home-brand { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; background: transparent; cursor: pointer; }
+    .home-brand img { width: clamp(190px, 22vw, 345px); height: auto; filter: drop-shadow(0 3px 15px #141512); }
+    .home-index { position: absolute; z-index: 2; top: 22px; right: clamp(25px, 4vw, 62px); }
+    .home-menu { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 46px; border: 0; background: var(--paper); color: var(--ink); }
+    .home-menu[open] { display: grid; grid-template-rows: auto 1fr; justify-items: center; overflow: auto; }
+    .home-menu__brand { height: auto; }
+    .home-menu__close { position: absolute; top: 28px; right: clamp(25px, 4vw, 62px); padding: 8px 0; background: transparent; cursor: pointer; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .home-menu__links { display: grid; align-content: center; justify-items: center; gap: clamp(9px, 2.3vh, 25px); }
+    .home-menu__links button { padding: 2px 10px; background: transparent; cursor: pointer; font: 400 clamp(41px, 6.2vw, 97px)/.94 var(--serif); letter-spacing: -.05em; }
+    .home-menu__links button:hover, .home-menu__links button:focus-visible, .home-menu__close:hover { color: #a62a20; }
+    .slide--work .slide__media { position: relative; }
+    .work-view { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; background: transparent; pointer-events: none; }
+    .slide.is-active .work-view { pointer-events: auto; cursor: pointer; }
+    .home-view:focus-visible, .work-view:focus-visible { outline-offset: -5px; }
+    .view-cursor { position: fixed; z-index: 40; top: 0; left: 0; translate: -50% -50%; display: grid; width: 78px; aspect-ratio: 1; place-items: center; color: var(--ink); background: var(--paper); border-radius: 50%; pointer-events: none; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+    .view-cursor[hidden] { display: none; }
+    @media (hover: hover) and (pointer: fine) { .home-view, .slide.is-active .work-view { cursor: none; } }
+    @media (max-width: 979px) { .study-home { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .study-home.is-away { transition-delay: 0s; } }
+    .home-menu { padding: clamp(26px, 5vh, 52px) clamp(36px, 6vw, 86px); }
+    .home-menu[open] { align-content: center; grid-template-rows: auto auto; row-gap: clamp(32px, 8vh, 90px); }
+    .home-menu__brand { width: clamp(255px, 32vw, 390px); max-width: 82%; }
+    .home-menu__links { width: min(100%, 540px); gap: 0; justify-items: stretch; border-top: 1px solid var(--line); }
+    .home-menu__links button { display: grid; grid-template-columns: 36px 1fr; align-items: baseline; gap: 13px; text-align: left; padding: 15px 0; border-bottom: 1px solid var(--line); color: #4d4b43; font: 400 clamp(27px, 3vw, 43px)/1 var(--serif); letter-spacing: -.035em; }
+    .home-menu__links button span { color: #68665d; font: 10px/1 var(--sans); letter-spacing: .12em; }
+    .study-wordmark { width: clamp(106px, 12vw, 174px); height: auto; }
+    .stage-nav { gap: clamp(12px, 2vw, 32px); }
+    .stage-nav .nav-list { gap: clamp(12px, 1.8vw, 32px); }
+    .stage-nav :is(.nav-button, .index-button) { white-space: nowrap; font-size: clamp(10px, 1vw, 14px); font-weight: 600; letter-spacing: .12em; }
+    .stage-nav .nav-button { color: rgba(242,239,230,.81); }
+    .stage-nav .nav-button.is-active, .stage-nav .nav-button:hover { color: white; }
+    .stage-actions { display: flex; align-items: center; gap: clamp(10px, 1.4vw, 24px); white-space: nowrap; }
+    .quote-button { padding: 10px clamp(9px, 1.25vw, 19px); border: 1px solid var(--paper); color: var(--ink); background: var(--paper); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+    .quote-button:hover, .quote-button:focus-visible { background: var(--cream); box-shadow: inset 0 0 0 1px var(--ink); }
+    .site.is-reading .quote-button { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+    .slide--work .slide__shade {
+      background: linear-gradient(to bottom, rgba(12,10,9,.22), rgba(12,10,9,.12) 38%, rgba(12,10,9,.26) 60%, rgba(12,10,9,.86)),
+                  radial-gradient(ellipse at 100% 100%, rgba(12,10,9,.34), transparent 53%);
+    }
+    .slide--work .slide__testimonial { inset: auto 0 0 auto; width: min(62%, 590px); padding: 42px 24px 22px 42px; text-align: right; background: none; }
+    .slide--work .slide__testimonial blockquote { margin-left: auto; font-size: clamp(23px, 2.65vw, 40px); }
+    .project-gallery__slide img { object-fit: contain; }
+    .story-panel { overflow-y: auto; justify-content: safe center; }
+    .story-panel h2 { max-width: none; font-size: clamp(32px, 3vw, 54px); }
+    .story-panel p { max-width: none; color: rgba(242,239,230,.86); }
+    .story-panel > * { flex-shrink: 0; }
+    .project-facts { margin: 0; }
+    .project-facts div { padding: 13px 0; border-top: 1px solid rgba(242,239,230,.2); }
+    .project-facts dt { margin-bottom: 6px; color: var(--accent); font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+    .project-facts dd { margin: 0; font: 17px/1.4 var(--serif); }
+  </style>
+</head>
+<body>
+  <aside class="mobile-gate" aria-label="Desktop study notice">
+    <div class="mobile-gate__inner">
+      <div class="mobile-gate__label">Rivington Marx / Study 10</div>
+      <h1>The Project Story is a desktop study.</h1>
+      <p>The mobile experience is intentionally deferred until the selected desktop direction has been approved.</p>
+    </div>
+  </aside>
+
+  <section class="study-home" aria-label="Home">
+    <button class="home-view" type="button" aria-label="View selected work">
+      <img src="../assets/study10-the-nile-nocturne-01.jpg" alt="" fetchpriority="high">
+      <img src="../assets/study10-the-nile-nocturne-02.jpg" alt="">
+      <span class="home-caption">The Nile Nocturne</span>
+      <span class="home-view-label" aria-hidden="true">View</span>
+    </button>
+    <button class="home-brand" type="button" aria-label="Rivington Marx — open navigation" aria-haspopup="dialog" aria-controls="home-menu">
+      <img src="../assets/study10-rivington-marx-logo-white.png" alt="">
+    </button>
+    <button class="index-button home-index" type="button" aria-expanded="false" aria-controls="project-index"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i>Index</button>
+  </section>
+  <dialog class="home-menu" id="home-menu" aria-label="Site navigation">
+    <img class="home-menu__brand" src="../assets/study10-rivington-marx-logo.png" alt="Rivington Marx Interiors">
+    <button class="home-menu__close" type="button" autofocus>Close</button>
+    <nav class="home-menu__links" aria-label="Site sections">
+      <button type="button" data-destination="work"><span aria-hidden="true">01</span>Work</button>
+      <button type="button" data-destination="point"><span aria-hidden="true">02</span>Point of view</button>
+      <button type="button" data-destination="approach"><span aria-hidden="true">03</span>Approach</button>
+      <button type="button" data-destination="studio"><span aria-hidden="true">04</span>Studio</button>
+      <button type="button" data-destination="contact"><span aria-hidden="true">05</span>Contact</button>
+    </nav>
+  </dialog>
+  <div class="view-cursor" aria-hidden="true" hidden>View</div>
+
+  <main class="site" inert>
+    <aside class="left-rail">
+      <div class="brand-row">
+        <a class="brand" href="#" aria-label="Rivington Marx — return to homepage"><img class="study-wordmark" src="../assets/study10-rivington-marx-logo.png" alt=""></a>
+        <span class="study-mark">Study 10</span>
+      </div>
+
+      <div class="copy-area">
+        <div class="copy-stack">
+          <h1 class="title title--featured">The Pink Pony</h1>
+          <p class="description">Cream, pink, deep blue and soft grey form the palette of this new-build home.</p>
+          <div class="meta">
+            <div class="meta__item"><span class="meta__key">Neighborhood</span><span class="meta__value">Hilltop</span></div>
+            <div class="meta__item"><span class="meta__key">Focus</span><span class="meta__value">Expressive colour</span></div>
+          </div>
+        </div>
+        <div class="copy-viewport" aria-live="polite">
+          <div class="copy-track"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="controls__main">
+          <button class="arrow arrow--prev" type="button" aria-label="Previous slide">←</button>
+          <button class="arrow arrow--next" type="button" aria-label="Next slide">→</button>
+          <span class="counter" aria-live="polite">01 — 10</span>
+          <div class="progress-line" aria-hidden="true"><span></span></div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="right-stage" aria-label="Interactive presentation">
+      <nav class="stage-nav" aria-label="Study sections">
+        <div class="nav-list">
+          <button class="nav-button is-active" type="button" data-group="work">Work</button>
+          <button class="nav-button" type="button" data-group="point">Point of view</button>
+          <button class="nav-button" type="button" data-group="approach">Approach</button>
+          <button class="nav-button" type="button" data-group="studio">Studio</button>
+          <button class="nav-button" type="button" data-group="contact">Contact</button>
+        </div>
+        <div class="stage-actions">
+          <button class="index-button" type="button" aria-expanded="false" aria-controls="project-index"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i>Index</button>
+          <a class="quote-button" href="./quote.html">Get a quote</a>
+        </div>
+      </nav>
+
+      <div class="stage-viewport">
+        <div class="media-track" aria-live="polite"></div>
+      </div>
+      <div class="stage-note">Horizontal study / Client imagery only</div>
+    </section>
+
+    <article class="point-essay" aria-labelledby="point-essay-title" inert>
+      <div class="point-essay__bar">
+        <button class="point-essay__control point-essay__back" type="button"><span aria-hidden="true">←</span>Back to slides</button>
+        <span class="counter point-essay__count" aria-label="Current slide"></span>
+      </div>
+      <div class="point-essay__scroll" role="region" aria-labelledby="point-essay-title" tabindex="0">
+        <header class="point-essay__hero">
+          <div>
+            <h1 id="point-essay-title"><span>Rooms with a life</span> <em>of their own</em></h1>
+            <div class="point-essay__intro">
+              <p>A room takes its character from the people who live in it and the things they could never leave behind.</p>
+              <button class="point-essay__control point-essay__continue" type="button"><span aria-hidden="true">↓</span>Scroll to read</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="point-essay__block" id="point-essay-serious" aria-labelledby="point-essay-serious-title">
+          <img class="point-essay__image" src="../assets/studio-lounge-wide.jpg" alt="Studio lounge with large-scale artwork, dark armchairs and a patterned rug" loading="lazy" decoding="async">
+          <div>
+            <h2 id="point-essay-serious-title">Serious design. <em>Never solemn.</em></h2>
+            <p>We get the architecture right so there’s room for the unexpected. A favourite painting, a chair with a past or a colour you can’t stop thinking about can change the feel of an entire room.</p>
+          </div>
+        </section>
+
+        <section class="point-essay__block point-essay__block--right" aria-labelledby="point-essay-soul-title">
+          <img class="point-essay__image" src="../assets/salon-blue-wall.jpg" alt="Sculptural objects arranged against deep blue patterned wallpaper" loading="lazy" decoding="async">
+          <div>
+            <h2 id="point-essay-soul-title">More soul. <em>Less beige.</em></h2>
+            <p>Colour sets the mood. Pattern brings a room to life. We use both with care, alongside the pieces you’ve collected and the surfaces you’ll want to touch every day.</p>
+          </div>
+        </section>
+
+        <section class="point-essay__block" aria-labelledby="point-essay-yours-title">
+          <img class="point-essay__image" src="../assets/light-living.jpg" alt="Living room with a grand piano, a fireplace and layered seating" loading="lazy" decoding="async">
+          <div>
+            <h2 id="point-essay-yours-title">Let’s make it <em>unmistakably yours.</em></h2>
+            <p>Tell us about the place you call home and how you’d like it to feel. We’ll start there.</p>
+            <a class="point-essay__contact" href="https://rivingtonmarx.com/contact/" target="_blank" rel="noopener">Begin a project <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <aside class="index-overlay" id="project-index" aria-hidden="true">
+    <div class="index-panel">
+      <div class="index-head"><strong>Project index</strong><button class="overlay-close index-close" type="button">Close — Esc</button></div>
+      <div class="project-list"></div>
+      <div class="index-foot"><span class="index-count">10 selected stories</span><span>Hover to preview</span></div>
+    </div>
+    <div class="index-preview">
+      <img src="../assets/study10-the-pink-pony-05.jpg" alt="A wide view of the dining room with a chandelier, full table and tall windows">
+      <div class="index-preview__caption"><span class="index-preview__title">The Pink Pony</span><span class="index-preview__meta">Work / Expressive colour</span></div>
+    </div>
+  </aside>
+
+  <section class="project-view" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Project story">
+    <div class="project-gallery">
+      <div class="project-gallery__track"></div>
+      <div class="project-gallery__position">Image <span>01 / 04</span></div>
+      <div class="project-gallery__hint">Scroll vertically / Hover for arrows</div>
+      <div class="gallery-controls">
+        <button class="gallery-arrow gallery-prev" type="button" aria-label="Previous project image">↑</button>
+        <button class="gallery-arrow gallery-next" type="button" aria-label="Next project image">↓</button>
+      </div>
+    </div>
+    <div class="project-story">
+      <div class="project-view__top"><button class="overlay-close project-close" type="button">Close — Esc</button></div>
+      <div class="project-story__viewport"><div class="project-story__track"></div></div>
+      <div class="project-story__footer">
+        <div class="story-controls">
+          <button class="story-prev" type="button" aria-label="Previous text chapter">←</button>
+          <button class="story-next" type="button" aria-label="Next text chapter">→</button>
+          <span class="story-counter">01 / 03</span>
+        </div>
+        <div class="story-progress" aria-hidden="true"><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const indexPreviews = {
+        "The Pink Pony": {
+          "src": "../assets/study10-the-pink-pony-05.jpg",
+          "alt": "A wide view of the dining room with a chandelier, full table and tall windows"
+        },
+        "Tailored In Stone": {
+          "src": "../assets/study10-tailored-in-stone-04.jpg",
+          "alt": "A wide kitchen view with the stone island, surrounding cabinets and sculptural lighting"
+        },
+        "Adventures in Moodsetting": {
+          "src": "../assets/study10-adventures-in-moodsetting-10.jpg",
+          "alt": "A wide view of the gold-toned living room with two seating areas and a chandelier"
+        },
+        "Parlors &amp; Power": {
+          "src": "../assets/study10-parlors-power-05.jpg",
+          "alt": "The full sitting area with dark trim, windows and layered seating"
+        },
+        "Beyond the Pale": {
+          "src": "../assets/study10-beyond-the-pale-02.jpg",
+          "alt": "A wide view of the pale living room with a fireplace, tall windows and layered seating"
+        },
+        "Midcentury Globetrotter": {
+          "src": "../assets/study10-midcentury-globetrotter-03.jpg",
+          "alt": "The dining area with a timber table, black chairs and a long black wall light",
+          "position": "50% 62%"
+        },
+        "In the Studio": {
+          "src": "../assets/study10-in-the-studio-01.jpg",
+          "alt": "A wide view of the studio lounge with patterned walls, seating and a rug"
+        },
+        "East Meets Rest": {
+          "src": "../assets/study10-east-meets-rest-01.jpg",
+          "alt": "A wide view of the living room with a brass coffee table and blue seating"
+        }
+      };
+
+      const groups = {
+        work: {
+          label: 'Selected work',
+          entries: [
+            {"title":"The Pink Pony","short":"The Pink Pony","description":"Cream, pink, deep blue and soft grey form the palette of this new-build home.","image":"../assets/study10-the-pink-pony-01.jpg","alt":"The Pink Pony project photograph","meta":[["Neighborhood","Hilltop"],["Focus","Expressive colour"]],"accent":"#edabbf","panel":"#5d3846","tag":"Work / Expressive colour","testimonial":"His designs are bold and inventive","attribution":"Dave, Denver, CO"},
+            {"title":"Tailored In Stone","short":"Tailored In Stone","description":"The design concept for this project centered on reconciling a contemporary, minimalist aesthetic with the home’s more traditional architecture.","image":"../assets/study10-tailored-in-stone-01.jpg","alt":"Tailored In Stone project photograph","meta":[["Neighborhood","Cherry Hills Village"],["Focus","Material and craft"]],"accent":"#e7c6a1","panel":"#474037","tag":"Work / Material and craft","testimonial":"Every surface feels considered.","attribution":"Sample testimonial"},
+            {"title":"Adventures in Moodsetting","short":"Adventures in Moodsetting","description":"Deep reds, antiques, portraiture and low lighting play up the character of this 1939 Tudor.","image":"../assets/study10-adventures-in-moodsetting-01.jpg","alt":"Adventures in Moodsetting project photograph","meta":[["Neighborhood","Mayfair"],["Focus","Historic character"]],"accent":"#efab90","panel":"#432b30","tag":"Work / Historic character","testimonial":"My own home, which is an ever-evolving canvas","attribution":"Troy Rivington, Denver, CO"},
+            {"title":"Parlors &amp; Power","short":"Parlors &amp; Power","description":"An 1880 Second Empire house pairs stained glass, dark trim and mural walls with boldly patterned textiles and dramatic lighting.","image":"../assets/study10-parlors-power-01.jpg","alt":"Parlors &amp; Power project photograph","meta":[["Neighborhood","Curtis Park"],["Focus","Historic architecture"]],"accent":"#dcc49c","panel":"#2b3630","tag":"Work / Historic architecture","testimonial":"I prefer to reach a solution organically","attribution":"Tim, Denver, CO"},
+            {"title":"Beyond the Pale","short":"Beyond the Pale","description":"Soft taupe, misty grey and cream sit alongside brass and natural materials.","image":"../assets/study10-beyond-the-pale-01.jpg","alt":"Beyond the Pale project photograph","meta":[["Neighborhood","Castle Pines"],["Focus","Quiet texture"]],"accent":"#edcfaa","panel":"#504840","tag":"Work / Quiet texture","testimonial":"Troy hit that mark well beyond our wildest expectations.","attribution":"RB, Castle Pines, CO"},
+            {"title":"Midcentury Globetrotter","short":"Midcentury Globetrotter","description":"Clean midcentury shapes meet warm wood, black accents and pieces collected on travels.","image":"../assets/study10-midcentury-globetrotter-01.jpg","alt":"Midcentury Globetrotter project photograph","meta":[["Neighborhood","Wash Park"],["Focus","Collected modernism"]],"accent":"#eec29c","panel":"#37353a","tag":"Work / Collected modernism","testimonial":"Courageous collaboration.","attribution":"Matt &amp; Lance, Denver, CO"},
+            {"title":"In the Studio","short":"In the Studio","description":"The Rivington Marx workspace puts the firm’s approach on display.","image":"../assets/study10-in-the-studio-01.jpg","alt":"In the Studio project photograph","meta":[["Neighborhood","Speer Neighborhood"],["Focus","Studio interiors"]],"accent":"#e7b993","panel":"#3b3029","tag":"Work / Studio interiors","testimonial":"Elevated, inviting, and grounded in originality.","attribution":"Troy Rivington, Denver, CO"},
+            {"title":"East Meets Rest","short":"East Meets Rest","description":"Warm neutrals, deep blues and brass set the tone.","image":"../assets/study10-east-meets-rest-01.jpg","alt":"East Meets Rest project photograph","meta":[["Neighborhood","Buffalo Ridge Estates in Castle Pines"],["Focus","Layered furnishings"]],"accent":"#b1cfdf","panel":"#25394b","tag":"Work / Layered furnishings","testimonial":"A sophisticated yet cozy home.","attribution":"GZ, Castle Pines North, CO"},
+            {"title":"Midwinter Muse","short":"Midwinter Muse","description":"Saturated red trees, candlelight, antiques and garlands dress the Mayfair home for winter evenings.","image":"../assets/study10-midwinter-muse-01.jpg","alt":"Midwinter Muse project photograph","meta":[["Neighborhood","Mayfair"],["Focus","Seasonal styling"]],"accent":"#f0ac9b","panel":"#4e282b","tag":"Work / Seasonal styling","testimonial":"The holiday season always asks for a bit of magic and I decided to answer in red.","attribution":"Troy Rivington"},
+            {"title":"The Nile Nocturne","short":"The Nile Nocturne","description":"A richly layered bedroom suite inspired by the romance and intrigue of 1940s Cairo.","image":"../assets/study10-the-nile-nocturne-01.jpg","alt":"The Nile Nocturne project photograph","meta":[["Neighborhood","To be confirmed"],["Focus","Colour and atmosphere"]],"accent":"#f1ad8b","panel":"#442827","tag":"Work / Colour and atmosphere","testimonial":"The whole room feels like an occasion.","attribution":"Sample testimonial"}
+          ]
+        },
+        point: {
+          label: 'Point of view',
+          entries: [
+            { title: "The most memorable rooms feel as though they could belong to <em>no one else.</em>", editorial: true, short: 'Character', description: 'We begin with the life that will unfold inside a room. The result is layered rather than styled, expressive rather than expected.', image: '../assets/collected-living.jpg', second: '../assets/portrait-vignette.jpg', alt: 'Collected living room and portrait vignette', meta: [['Principle','Personal first'],['Method','Layer + edit']], accent: '#94613f', tag: 'Point of view / 01', testimonial: 'It feels like us in every detail.' },
+            { title: 'The whole and the <em>telling detail.</em>', short: 'Craft', description: 'Architecture sets the rhythm; materials, objects and light make it intimate.', image: '../assets/stone-kitchen.jpg', second: '../assets/tailored-bar.jpg', alt: 'Stone kitchen and tailored bar detail', meta: [['Principle','Big idea, fine detail'],['Method','Resolve + refine']], accent: '#706554', tag: 'Point of view / 02', testimonial: 'Even the smallest details feel considered.' },
+            { title: 'A little tension makes it <em>memorable.</em>', short: 'Contrast', description: 'Tailored lines meet unexpected art, deep colour and objects with a point of view.', image: '../assets/blue-salon.jpg', second: '../assets/black-bath.jpg', alt: 'Blue salon and dark art-filled room', meta: [['Principle','Restraint + surprise'],['Method','Contrast + balance']], accent: '#3f5870', tag: 'Point of view / 03', testimonial: 'The room has so much personality.' },
+            { fullPage: true, accent: '#a62a20' }
+          ]
+        },
+        approach: {
+          label: 'Design + build',
+          entries: [
+            { title: 'First, we <em>listen.</em>', short: 'Discover', description: 'How you live, what you collect and how the house should feel set the direction.', image: '../assets/foyer.jpg', alt: 'Layered foyer with staircase, artwork and flowers', meta: [['Stage','01 / Discover'],['Output','A clear point of view']], accent: '#77513f', tag: 'Approach / Discover', step: '01' },
+            { title: 'Then, we <em>compose.</em>', short: 'Design', description: 'Space, colour, material and light are developed as one connected idea.', image: '../assets/desk.jpg', alt: 'Tailored desk in front of stained glass window', meta: [['Stage','02 / Design'],['Output','Space + material']], accent: '#8e6f3f', tag: 'Approach / Design', step: '02' },
+            { title: 'We find what belongs <em>nowhere else.</em>', short: 'Collect', description: 'Art, antiques and custom pieces bring individuality into the architectural frame.', image: '../assets/portrait-vignette.jpg', alt: 'Portrait artwork above a collected wood cabinet', meta: [['Stage','03 / Collect'],['Output','Art + objects']], accent: '#526851', tag: 'Approach / Collect', step: '03' },
+            { title: 'Every line is <em>resolved.</em>', short: 'Deliver', description: 'Documentation, coordination and construction fluency protect the final experience.', image: '../assets/powder-detail.jpg', alt: 'Refined powder room detail with stone, mirror and red flowers', meta: [['Stage','04 / Deliver'],['Output','A complete interior']], accent: '#8b3b42', tag: 'Approach / Deliver', step: '04' }
+          ]
+        },
+        studio: {
+          label: 'The studio',
+          entries: [
+            { title: 'One studio. <em>Many disciplines.</em>', short: 'Rivington Marx Studio', description: 'Interior design, architectural thinking and construction fluency working as one.', image: '../assets/studio.jpg', alt: 'Rivington Marx studio with material boards and reception desk', meta: [['Based in','Denver, Colorado'],['Working','Nationwide']], accent: '#80413b', tag: 'Studio / Denver' },
+            { title: 'Bold ideas. <em>Precisely delivered.</em>', short: 'Integrated Practice', description: 'A single creative thread carries the project from early concept to the final object.', image: '../assets/dark-kitchen.jpg', alt: 'Tailored dark and cream kitchen with art and patterned ceiling', meta: [['Practice','Design + architecture'],['Capability','Project delivery']], accent: '#74633e', tag: 'Studio / Integrated practice' }
+          ]
+        },
+        contact: {
+          label: 'Begin a project',
+          entries: [
+            { title: 'Make it <em>unmistakably yours.</em>', short: 'Begin a Project', description: 'A conversation is the first step toward a home with character, clarity and a life of its own.', image: '../assets/gold-dining.jpg', alt: 'Atmospheric gold dining room', meta: [['Studio','Rivington Marx'],['Location','Denver / Nationwide']], accent: '#aa6d3d', tag: 'Contact / New enquiries', contact: true }
+          ]
+        }
+      };
+
+      const projectStories = [
+        {"gallery":[["../assets/study10-the-pink-pony-01.jpg","The Pink Pony — photograph 1"],["../assets/study10-the-pink-pony-02.jpg","The Pink Pony — photograph 2"],["../assets/study10-the-pink-pony-03.jpg","The Pink Pony — photograph 3"],["../assets/study10-the-pink-pony-04.jpg","The Pink Pony — photograph 4"],["../assets/study10-the-pink-pony-05.jpg","The Pink Pony — photograph 5"],["../assets/study10-the-pink-pony-06.jpg","The Pink Pony — photograph 6"],["../assets/study10-the-pink-pony-07.jpg","The Pink Pony — photograph 7"],["../assets/study10-the-pink-pony-08.jpg","The Pink Pony — photograph 8"],["../assets/study10-the-pink-pony-09.jpg","The Pink Pony — photograph 9"],["../assets/study10-the-pink-pony-10.jpg","The Pink Pony — photograph 10"],["../assets/study10-the-pink-pony-11.jpg","The Pink Pony — photograph 11"],["../assets/study10-the-pink-pony-12.jpg","The Pink Pony — photograph 12"],["../assets/study10-the-pink-pony-13.jpg","The Pink Pony — photograph 13"],["../assets/study10-the-pink-pony-14.jpg","The Pink Pony — photograph 14"],["../assets/study10-the-pink-pony-15.jpg","The Pink Pony — photograph 15"],["../assets/study10-the-pink-pony-16.jpg","The Pink Pony — photograph 16"]],"chapters":[{"label":"01 / Design concept","title":"The Pink Pony","copy":["The Pink Pony brings personality to a new build through a confident mix of cream, pink, deep blue, soft gray, brass, pattern, and collected pieces. The design moves between calm and dramatic moments, from richly colored rooms to tailored furnishings and playful details, creating a home that feels polished, personal, and anything but expected."]},{"label":"02 / Notes","title":"A closer look","copy":["A dining room composed as theatre, with vivid colour, expressive art and lighting that gives the room a sense of occasion."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Hilltop"],["Property type","New build, single-family residence"],["Scope","Whole-home design and furnishings, with custom details and expanded kitchen storage."]]}]},
+        {"gallery":[["../assets/study10-tailored-in-stone-01.jpg","Tailored In Stone — photograph 1"],["../assets/study10-tailored-in-stone-02.jpg","Tailored In Stone — photograph 2"],["../assets/study10-tailored-in-stone-03.jpg","Tailored In Stone — photograph 3"],["../assets/study10-tailored-in-stone-04.jpg","Tailored In Stone — photograph 4"],["../assets/study10-tailored-in-stone-05.jpg","Tailored In Stone — photograph 5"],["../assets/study10-tailored-in-stone-06.jpg","Tailored In Stone — photograph 6"],["../assets/study10-tailored-in-stone-07.jpg","Tailored In Stone — photograph 7"],["../assets/study10-tailored-in-stone-08.jpg","Tailored In Stone — photograph 8"],["../assets/study10-tailored-in-stone-09.jpg","Tailored In Stone — photograph 9"],["../assets/study10-tailored-in-stone-10.jpg","Tailored In Stone — photograph 10"],["../assets/study10-tailored-in-stone-11.jpg","Tailored In Stone — photograph 11"],["../assets/study10-tailored-in-stone-12.jpg","Tailored In Stone — photograph 12"],["../assets/study10-tailored-in-stone-13.jpg","Tailored In Stone — photograph 13"],["../assets/study10-tailored-in-stone-14.jpg","Tailored In Stone — photograph 14"],["../assets/study10-tailored-in-stone-15.jpg","Tailored In Stone — photograph 15"]],"chapters":[{"label":"01 / Design concept","title":"Tailored In Stone","copy":["The design concept for this project centered on reconciling a contemporary, minimalist aesthetic with the home’s more traditional architecture. The kitchen cabinetry incorporated a mix of materials across slab-style doors, including bleached walnut, velvet matte laminate, bronze metal, glass, and a plaster hood. Together, these elements introduced warmer, softer finishes within a contemporary application. In the primary bathroom, the soaking tub was clad in slabs of Calacatta Bluette marble. Vintage glass light fixtures were incorporated throughout the home to balance the more contemporary elements."]},{"label":"02 / Notes","title":"A closer look","copy":["Warm light, rounded edges and natural stone soften the precision of the kitchen joinery."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Cherry Hills Village"],["Property type","Large single-family residence"],["Scope","Full gut renovation with a complete re-configuration of the main floor."]]}]},
+        {"gallery":[["../assets/study10-adventures-in-moodsetting-01.jpg","Adventures in Moodsetting — photograph 1"],["../assets/study10-adventures-in-moodsetting-02.jpg","Adventures in Moodsetting — photograph 2"],["../assets/study10-adventures-in-moodsetting-03.jpg","Adventures in Moodsetting — photograph 3"],["../assets/study10-adventures-in-moodsetting-04.jpg","Adventures in Moodsetting — photograph 4"],["../assets/study10-adventures-in-moodsetting-05.jpg","Adventures in Moodsetting — photograph 5"],["../assets/study10-adventures-in-moodsetting-06.jpg","Adventures in Moodsetting — photograph 6"],["../assets/study10-adventures-in-moodsetting-07.jpg","Adventures in Moodsetting — photograph 7"],["../assets/study10-adventures-in-moodsetting-08.jpg","Adventures in Moodsetting — photograph 8"],["../assets/study10-adventures-in-moodsetting-09.jpg","Adventures in Moodsetting — photograph 9"],["../assets/study10-adventures-in-moodsetting-10.jpg","Adventures in Moodsetting — photograph 10"],["../assets/study10-adventures-in-moodsetting-11.jpg","Adventures in Moodsetting — photograph 11"],["../assets/study10-adventures-in-moodsetting-12.jpg","Adventures in Moodsetting — photograph 12"],["../assets/study10-adventures-in-moodsetting-13.jpg","Adventures in Moodsetting — photograph 13"],["../assets/study10-adventures-in-moodsetting-14.jpg","Adventures in Moodsetting — photograph 14"],["../assets/study10-adventures-in-moodsetting-15.jpg","Adventures in Moodsetting — photograph 15"],["../assets/study10-adventures-in-moodsetting-16.jpg","Adventures in Moodsetting — photograph 16"],["../assets/study10-adventures-in-moodsetting-17.jpg","Adventures in Moodsetting — photograph 17"],["../assets/study10-adventures-in-moodsetting-18.jpg","Adventures in Moodsetting — photograph 18"],["../assets/study10-adventures-in-moodsetting-19.jpg","Adventures in Moodsetting — photograph 19"],["../assets/study10-adventures-in-moodsetting-20.jpg","Adventures in Moodsetting — photograph 20"]],"chapters":[{"label":"01 / Design concept","title":"Adventures in Moodsetting","copy":["Adventures in Moodsetting honors the character of a 1939 Tudor while adding a layered, moody, and artful point of view. Deep reds, antique pieces, portrait art, patterned surfaces, and dramatic lighting give the home a collected feel, with each room shaped to support intimate everyday living and memorable evenings with guests."]},{"label":"02 / Notes","title":"A closer look","copy":["Pattern and artwork create rhythm from room to room. Dark architectural lines give the collection a frame."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Mayfair"],["Property type","Single-family residence"],["Scope","Complete renovation and furnishings, including the kitchen, bathrooms, interior finishes and updates to historic features."]]}]},
+        {"gallery":[["../assets/study10-parlors-power-01.jpg","Parlors &amp; Power — photograph 1"],["../assets/study10-parlors-power-02.jpg","Parlors &amp; Power — photograph 2"],["../assets/study10-parlors-power-03.jpg","Parlors &amp; Power — photograph 3"],["../assets/study10-parlors-power-04.jpg","Parlors &amp; Power — photograph 4"],["../assets/study10-parlors-power-05.jpg","Parlors &amp; Power — photograph 5"],["../assets/study10-parlors-power-06.jpg","Parlors &amp; Power — photograph 6"],["../assets/study10-parlors-power-07.jpg","Parlors &amp; Power — photograph 7"],["../assets/study10-parlors-power-08.jpg","Parlors &amp; Power — photograph 8"],["../assets/study10-parlors-power-09.jpg","Parlors &amp; Power — photograph 9"],["../assets/study10-parlors-power-10.jpg","Parlors &amp; Power — photograph 10"],["../assets/study10-parlors-power-11.jpg","Parlors &amp; Power — photograph 11"],["../assets/study10-parlors-power-12.jpg","Parlors &amp; Power — photograph 12"],["../assets/study10-parlors-power-13.jpg","Parlors &amp; Power — photograph 13"],["../assets/study10-parlors-power-14.jpg","Parlors &amp; Power — photograph 14"],["../assets/study10-parlors-power-15.jpg","Parlors &amp; Power — photograph 15"],["../assets/study10-parlors-power-16.jpg","Parlors &amp; Power — photograph 16"],["../assets/study10-parlors-power-17.jpg","Parlors &amp; Power — photograph 17"],["../assets/study10-parlors-power-18.jpg","Parlors &amp; Power — photograph 18"],["../assets/study10-parlors-power-19.jpg","Parlors &amp; Power — photograph 19"]],"chapters":[{"label":"01 / Design concept","title":"Parlors &amp; Power","copy":["Parlors &amp; Power reimagines an 1880 Second Empire-style residence with bold color, historic character, patterned textiles, dramatic lighting, and a strong mix of vintage and contemporary pieces. Dark trim, stained glass, mural walls, rich finishes, and expressive furnishings give the home a powerful sense of story while still respecting its original architecture."]},{"label":"02 / Notes","title":"A closer look","copy":["Stained glass and dark wood give the rooms a strong architectural frame. Each shift in pattern or finish adds another layer."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Curtis Park"],["Property type","Historic single-family residence"],["Scope","Complete home renovation and full-service furnishings."]]}]},
+        {"gallery":[["../assets/study10-beyond-the-pale-01.jpg","Beyond the Pale — photograph 1"],["../assets/study10-beyond-the-pale-02.jpg","Beyond the Pale — photograph 2"],["../assets/study10-beyond-the-pale-03.jpg","Beyond the Pale — photograph 3"],["../assets/study10-beyond-the-pale-04.jpg","Beyond the Pale — photograph 4"],["../assets/study10-beyond-the-pale-05.jpg","Beyond the Pale — photograph 5"],["../assets/study10-beyond-the-pale-06.jpg","Beyond the Pale — photograph 6"],["../assets/study10-beyond-the-pale-07.jpg","Beyond the Pale — photograph 7"],["../assets/study10-beyond-the-pale-08.jpg","Beyond the Pale — photograph 8"],["../assets/study10-beyond-the-pale-09.jpg","Beyond the Pale — photograph 9"],["../assets/study10-beyond-the-pale-10.jpg","Beyond the Pale — photograph 10"],["../assets/study10-beyond-the-pale-11.jpg","Beyond the Pale — photograph 11"],["../assets/study10-beyond-the-pale-12.jpg","Beyond the Pale — photograph 12"],["../assets/study10-beyond-the-pale-13.jpg","Beyond the Pale — photograph 13"],["../assets/study10-beyond-the-pale-14.jpg","Beyond the Pale — photograph 14"],["../assets/study10-beyond-the-pale-15.jpg","Beyond the Pale — photograph 15"]],"chapters":[{"label":"01 / Design concept","title":"Beyond the Pale","copy":["Beyond the Pale was designed as a calm, textural retreat with soft taupes, misty grays, creamy whites, brass accents, and organic materials throughout. The redesigned flow opens the home for easier living. At the same time, layered fabrics, sculptural details, and refined furnishings create a quiet sense of luxury that feels relaxed, warm, and connected to the Castle Pines setting."]},{"label":"02 / Notes","title":"A closer look","copy":["Soft surfaces and warm light give the rooms definition without interrupting the calm palette."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Castle Pines"],["Property type","Single-family residence"],["Scope","Full renovation and furnishings, including kitchens and baths, space planning and interior selections."]]}]},
+        {"gallery":[["../assets/study10-midcentury-globetrotter-01.jpg","Midcentury Globetrotter — photograph 1"],["../assets/study10-midcentury-globetrotter-02.jpg","Midcentury Globetrotter — photograph 2"],["../assets/study10-midcentury-globetrotter-03.jpg","Midcentury Globetrotter — photograph 3"],["../assets/study10-midcentury-globetrotter-04.jpg","Midcentury Globetrotter — photograph 4"]],"chapters":[{"label":"01 / Design concept","title":"Midcentury Globetrotter","copy":["Midcentury Globetrotter blends clean midcentury lines with warm wood, black accents, sculptural objects, and collected pieces from around the globe. The design stays edited and refined, allowing the furnishings, art, and travel-inspired details to bring character without overwhelming the home’s calm, modern rhythm."]},{"label":"02 / Notes","title":"A closer look","copy":["Furniture, art and lighting each have a clear silhouette. The details bring a personal rhythm to the room."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Wash Park"],["Property type","Single-family residence"],["Scope","Interior design completed in multiple phases."]]}]},
+        {"gallery":[["../assets/study10-in-the-studio-01.jpg","In the Studio — photograph 1"],["../assets/study10-in-the-studio-02.jpg","In the Studio — photograph 2"],["../assets/study10-in-the-studio-03.jpg","In the Studio — photograph 3"],["../assets/study10-in-the-studio-04.jpg","In the Studio — photograph 4"],["../assets/study10-in-the-studio-05.jpg","In the Studio — photograph 5"],["../assets/study10-in-the-studio-06.jpg","In the Studio — photograph 6"],["../assets/study10-in-the-studio-07.jpg","In the Studio — photograph 7"],["../assets/study10-in-the-studio-08.jpg","In the Studio — photograph 8"],["../assets/study10-in-the-studio-09.jpg","In the Studio — photograph 9"],["../assets/study10-in-the-studio-10.jpg","In the Studio — photograph 10"],["../assets/study10-in-the-studio-11.jpg","In the Studio — photograph 11"],["../assets/study10-in-the-studio-12.jpg","In the Studio — photograph 12"],["../assets/study10-in-the-studio-13.jpg","In the Studio — photograph 13"],["../assets/study10-in-the-studio-14.jpg","In the Studio — photograph 14"],["../assets/study10-in-the-studio-15.jpg","In the Studio — photograph 15"],["../assets/study10-in-the-studio-16.jpg","In the Studio — photograph 16"],["../assets/study10-in-the-studio-17.jpg","In the Studio — photograph 17"],["../assets/study10-in-the-studio-18.jpg","In the Studio — photograph 18"]],"chapters":[{"label":"01 / Design concept","title":"In the Studio","copy":["In The Studio turns the Rivington Marx workspace into a living expression of the firm’s design point of view. Handwoven wall-coverings, specialty paint finishes, dramatic lighting, vintage pieces, one-of-a-kind objects, and a jewel-box powder room create a studio that feels creative, tactile, and deeply personal."]},{"label":"02 / Notes","title":"A closer look","copy":["Artwork and vintage objects sit beside material samples and working spaces. The studio is designed for both presentation and day-to-day use."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Speer Neighborhood"],["Property type","Commercial"],["Scope","Complete renovation and furnishings."]]}]},
+        {"gallery":[["../assets/study10-east-meets-rest-01.jpg","East Meets Rest — photograph 1"],["../assets/study10-east-meets-rest-02.jpg","East Meets Rest — photograph 2"],["../assets/study10-east-meets-rest-03.jpg","East Meets Rest — photograph 3"],["../assets/study10-east-meets-rest-04.jpg","East Meets Rest — photograph 4"],["../assets/study10-east-meets-rest-05.jpg","East Meets Rest — photograph 5"]],"chapters":[{"label":"01 / Design concept","title":"East Meets Rest","copy":["East Meets Rest creates a calm, collected home with warm neutrals, deep blues, brass, embroidered drapery, porcelain accents, and Asian-inspired pieces. A brass cocktail table, blue seating, vintage dining chairs, and a gilt-wood Buddha statue bring balance between serenity and visual interest, giving the home a polished global feel."]},{"label":"02 / Notes","title":"A closer look","copy":["Prints repeat without matching exactly. Warm wood and brass offer a counterpoint to the blue upholstery."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Buffalo Ridge Estates in Castle Pines"],["Property type","Single-family residence"],["Scope","Complete home renovation and furnishings."]]}]},
+        {"gallery":[["../assets/study10-midwinter-muse-01.jpg","Midwinter Muse — photograph 1"],["../assets/study10-midwinter-muse-02.jpg","Midwinter Muse — photograph 2"],["../assets/study10-midwinter-muse-03.jpg","Midwinter Muse — photograph 3"],["../assets/study10-midwinter-muse-04.jpg","Midwinter Muse — photograph 4"],["../assets/study10-midwinter-muse-05.jpg","Midwinter Muse — photograph 5"],["../assets/study10-midwinter-muse-06.jpg","Midwinter Muse — photograph 6"],["../assets/study10-midwinter-muse-07.jpg","Midwinter Muse — photograph 7"],["../assets/study10-midwinter-muse-08.jpg","Midwinter Muse — photograph 8"],["../assets/study10-midwinter-muse-09.jpg","Midwinter Muse — photograph 9"],["../assets/study10-midwinter-muse-10.jpg","Midwinter Muse — photograph 10"],["../assets/study10-midwinter-muse-11.jpg","Midwinter Muse — photograph 11"],["../assets/study10-midwinter-muse-12.jpg","Midwinter Muse — photograph 12"],["../assets/study10-midwinter-muse-13.jpg","Midwinter Muse — photograph 13"],["../assets/study10-midwinter-muse-14.jpg","Midwinter Muse — photograph 14"]],"chapters":[{"label":"01 / Design concept","title":"Midwinter Muse","copy":["The Mayfair home takes on a richer holiday palette through deep red trees, candlelight, garlands and antiques. The seasonal additions sit among the existing patterns and furnishings, creating the atmosphere of a winter evening.","The bar has a quieter character. Pine, eucalyptus and glass icicles offer a cooler, lighter counterpart to the saturated red and dramatic styling in the adjoining rooms."]},{"label":"02 / Notes","title":"A closer look","copy":["The rooms change after dark. Candlelight picks out the ornament, while greenery softens the edges of the rooms."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","Mayfair"],["Property type","Single-family residence"],["Scope","Seasonal styling and holiday design for an existing full-home interior."]]}]},
+        {"gallery":[["../assets/study10-the-nile-nocturne-01.jpg","The Nile Nocturne — photograph 1"],["../assets/study10-the-nile-nocturne-02.jpg","The Nile Nocturne — photograph 2"],["../assets/study10-the-nile-nocturne-03.jpg","The Nile Nocturne — photograph 3"],["../assets/study10-the-nile-nocturne-04.jpg","The Nile Nocturne — photograph 4"],["../assets/study10-the-nile-nocturne-05.jpg","The Nile Nocturne — photograph 5"],["../assets/study10-the-nile-nocturne-06.jpg","The Nile Nocturne — photograph 6"],["../assets/study10-the-nile-nocturne-07.jpg","The Nile Nocturne — photograph 7"],["../assets/study10-the-nile-nocturne-08.jpg","The Nile Nocturne — photograph 8"],["../assets/study10-the-nile-nocturne-09.jpg","The Nile Nocturne — photograph 9"],["../assets/study10-the-nile-nocturne-10.jpg","The Nile Nocturne — photograph 10"],["../assets/study10-the-nile-nocturne-11.jpg","The Nile Nocturne — photograph 11"],["../assets/study10-the-nile-nocturne-12.jpg","The Nile Nocturne — photograph 12"],["../assets/study10-the-nile-nocturne-13.jpg","The Nile Nocturne — photograph 13"],["../assets/study10-the-nile-nocturne-14.jpg","The Nile Nocturne — photograph 14"],["../assets/study10-the-nile-nocturne-15.jpg","The Nile Nocturne — photograph 15"],["../assets/study10-the-nile-nocturne-16.jpg","The Nile Nocturne — photograph 16"]],"chapters":[{"label":"01 / Design concept","title":"The Nile Nocturne","copy":["Designed by Troy Rivington of Rivington Marx Interiors, The Nile Nocturne is a richly layered bedroom suite inspired by the romance and intrigue of 1940s Cairo. Blending French Art Deco, Egyptian Revival, and English aristocratic influences, the space features custom Schumacher Chinoiserie wallcoverings, a laser-etched suede ceiling by Perennials, dark sisal carpeting, and century-old Egyptian rugs. Seven sculptural brass chandeliers, an Artistic Tile fireplace, antique carved-ivory Chinese panels, and curated artwork contribute to the room&#x27;s sophisticated, collected aesthetic.","The furnishings combine antique and contemporary pieces, including a distressed chocolate leather bed by Vanguard, an oxblood dresser and bistro table by Made Goods, and upholstered furniture featuring Schumacher and Romo fabrics with Samuel &amp; Sons trims. An antique griffin-carved console, vintage sconces, sculptural accessories, and international textiles complete the design, creating an atmospheric retreat that celebrates craftsmanship, history, and the art of collecting."]},{"label":"02 / Notes","title":"A closer look","copy":["Oxblood velvet and dark floral walls set the tone. Warm light picks out the brass and catches the folds of the curtains."]},{"label":"03 / Project details","title":"Project details","copy":[],"details":[["Neighborhood","To be confirmed"],["Property type","Bedroom suite · draft"],["Scope","Bedroom suite interiors and furnishings · draft"]]}]}
+      ];
+
+      let activeGroup = 'work';
+      let activeIndex = 0;
+      let dragStart = 0;
+      let dragBase = 0;
+      let dragDistance = 0;
+      let dragging = false;
+      let swapTimer = null;
+      let sectionWheelLock = false;
+
+      const root = document.documentElement;
+      const site = document.querySelector('.site');
+      const leftRail = document.querySelector('.left-rail');
+      const stage = document.querySelector('.right-stage');
+      const viewport = document.querySelector('.stage-viewport');
+      const track = document.querySelector('.media-track');
+      const essay = document.querySelector('.point-essay');
+      const essayScroll = document.querySelector('.point-essay__scroll');
+      const essayCount = document.querySelector('.point-essay__count');
+      const essayBack = document.querySelector('.point-essay__back');
+      const essayContinue = document.querySelector('.point-essay__continue');
+      const copy = document.querySelector('.copy-stack');
+      const copyViewport = document.querySelector('.copy-viewport');
+      const copyTrack = document.querySelector('.copy-track');
+      const title = document.querySelector('.title');
+      const description = document.querySelector('.description');
+      const meta = document.querySelector('.meta');
+      const counter = document.querySelector('.counter');
+      const progress = document.querySelector('.progress-line span');
+      const prev = document.querySelector('.arrow--prev');
+      const next = document.querySelector('.arrow--next');
+      const navButtons = [...document.querySelectorAll('.nav-button')];
+      const indexOverlay = document.querySelector('.index-overlay');
+      const indexButton = document.querySelector('.stage-nav .index-button');
+      const home = document.querySelector('.study-home');
+      const homeView = document.querySelector('.home-view');
+      const homeBrand = document.querySelector('.home-brand');
+      const homeIndex = document.querySelector('.home-index');
+      const homeMenu = document.querySelector('.home-menu');
+      const returnHome = document.querySelector('.left-rail .brand');
+      const viewCursor = document.querySelector('.view-cursor');
+      const hideViewCursor = () => { viewCursor.hidden = true; };
+      const enterSite = () => {
+        if (home.inert) return;
+        hideViewCursor();
+        home.inert = true;
+        site.inert = false;
+        home.classList.add('is-away');
+      };
+      const openHomeDestination = (group) => {
+        if (homeMenu.open) homeMenu.close();
+        setGroup(group);
+        enterSite();
+        navButtons.find(button => button.dataset.group === group).focus({ preventScroll: true });
+      };
+      const indexClose = document.querySelector('.index-close');
+      const projectList = document.querySelector('.project-list');
+      const indexPreview = document.querySelector('.index-preview');
+      const indexImage = indexPreview.querySelector('img');
+      const indexCount = document.querySelector('.index-count');
+      const indexTitle = document.querySelector('.index-preview__title');
+      const indexMeta = document.querySelector('.index-preview__meta');
+      const projectView = document.querySelector('.project-view');
+      const projectClose = document.querySelector('.project-close');
+      const projectGallery = document.querySelector('.project-gallery');
+      const projectGalleryTrack = document.querySelector('.project-gallery__track');
+      const projectGalleryPosition = document.querySelector('.project-gallery__position span');
+      const galleryPrev = document.querySelector('.gallery-prev');
+      const galleryNext = document.querySelector('.gallery-next');
+      const projectStory = document.querySelector('.project-story');
+      const projectStoryTrack = document.querySelector('.project-story__track');
+      const storyPrev = document.querySelector('.story-prev');
+      const storyNext = document.querySelector('.story-next');
+      const storyCounter = document.querySelector('.story-counter');
+      const storyProgress = document.querySelector('.story-progress span');
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let openProjectIndex = 0;
+      let galleryIndex = 0;
+      let storyIndex = 0;
+      let galleryWheelLock = false;
+      let storyWheelLock = false;
+
+      const pad = (value) => String(value).padStart(2, '0');
+      const horizontalCopyGroups = new Set(['work', 'point', 'approach', 'studio']);
+      const currentEntries = () => groups[activeGroup].entries;
+      const usesHorizontalCopy = () => horizontalCopyGroups.has(activeGroup);
+      const slideStep = () => viewport.clientWidth;
+      const targetX = () => -(activeIndex * slideStep());
+      const copyTargetX = () => -(activeIndex * 100);
+
+      const copyPanelMarkup = (entry, index) => {
+        if (entry.fullPage) return '<section class="copy-panel" aria-hidden="true"></section>';
+        const heading = entry.editorial
+          ? `<blockquote class="title editorial-quote">${entry.title}</blockquote>`
+          : `<h1 class="title${entry.featured ? ' title--featured' : ''}">${entry.title}</h1>`;
+        const details = entry.editorial ? '' : `<div class="meta">${entry.meta.map(([key, value]) => `<div class="meta__item"><span class="meta__key">${key}</span><span class="meta__value">${value}</span></div>`).join('')}</div>`;
+        return `<section class="copy-panel${entry.editorial ? ' copy-panel--editorial' : ''}" aria-hidden="${index === activeIndex ? 'false' : 'true'}">${heading}<p class="description">${entry.description}</p>${details}</section>`;
+      };
+
+      const renderCopyTrack = () => {
+        copyTrack.innerHTML = currentEntries().map(copyPanelMarkup).join('');
+        copyTrack.dataset.group = activeGroup;
+        copyTrack.style.transform = `translate3d(${copyTargetX()}%,0,0)`;
+      };
+
+      const updateCopyTrack = () => {
+        if (copyTrack.dataset.group !== activeGroup) renderCopyTrack();
+        copyTrack.style.transform = `translate3d(${copyTargetX()}%,0,0)`;
+        [...copyTrack.children].forEach((panel, index) => panel.setAttribute('aria-hidden', String(index !== activeIndex || currentEntries()[index].fullPage === true)));
+      };
+
+      const buildSlide = (entry, index) => {
+        const node = document.createElement('article');
+        node.className = 'slide';
+        node.dataset.index = index;
+        if (entry.fullPage) {
+          node.classList.add('slide--essay');
+          node.setAttribute('aria-hidden', 'true');
+          return node;
+        }
+        if (entry.second) node.classList.add('slide--diptych');
+        if (entry.step) { node.classList.add('slide--step'); node.dataset.step = entry.step; }
+        if (entry.contact) node.classList.add('slide--contact');
+        const isWork = activeGroup === 'work';
+        const quote = entry.testimonial;
+        if (isWork) node.classList.add('slide--work');
+        const testimonial = quote ? `<figure class="slide__testimonial"><blockquote>“${quote}”</blockquote><figcaption>${entry.attribution || 'Sample testimonial'}</figcaption></figure>` : '';
+        const firstMedia = `<div class="slide__media"><img src="${entry.image}" alt="${entry.alt}"${entry.contact ? ' draggable="false"' : ''} ${index ? 'loading="lazy"' : ''} decoding="async">${testimonial}</div>`;
+        const secondMedia = entry.second ? `<div class="slide__media"><img src="${entry.second}" alt="" loading="lazy" decoding="async"></div>` : '';
+        const contact = entry.contact ? `<div class="slide__cta"><span>Begin a conversation.</span><a href="https://rivingtonmarx.com/contact/" target="_blank" rel="noopener">Contact the studio <b aria-hidden="true">↗</b></a></div>` : '';
+        node.innerHTML = `${firstMedia}${secondMedia}<div class="slide__shade"></div>${contact}<div class="slide__caption"><strong>${entry.short}</strong></div>`;
+        if (isWork) {
+          const view = document.createElement('button');
+          view.type = 'button';
+          view.className = 'work-view';
+          view.innerHTML = '<span class="slide__open" aria-hidden="true">Open project ↗</span>';
+          view.tabIndex = -1;
+          view.setAttribute('aria-label', 'View ' + entry.short);
+          view.addEventListener('click', (event) => {
+            if (index === activeIndex && (event.detail === 0 || dragDistance < 8)) {
+              hideViewCursor();
+              openProject(index);
+            }
+          });
+          node.append(view);
+        }
+        return node;
+      };
+
+      const renderTrack = () => {
+        track.innerHTML = '';
+        currentEntries().forEach((entry, index) => track.appendChild(buildSlide(entry, index)));
+        requestAnimationFrame(() => {
+          track.style.transform = `translate3d(${targetX()}px,0,0)`;
+          updateActiveSlides();
+        });
+      };
+
+      const renderCopy = (immediate = false) => {
+        const entry = currentEntries()[activeIndex];
+        const apply = () => {
+          const reading = entry.fullPage === true;
+          const wasReading = site.classList.contains('is-reading');
+          site.classList.toggle('is-reading', reading);
+          essay.inert = !reading;
+          leftRail.inert = reading;
+          viewport.inert = reading;
+          if (reading) {
+            essayCount.textContent = `${pad(activeIndex + 1)} / ${pad(currentEntries().length)}`;
+            if (!wasReading) essayScroll.scrollTop = 0;
+          }
+          returnHome.querySelector('img').src = activeGroup === 'work' ? '../assets/study10-rivington-marx-logo-white.png' : '../assets/study10-rivington-marx-logo.png';
+          root.style.setProperty('--accent', entry.accent);
+          leftRail.classList.toggle('has-horizontal-copy', usesHorizontalCopy());
+          leftRail.classList.toggle('is-contact', activeGroup === 'contact');
+          if (activeGroup === 'work') {
+            leftRail.style.setProperty('--rail-bg', entry.panel);
+            leftRail.style.setProperty('--rail-ink', 'var(--cream)');
+            leftRail.style.setProperty('--rail-muted', 'rgba(242,239,230,.58)');
+            leftRail.style.setProperty('--rail-line', 'rgba(242,239,230,.28)');
+          } else {
+            ['--rail-bg', '--rail-ink', '--rail-muted', '--rail-line'].forEach((property) => leftRail.style.removeProperty(property));
+          }
+          if (usesHorizontalCopy()) updateCopyTrack();
+          else {
+            title.innerHTML = entry.title;
+            description.textContent = entry.description;
+            meta.innerHTML = entry.meta.map(([key, value]) => `<div class="meta__item"><span class="meta__key">${key}</span><span class="meta__value">${value}</span></div>`).join('');
+          }
+          counter.textContent = `${pad(activeIndex + 1)} — ${pad(currentEntries().length)}`;
+          progress.style.transform = `scaleX(${(activeIndex + 1) / currentEntries().length})`;
+          prev.disabled = activeIndex === 0;
+          next.disabled = activeIndex === currentEntries().length - 1;
+          copy.classList.remove('is-switching');
+          copyViewport.classList.remove('is-switching');
+        };
+        if (immediate || reduceMotion || usesHorizontalCopy()) apply();
+        else {
+          copy.classList.add('is-switching');
+          setTimeout(apply, 230);
+        }
+      };
+
+      const updateActiveSlides = () => {
+        hideViewCursor();
+        [...track.children].forEach((slide, index) => {
+          const active = index === activeIndex;
+          slide.classList.toggle('is-active', active);
+          const view = slide.querySelector('.work-view');
+          if (view) view.tabIndex = active ? 0 : -1;
+        });
+      };
+
+      const goTo = (index) => {
+        const max = currentEntries().length - 1;
+        const target = Math.max(0, Math.min(max, index));
+        if (target === activeIndex) return;
+        const wasReading = currentEntries()[activeIndex].fullPage;
+        activeIndex = target;
+        track.style.transform = `translate3d(${targetX()}px,0,0)`;
+        updateActiveSlides();
+        renderCopy();
+        if (currentEntries()[activeIndex].fullPage) essayScroll.focus({ preventScroll: true });
+        else if (wasReading) next.focus({ preventScroll: true });
+        preloadNearby();
+      };
+
+      const setGroup = (name) => {
+        if (!groups[name] || name === activeGroup) return;
+        clearTimeout(swapTimer);
+        stage.classList.add('is-swapping');
+        copy.classList.add('is-switching');
+        copyViewport.classList.add('is-switching');
+        activeGroup = name;
+        activeIndex = 0;
+        navButtons.forEach((button) => button.classList.toggle('is-active', button.dataset.group === name));
+        swapTimer = setTimeout(() => {
+          renderTrack();
+          renderCopy(true);
+          requestAnimationFrame(() => stage.classList.remove('is-swapping'));
+        }, reduceMotion ? 0 : 360);
+      };
+
+      const preloadNearby = () => {
+        [activeIndex - 1, activeIndex + 1].forEach((index) => {
+          const entry = currentEntries()[index];
+          if (entry) [entry.image, entry.second].filter(Boolean).forEach((src) => { const image = new Image(); image.src = src; });
+        });
+      };
+
+      const renderIndex = () => {
+        projectList.innerHTML = '';
+        indexCount.textContent = `${pad(groups.work.entries.length)} selected stories`;
+        groups.work.entries.forEach((entry, index) => {
+          const button = document.createElement('button');
+          button.className = `project-link${index === activeIndex && activeGroup === 'work' ? ' is-active' : ''}`;
+          button.type = 'button';
+          button.innerHTML = `<span class="project-link__no">${pad(index + 1)}</span><span class="project-link__title">${entry.short}</span><span class="project-link__type">${entry.tag.split('/')[1]}</span>`;
+          const preview = () => showIndexPreview(index);
+          button.addEventListener('mouseenter', preview);
+          button.addEventListener('focus', preview);
+          button.addEventListener('click', () => {
+            activeGroup = 'work';
+            activeIndex = index;
+            navButtons.forEach((item) => item.classList.toggle('is-active', item.dataset.group === 'work'));
+            renderTrack();
+            renderCopy(true);
+            enterSite();
+            setIndex(false);
+          });
+          projectList.appendChild(button);
+        });
+      };
+
+      let indexPreviewTimer;
+      const showIndexPreview = (index) => {
+        const entry = groups.work.entries[index];
+        const preview = indexPreviews[entry.short];
+        clearTimeout(indexPreviewTimer);
+        indexPreview.classList.add('is-changing');
+        indexPreviewTimer = setTimeout(() => {
+          indexImage.style.objectPosition = preview?.position ?? '';
+          indexImage.src = preview?.src ?? entry.image;
+          indexImage.alt = preview?.alt ?? entry.alt;
+          indexTitle.textContent = entry.short;
+          indexMeta.textContent = entry.tag;
+          indexPreview.classList.remove('is-changing');
+        }, reduceMotion ? 0 : 190);
+        [...projectList.children].forEach((item, itemIndex) => item.classList.toggle('is-active', itemIndex === index));
+      };
+
+      const setIndex = (open) => {
+        if (open) renderIndex();
+        indexOverlay.classList.toggle('is-open', open);
+        indexOverlay.setAttribute('aria-hidden', String(!open));
+        [indexButton, homeIndex].forEach(button => button.setAttribute('aria-expanded', String(open)));
+        if (open) { showIndexPreview(activeGroup === 'work' ? activeIndex : 0); indexClose.focus(); }
+        else (home.inert ? indexButton : homeIndex).focus();
+      };
+
+      const renderProjectGallery = () => {
+        const story = projectStories[openProjectIndex];
+        projectGalleryTrack.innerHTML = story.gallery.map(([src, alt, width, height], imageIndex) => `<figure class="project-gallery__slide${imageIndex === 0 ? ' is-active' : ''}"><img src="${src}" alt="${alt}" ${width ? `width="${width}" height="${height}"` : ''} ${imageIndex ? 'loading="lazy"' : ''} decoding="async"><span class="project-gallery__shade"></span></figure>`).join('');
+      };
+
+      const renderProjectStory = () => {
+        const story = projectStories[openProjectIndex];
+        projectStoryTrack.innerHTML = story.chapters.map((chapter, chapterIndex) => `<section class="story-panel"><div class="story-panel__label">${chapter.label}</div><${chapterIndex ? 'h3' : 'h2'}>${chapter.title}</${chapterIndex ? 'h3' : 'h2'}>${chapter.copy.map(paragraph => `<p>${paragraph}</p>`).join('')}${chapter.details ? `<dl class="project-facts">${chapter.details.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl>` : ''}</section>`).join('');
+      };
+
+      const updateGallery = (index) => {
+        const total = projectStories[openProjectIndex].gallery.length;
+        galleryIndex = Math.max(0, Math.min(total - 1, index));
+        projectGalleryTrack.style.transform = `translate3d(0,${-(galleryIndex * 100)}%,0)`;
+        [...projectGalleryTrack.children].forEach((slide, slideIndex) => slide.classList.toggle('is-active', slideIndex === galleryIndex));
+        projectGalleryPosition.textContent = `${pad(galleryIndex + 1)} / ${pad(total)}`;
+        galleryPrev.disabled = galleryIndex === 0;
+        galleryNext.disabled = galleryIndex === total - 1;
+      };
+
+      const updateStory = (index) => {
+        const total = projectStories[openProjectIndex].chapters.length;
+        storyIndex = Math.max(0, Math.min(total - 1, index));
+        projectStoryTrack.style.transform = `translate3d(${-(storyIndex * 100)}%,0,0)`;
+        [...projectStoryTrack.children].forEach((panel, panelIndex) => {
+          panel.inert = panelIndex !== storyIndex;
+        });
+        storyCounter.textContent = `${pad(storyIndex + 1)} / ${pad(total)}`;
+        storyProgress.style.transform = `scaleX(${(storyIndex + 1) / total})`;
+        storyPrev.disabled = storyIndex === 0;
+        storyNext.disabled = storyIndex === total - 1;
+        storyNext.setAttribute('aria-label', storyIndex === total - 1 ? 'Story complete' : 'Next text chapter');
+      };
+
+      const stepOnWheel = (event, axis) => {
+        if (!projectView.classList.contains('is-open')) return;
+        const panel = event.target.closest('.story-panel');
+        if (axis === 'story' && panel && Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
+          const remaining = panel.scrollHeight - panel.clientHeight - panel.scrollTop;
+          if ((event.deltaY > 0 && remaining > 2) || (event.deltaY < 0 && panel.scrollTop > 2)) return;
+        }
+        event.preventDefault();
+        const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+        if (Math.abs(delta) < 8) return;
+        if (axis === 'gallery') {
+          if (galleryWheelLock) return;
+          galleryWheelLock = true;
+          updateGallery(galleryIndex + (delta > 0 ? 1 : -1));
+          setTimeout(() => { galleryWheelLock = false; }, reduceMotion ? 50 : 780);
+        } else {
+          if (storyWheelLock) return;
+          storyWheelLock = true;
+          updateStory(storyIndex + (delta > 0 ? 1 : -1));
+          setTimeout(() => { storyWheelLock = false; }, reduceMotion ? 50 : 720);
+        }
+      };
+
+      const openProject = (index) => {
+        openProjectIndex = index;
+        galleryIndex = 0;
+        storyIndex = 0;
+        renderProjectGallery();
+        renderProjectStory();
+        updateGallery(0);
+        updateStory(0);
+        projectView.classList.add('is-open');
+        projectView.setAttribute('aria-hidden', 'false');
+        projectClose.focus();
+      };
+
+      const closeProject = () => {
+        projectView.classList.remove('is-open');
+        projectView.setAttribute('aria-hidden', 'true');
+        track.querySelector('.slide.is-active .work-view')?.focus({ preventScroll: true });
+      };
+
+      prev.addEventListener('click', () => goTo(activeIndex - 1));
+      next.addEventListener('click', () => goTo(activeIndex + 1));
+      essayBack.addEventListener('click', () => goTo(activeIndex - 1));
+      essayContinue.addEventListener('click', () => document.getElementById('point-essay-serious').scrollIntoView({ block: 'start' }));
+      navButtons.forEach((button) => button.addEventListener('click', () => setGroup(button.dataset.group)));
+      indexButton.addEventListener('click', () => setIndex(true));
+      homeIndex.addEventListener('click', () => setIndex(true));
+      homeView.addEventListener('click', () => openHomeDestination('work'));
+      homeBrand.addEventListener('click', () => { hideViewCursor(); homeMenu.showModal(); });
+      homeMenu.querySelector('.home-menu__close').addEventListener('click', () => homeMenu.close());
+      homeMenu.querySelectorAll('[data-destination]').forEach(button => {
+        button.addEventListener('click', () => openHomeDestination(button.dataset.destination));
+      });
+      returnHome.addEventListener('click', (event) => {
+        event.preventDefault();
+        hideViewCursor();
+        home.classList.remove('is-away');
+        home.inert = false;
+        site.inert = true;
+        homeBrand.focus({ preventScroll: true });
+      });
+      addEventListener('pointermove', (event) => {
+        const target = event.target;
+        if (event.pointerType === 'mouse' && (target.closest('.home-view') || (!dragging && target.closest('.slide.is-active .work-view')))) {
+          viewCursor.style.left = event.clientX + 'px';
+          viewCursor.style.top = event.clientY + 'px';
+          viewCursor.hidden = false;
+        } else hideViewCursor();
+      });
+      document.documentElement.addEventListener('pointerleave', hideViewCursor);
+      track.addEventListener('pointerdown', hideViewCursor);
+      indexClose.addEventListener('click', () => setIndex(false));
+      projectClose.addEventListener('click', closeProject);
+      galleryPrev.addEventListener('click', () => updateGallery(galleryIndex - 1));
+      galleryNext.addEventListener('click', () => updateGallery(galleryIndex + 1));
+      storyPrev.addEventListener('click', () => updateStory(storyIndex - 1));
+      storyNext.addEventListener('click', () => updateStory(storyIndex + 1));
+      projectGallery.addEventListener('wheel', (event) => stepOnWheel(event, 'gallery'), { passive: false });
+      projectStory.addEventListener('wheel', (event) => stepOnWheel(event, 'story'), { passive: false });
+      site.addEventListener('wheel', (event) => {
+        if (!usesHorizontalCopy() || projectView.classList.contains('is-open') || indexOverlay.classList.contains('is-open')) return;
+        const reading = site.classList.contains('is-reading');
+        const vertical = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+        const delta = vertical ? event.deltaY : event.deltaX;
+        if (reading && (event.ctrlKey || !vertical || delta >= 0 || essayScroll.scrollTop > 1)) return;
+        if (Math.abs(delta) < 8) return;
+        event.preventDefault();
+        if (sectionWheelLock) return;
+        sectionWheelLock = true;
+        goTo(activeIndex + (delta > 0 ? 1 : -1));
+        setTimeout(() => { sectionWheelLock = false; }, reduceMotion ? 50 : reading ? 950 : 760);
+      }, { passive: false });
+
+      track.addEventListener('pointerdown', (event) => {
+        if (activeGroup === 'contact') return;
+        dragging = true;
+        dragDistance = 0;
+        dragStart = event.clientX;
+        dragBase = targetX();
+        track.classList.add('is-dragging');
+      });
+      track.addEventListener('pointermove', (event) => {
+        if (!dragging) return;
+        const delta = event.clientX - dragStart;
+        dragDistance = Math.abs(delta);
+        if (dragDistance > 8 && !track.hasPointerCapture(event.pointerId)) track.setPointerCapture(event.pointerId);
+        track.style.transform = `translate3d(${dragBase + delta}px,0,0)`;
+      });
+      const endDrag = (event) => {
+        if (!dragging) return;
+        const delta = event.clientX - dragStart;
+        dragging = false;
+        track.classList.remove('is-dragging');
+        if (Math.abs(delta) > 70) goTo(activeIndex + (delta < 0 ? 1 : -1));
+        else track.style.transform = `translate3d(${targetX()}px,0,0)`;
+        setTimeout(() => { dragging = false; }, 30);
+      };
+      track.addEventListener('pointerup', endDrag);
+      track.addEventListener('pointercancel', endDrag);
+
+      addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (projectView.classList.contains('is-open')) closeProject();
+          else if (indexOverlay.classList.contains('is-open')) setIndex(false);
+        }
+        if (projectView.classList.contains('is-open')) {
+          if (event.key === 'ArrowUp') updateGallery(galleryIndex - 1);
+          if (event.key === 'ArrowDown') updateGallery(galleryIndex + 1);
+          if (event.key === 'ArrowLeft') updateStory(storyIndex - 1);
+          if (event.key === 'ArrowRight') updateStory(storyIndex + 1);
+          return;
+        }
+        if (home.inert && !projectView.classList.contains('is-open') && !indexOverlay.classList.contains('is-open')) {
+          if (event.key === 'ArrowLeft') goTo(activeIndex - 1);
+          if (event.key === 'ArrowRight') goTo(activeIndex + 1);
+        }
+      });
+      addEventListener('resize', () => { track.style.transform = `translate3d(${targetX()}px,0,0)`; });
+
+      renderTrack();
+      renderCopy(true);
+      preloadNearby();
+    })();
+  </script>
+</body>
+</html>
