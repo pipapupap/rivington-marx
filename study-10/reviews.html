@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <title>Reviews | Rivington Marx Interiors</title>
+  <style>
+    :root {
+      --paper: #ece9df;
+      --cream: #f2efe6;
+      --ink: #191a17;
+      --dark: #141512;
+      --rail: #442827;
+      --red: #a62a20;
+      --peach: #f1ad8b;
+      --serif: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --sans: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+      --inset: clamp(34px, 5.7vw, 104px);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.58 var(--serif); }
+    h1, h2, p, figure, blockquote { margin: 0; }
+    img { display: block; }
+    button, a { color: inherit; }
+    a:focus-visible, button:focus-visible, .review-reel:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+    .review-layout { min-height: 100vh; min-height: 100svh; display: grid; grid-template-columns: clamp(355px, 31vw, 560px) minmax(0, 1fr); }
+    .review-rail {
+      position: sticky; top: 0; z-index: 2; height: 100vh; height: 100svh;
+      background: var(--rail); color: var(--cream); padding: 31px clamp(34px, 3.5vw, 64px) 34px;
+      display: grid; grid-template-rows: auto 1fr auto; gap: clamp(20px, 4vh, 52px);
+    }
+    .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .wordmark { width: clamp(106px, 12vw, 174px); height: auto; }
+    .study-mark { color: rgba(242,239,230,.58); font: 9px/1.4 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
+    .rail-copy { align-self: center; }
+    h1, .quote, .quote-slide h2 { font-family: var(--serif); font-weight: 400; letter-spacing: -.055em; }
+    h1 { font-size: clamp(54px, 6.1vw, 104px); line-height: .9; }
+    h1 em { color: var(--peach); }
+    .rail-intro { margin-top: 24px; max-width: 375px; }
+    .counter, figcaption, .action { font: 600 11px/1.45 var(--sans); letter-spacing: .12em; text-transform: uppercase; }
+    .review-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .arrow {
+      display: grid; place-items: center; padding: 0; width: 46px; aspect-ratio: 1;
+      border: 1px solid rgba(242,239,230,.47); border-radius: 50%; background: transparent;
+      cursor: pointer; font: 20px/1 var(--sans);
+    }
+    .arrow:not(:disabled):hover { background: var(--cream); color: var(--rail); }
+    .arrow:disabled { opacity: .35; cursor: default; }
+    .counter { margin-left: 7px; font-variant-numeric: tabular-nums; }
+    .review-stage { min-width: 0; height: 100vh; height: 100svh; display: grid; grid-template-rows: 64px minmax(0, 1fr); background: var(--dark); }
+    .stage-nav {
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+      gap: clamp(12px,2vw,32px); padding: 0 clamp(28px,3.5vw,58px);
+      border-bottom: 1px solid rgba(242,239,230,.18);
+      background: linear-gradient(180deg, rgba(20,21,18,.88), rgba(20,21,18,.38));
+      color: var(--cream);
+    }
+    .nav-list, .stage-actions { display: flex; align-items: center; }
+    .nav-list { gap: clamp(12px,1.8vw,32px); }
+    .stage-actions { gap: clamp(10px,1.4vw,24px); }
+    .stage-nav a { text-decoration: none; white-space: nowrap; font: 600 clamp(10px,1vw,14px)/1.45 var(--sans); letter-spacing: .12em; text-transform: uppercase; }
+    .nav-button { position: relative; padding: 8px 0; color: rgba(242,239,230,.81); }
+    .nav-button:is(.is-active,:hover) { color: white; }
+    .nav-button.is-active::after { content: ""; position: absolute; right: 0; bottom: 2px; left: 0; height: 1px; background: var(--peach); }
+    .index-button { display: inline-flex; align-items: center; gap: 10px; padding: 8px 0; }
+    .index-button i { width: 18px; height: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .index-button i span { border: 1px solid currentColor; }
+    .quote-button { padding: 10px clamp(9px,1.25vw,19px); border: 1px solid var(--paper); color: var(--ink); background: var(--paper); }
+    .quote-button:hover { background: var(--cream); box-shadow: inset 0 0 0 1px var(--ink); }
+    figcaption a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .review-reel {
+      display: flex; overflow: auto hidden; scroll-snap-type: x mandatory; scrollbar-width: none;
+      overscroll-behavior-inline: contain;
+    }
+    .review-reel::-webkit-scrollbar { display: none; }
+    .review-reel:focus-visible { outline-offset: -4px; }
+    .quote-slide {
+      --quote-accent: var(--red);
+      position: relative; isolation: isolate; flex: 0 0 100%; min-width: 0;
+      scroll-snap-align: start; overflow-y: auto; color: var(--ink); background: var(--paper);
+      display: grid; align-items: safe center; padding: clamp(38px, 8vh, 96px) var(--inset);
+    }
+    .quote-slide figure { position: relative; max-width: 880px; }
+    .quote-slide--group {
+      --quote-accent: var(--peach);
+      display: grid; grid-template-columns: minmax(0, 1.17fr) minmax(0, .83fr);
+      align-items: center; gap: clamp(17px, 3.2vw, 50px);
+      padding: clamp(24px, 5vh, 70px) clamp(24px, 4.5vw, 74px);
+      color: var(--cream);
+    }
+    .quote-slide--blue { background: #253748; }
+    .quote-slide--wine { background: #51313c; }
+    .quote-slide--green { background: #2d4038; }
+    .quote-slide--umber { background: #4b362e; }
+    .quote-slide--plum { background: #403449; }
+    .quote-stack { display: grid; gap: clamp(20px, 4vh, 52px); }
+    .quote-stack .quote-mark { font-size: clamp(41px, 5vw, 72px); }
+    .quote-stack .quote { font-size: clamp(21px, 2.15vw, 37px); line-height: 1.14; text-wrap: pretty; }
+    .quote-stack figcaption { margin-top: 12px; }
+    .quote-side-image {
+      display: block; width: 100%; height: auto; max-height: 78vh;
+      aspect-ratio: 3 / 5; object-fit: cover;
+    }
+    @media (max-height: 700px) and (min-width: 980px) {
+      .quote-slide--group { padding-block: 22px; }
+      .quote-stack { gap: 16px; }
+      .quote-stack .quote { font-size: clamp(20px, 1.95vw, 32px); }
+      .quote-stack .quote-mark { font-size: 40px; }
+      .quote-side-image { max-height: 66vh; }
+    }
+    @media (max-width: 560px) {
+      .quote-slide--group { grid-template-columns: minmax(0,1.35fr) minmax(0,.65fr); gap: 13px; }
+      .quote-stack .quote { font-size: clamp(18px, 4.2vw, 23px); }
+      .quote-stack figcaption { font-size: 9px; }
+    }
+    .quote-mark { display: block; height: .58em; color: var(--quote-accent); font: 400 clamp(74px, 10vw, 150px)/1 var(--serif); }
+    .quote { font-size: clamp(38px, 5.3vw, 94px); line-height: .99; text-wrap: balance; }
+    .quote-slide--photo .quote { font-size: clamp(24px, 3.15vw, 56px); line-height: 1.12; }
+    figcaption { margin-top: clamp(24px, 4vh, 42px); }
+    figcaption a { text-decoration: none; }
+    .quote-slide--photo {
+      --quote-accent: var(--peach);
+      align-items: safe end; color: var(--cream); background: var(--dark);
+    }
+    .quote-slide--photo img, .quote-slide--photo::before { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .quote-slide--photo img { z-index: -2; object-fit: cover; }
+    .quote-slide--photo::before {
+      content: ""; z-index: -1;
+      background: linear-gradient(to top, rgba(12,10,9,.94), rgba(12,10,9,.56) 49%, transparent 88%),
+                  linear-gradient(90deg, rgba(12,10,9,.42), transparent);
+    }
+    .quote-slide h2 { max-width: 12ch; font-size: clamp(52px, 7.5vw, 126px); line-height: .88; }
+    .quote-slide h2 em { color: var(--peach); }
+    .action {
+      display: inline-flex; align-items: center; gap: 14px; margin-top: 32px; padding: 12px 18px;
+      border: 1px solid var(--cream); background: var(--cream); color: var(--ink);
+    }
+    .action:hover { background: var(--ink); color: var(--cream); }
+    @media (max-width: 1120px) {
+      .review-layout { grid-template-columns: 360px minmax(0,1fr); }
+      .review-rail { padding-inline: 38px; }
+      .stage-nav { gap: 12px; padding-inline: 16px; }
+      .stage-nav .nav-list, .stage-nav .stage-actions { gap: 9px; }
+    }
+    @media (max-width: 979px) {
+      .review-layout { grid-template-columns: 1fr; grid-template-rows: auto minmax(0,1fr); }
+      .review-rail { position: relative; height: auto; padding: 18px 24px 22px; gap: 15px; }
+      .stage-nav { overflow-x: auto; scrollbar-width: none; }
+      .nav-list, .stage-actions { flex-shrink: 0; }
+    }
+    @media (max-width: 800px) {
+      .review-layout { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+      .review-rail { position: relative; height: auto; padding: 18px 24px 22px; gap: 15px; }
+      .rail-copy { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 16px; }
+      h1 { font-size: clamp(45px, 8.8vw, 68px); }
+      .rail-intro { margin: 0; }
+      .arrow { width: 34px; font-size: 15px; }
+      .review-stage { height: max(440px, calc(100svh - 178px)); grid-template-rows: 64px minmax(0, 1fr); }
+      .quote-slide { padding: 36px 26px; }
+      .quote-slide--photo img { object-position: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="review-layout">
+    <aside class="review-rail" aria-labelledby="reviews-title">
+      <div class="brand-row">
+        <a href="./index.html"><img class="wordmark" src="../assets/study10-rivington-marx-logo-white.png" alt="Rivington Marx Interiors home"></a>
+        <span class="study-mark">Study 10</span>
+      </div>
+      <div class="rail-copy">
+        <h1 id="reviews-title"><em>Reviews</em></h1>
+        <p class="rail-intro">Hear from the clients and collaborators who have worked with us, from the first design ideas to the finished rooms.</p>
+      </div>
+      <div class="review-controls" aria-label="Review slide controls">
+        <button class="arrow" type="button" data-step="-1" aria-label="Previous slide" aria-controls="review-reel" disabled>←</button>
+        <button class="arrow" type="button" data-step="1" aria-label="Next slide" aria-controls="review-reel" disabled>→</button>
+        <span class="counter" aria-live="polite">01 / 09</span>
+      </div>
+    </aside>
+    <section class="review-stage" aria-label="Review slides">
+      <nav class="stage-nav" aria-label="Study sections">
+        <div class="nav-list">
+          <a class="nav-button" href="./index.html#work">Work</a>
+          <a class="nav-button" href="./index.html#point">Point of view</a>
+          <a class="nav-button" href="./index.html#approach">Approach</a>
+          <a class="nav-button" href="./index.html#studio">Studio</a>
+          <a class="nav-button is-active" href="./reviews.html" aria-current="page">Reviews</a>
+          <a class="nav-button" href="./index.html#contact">Contact</a>
+        </div>
+        <div class="stage-actions">
+          <a class="index-button" href="./index.html#portfolio"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i>Portfolio</a>
+          <a class="quote-button" href="./quote.html">Get a quote</a>
+        </div>
+      </nav>
+      <div class="review-reel" id="review-reel" tabindex="0" role="region" aria-label="Sideways-scrolling review slides">
+        <article class="quote-slide quote-slide--photo quote-slide--long" aria-label="Slide 1 of 9">
+          <img src="../assets/study10-parlors-power-05.jpg" alt="Layered sitting room with dark trim and large windows" fetchpriority="high" decoding="async">
+          <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>In a point and click design world, Rivington Marx goes beyond expectation and revolutionizes spaces with intriguing design and captivating conversation areas.</p></blockquote>
+          <figcaption>Lance Frey · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+        </article>
+        <article class="quote-slide quote-slide--group quote-slide--blue" aria-label="Slide 2 of 9">
+          <div class="quote-stack">
+            <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>From the very beginning, their design expertise stood out.</p></blockquote>
+          <figcaption>Lewis Poynter · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure> <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Couldn&#x27;t be happier with the final product. From start to finish, a seamless process.</p></blockquote>
+          <figcaption>Nick Firth · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+          </div>
+          <img class="quote-side-image" src="../assets/study10-the-pink-pony-02.jpg" alt="Blue sitting room with layered seating and a brass lamp" loading="lazy" decoding="async">
+        </article>
+        <article class="quote-slide quote-slide--group quote-slide--wine" aria-label="Slide 3 of 9">
+          <div class="quote-stack">
+            <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Their team is exceptionally organized, communicative, passionate and dedicated to their craft.</p></blockquote>
+          <figcaption>Bryony Brandt · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure> <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Troy is so easy to work with.</p></blockquote>
+          <figcaption>Bryson Clark · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+          </div>
+          <img class="quote-side-image" src="../assets/study10-adventures-in-moodsetting-10.jpg" alt="Gold-toned room with a chandelier and red accents" loading="lazy" decoding="async">
+        </article>
+        <article class="quote-slide quote-slide--group quote-slide--green" aria-label="Slide 4 of 9">
+          <div class="quote-stack">
+            <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>The entire team is competent, diligent and easy to work with.</p></blockquote>
+          <figcaption>Garrett Smith · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure> <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Rivington Marx should be your number 1 destination if you are thinking of Remodeling or Building a new home.</p></blockquote>
+          <figcaption>Misty Ashworth · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+          </div>
+          <img class="quote-side-image" src="../assets/study10-east-meets-rest-01.jpg" alt="Living room with blue seating and a brass coffee table" loading="lazy" decoding="async">
+        </article>
+        <article class="quote-slide quote-slide--photo quote-slide--long" aria-label="Slide 5 of 9">
+          <img src="../assets/study10-the-pink-pony-05.jpg" alt="Dining room with a sculptural chandelier and full-height windows" loading="lazy" decoding="async">
+          <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Their design taste and understanding of space planning is everything I wanted and more.</p></blockquote>
+          <figcaption>Gina Lloyd · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+        </article>
+        <article class="quote-slide quote-slide--group quote-slide--umber" aria-label="Slide 6 of 9">
+          <div class="quote-stack">
+            <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>We have worked with Annie Martin and her team at Rivington Marx on several projects over the last couple of years.</p></blockquote>
+          <figcaption>Brian Martin · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure> <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Troy’s design vision sets a high precedent with his team and their work ethic.</p></blockquote>
+          <figcaption>Matt Vigil · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+          </div>
+          <img class="quote-side-image" src="../assets/study10-in-the-studio-01.jpg" alt="Studio lounge with an antique cabinet and a patterned wall" loading="lazy" decoding="async">
+        </article>
+        <article class="quote-slide quote-slide--group quote-slide--plum" aria-label="Slide 7 of 9">
+          <div class="quote-stack">
+            <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Annie and her team are amazing to work with. Highly recommend to anyone who is looking for top notch interior design services!</p></blockquote>
+          <figcaption>Theodore Farver · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure> <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>Wow, you must check out this company, their team of experts and designers are incredible.</p></blockquote>
+          <figcaption>Kirk Axelson · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+          </div>
+          <img class="quote-side-image" src="../assets/study10-midcentury-globetrotter-03.jpg" alt="Dining area with warm timber and a long black wall light" loading="lazy" decoding="async">
+        </article>
+        <article class="quote-slide quote-slide--photo quote-slide--long" aria-label="Slide 8 of 9">
+          <img src="../assets/study10-tailored-in-stone-04.jpg" alt="Kitchen with a sculptural stone island and surrounding cabinetry" loading="lazy" decoding="async">
+          <figure>
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote class="quote"><p>We have nothing but good things to say about working with Rivington Marx and their team.</p></blockquote>
+          <figcaption>David Frydenlund · <a href="https://www.google.com/maps?cid=13277346911088777905">Google review</a></figcaption>
+        </figure>
+        </article>
+        <section class="quote-slide quote-slide--photo" aria-label="Slide 9 of 9">
+          <img src="../assets/study10-beyond-the-pale-02.jpg" alt="" loading="lazy" decoding="async">
+          <div>
+            <h2>Tell us about <em>your project</em></h2>
+            <a class="action" href="./quote.html">Get a Quote <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const layout = document.querySelector('.review-layout');
+      const reel = document.querySelector('.review-reel');
+      const slides = [...reel.children];
+      const previous = document.querySelector('[data-step="-1"]');
+      const next = document.querySelector('[data-step="1"]');
+      const counter = document.querySelector('.counter');
+      const motion = matchMedia('(prefers-reduced-motion: reduce)');
+      let requested = 0;
+      let active = 0;
+      let wheelTime = -Infinity;
+      let settle;
+      const pad = number => String(number).padStart(2, '0');
+      const updateControls = () => {
+        const total = slides.length;
+        counter.textContent = pad(active + 1) + ' / ' + pad(total);
+        previous.disabled = requested <= 0;
+        next.disabled = requested >= total - 1;
+      };
+      const goTo = index => {
+        requested = Math.max(0, Math.min(index, slides.length - 1));
+        reel.scrollTo({ left: requested * reel.clientWidth, behavior: motion.matches ? 'instant' : 'smooth' });
+        updateControls();
+      };
+      reel.addEventListener('scroll', () => {
+        active = Math.max(0, Math.min(Math.round(reel.scrollLeft / reel.clientWidth), slides.length - 1));
+        clearTimeout(settle);
+        settle = setTimeout(() => { requested = active; updateControls(); }, 120);
+        updateControls();
+      }, { passive: true });
+      previous.addEventListener('click', () => goTo(requested - 1));
+      next.addEventListener('click', () => goTo(requested + 1));
+      layout.addEventListener('wheel', event => {
+        if (event.ctrlKey || matchMedia('(max-width: 979px)').matches ||
+            Math.abs(event.deltaY) <= Math.abs(event.deltaX) || Math.abs(event.deltaY) < 8) return;
+        if (event.target.closest('.stage-nav')) return;
+        event.preventDefault();
+        const now = performance.now();
+        if (now - wheelTime < 530) return;
+        wheelTime = now;
+        goTo(requested + Math.sign(event.deltaY));
+      }, { passive: false });
+      layout.addEventListener('keydown', event => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        goTo(requested + (event.key === 'ArrowRight' ? 1 : -1));
+      });
+      updateControls();
+    })();
+  </script>
+</body>
+</html>
